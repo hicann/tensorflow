@@ -1,0 +1,282 @@
+/**
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+
+#include "absl/algorithm/container.h"
+#include "absl/memory/memory.h"
+#include "tensorflow/c/c_api.h"
+#include "tensorflow/c/c_api_internal.h"
+#include "tensorflow/c/eager/c_api_internal.h"
+#include "tensorflow/core/kernels/data/iterator_ops.h"
+#include "tensorflow/core/common_runtime/eager/tensor_handle.h"
+
+#include "npu_aoe.h"
+#include "npu_device.h"
+#include "npu_global.h"
+#include "npu_logger.h"
+
+using namespace tensorflow;
+namespace npu {
+class NpuCallOp : public OpKernel {
+ public:
+  explicit NpuCallOp(OpKernelConstruction *ctx) : OpKernel(ctx) {
+    OP_REQUIRES_OK(ctx, ctx->GetAttr("f", &attr_));
+    OP_REQUIRES_OK(ctx, ctx->GetAttr("device", &device_id_));
+  }
+
+  ~NpuCallOp() override = default;
+
+  void Compute(OpKernelContext *ctx) override {
+    DLOG() << "Compute npu op " << name() << " with function " << attr_.name();
+    std::lock_guard<std::mutex> lk(mu_);  // Prevent run same npu graph parallel
+    OP_REQUIRES_OK(ctx, Initilize(ctx));
+    TFE_Context *context;
+    NpuDevice *device;
+    auto status = std::unique_ptr<TF_Status, decltype(&TF_DeleteStatus)>(TF_NewStatus(), TF_DeleteStatus);
+    OP_REQUIRES_OK(ctx, global::NpuCtx::GetDeviceCtx(device_id_, &context, &device));
+    if (device->device_options.find("ge.jit_compile") != device->device_options.end()) {
+      DLOG() << "device_options ge.jit_compile : " << device->device_options["ge.jit_compile"];
+      jit_compile_ = device->device_options["ge.jit_compile"];
+    }
+    if (device->device_options.find("ge.compile_dynamic_mode") != device->device_options.end()) {
+      DLOG() << "device_options ge.compile_dynamic_mode : " <<
+          device->device_options["ge.compile_dynamic_mode"];
+      compile_dynamic_mode_ = device->device_options["ge.compile_dynamic_mode"];
+    }
+    if (device->device_options.find("shape_generalization_mode") != device->device_options.end()) {
+      DLOG() << "device_options shape_generalization_mode : " <<
+             device->device_options["shape_generalization_mode"];
+      shape_generalization_mode_ = device->device_options["shape_generalization_mode"];
+    }
+    if (compile_dynamic_mode_ == "1" && shape_generalization_mode_ != "STRICT") {
+      DLOG() << "compile_dynamic_mode is 1, shape_generalization_mode["
+             << shape_generalization_mode_ << "] will be ignore, please set compile_dynamic_mode=0.";
+    }
+    if (jit_compile_ != "1" && shape_generalization_mode_ != "STRICT") {
+      LOG(WARNING) << "jit_compile[" << jit_compile_ << "] is not 1, so shape_generalization_mode["
+                   << shape_generalization_mode_ << "] will be ignore, please set jit_compile=1 "
+                   << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
+      DLOG() << "jit_compile[" << jit_compile_ << "] is not 1, shape_generalization_mode["
+             << shape_generalization_mode_ << "] will be ignore, please set jit_compile=1 "
+             << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
+    }
+    bool loaded = false;
+    OP_REQUIRES_OK(ctx, Build(ctx, loaded));
+
+    if (empty_ge_graph_) {
+      DLOG() << "Compute bypass for cluster graph " << attr_.name() << " of " << name() << " as empty ge graph";
+      return;
+    }
+
+    std::vector<TFE_TensorHandle *> inputs;
+    inputs.reserve(static_cast<size_t>(ctx->num_inputs()));
+
+    npu::ScopeTensorHandleDeleter guarder;
+    for (int i = 0; i < ctx->num_inputs(); i++) {
+      inputs.push_back(tensorflow::wrap(TensorHandle::CreateLocalHandle(ctx->input(i))));
+      guarder.Guard(inputs.back());
+    }
+
+    // run aoe tuning if need
+    if (!device->device_options["ge.jobType"].empty()) {
+      auto &aoe = NpuAoe::GetInstance();
+      NPU_CTX_REQUIRES_OK(status,
+                          aoe.RunAoeTuning(*device, context, loaded, graph_id_, attr_.name(), *graph_def_, inputs));
+    }
+
+    std::vector<TFE_TensorHandle *> outputs(ctx->num_outputs());
+    device->RunGeGraphPin2Cpu(context, graph_id_, static_cast<int32_t>(inputs.size()), inputs.data(), output_types(),
+                              static_cast<int32_t>(outputs.size()), outputs.data(), status.get());
+    OP_REQUIRES_OK(ctx, status->status);
+
+    for (auto &handle : outputs) {
+      guarder.Guard(handle);
+    }
+    for (size_t i = 0UL; i < outputs.size(); i++) {
+      const Tensor *tensor;
+      OP_REQUIRES_OK(ctx, npu::GetTensorHandleTensor(outputs[i], &tensor));
+      ctx->set_output(static_cast<int32_t>(i), *tensor);
+    }
+  }
+
+  tensorflow::Status Initilize(OpKernelContext *ctx) {
+    if (initialized_) {
+      return tensorflow::Status::OK();
+    }
+
+    const tensorflow::FunctionLibraryDefinition *lib_def = ctx->function_library()->GetFunctionLibraryDefinition();
+    const tensorflow::FunctionDef *fdef = lib_def->Find(attr_.name());
+    NPU_REQUIRES(fdef != nullptr, tensorflow::errors::Internal("Failed lookup function ", attr_.name()));
+    std::unique_ptr<tensorflow::FunctionBody> fbody;
+    NPU_REQUIRES_OK(FunctionDefToBodyHelper(*fdef, tensorflow::AttrSlice{}, lib_def, &fbody));
+
+    graph_ = std::make_unique<tensorflow::Graph>(lib_def);
+    graph_def_ = std::make_unique<tensorflow::GraphDef>();
+    dumper_ = std::make_unique<OptimizeStageGraphDumper>(name() + "." + attr_.name());
+    CopyGraph(*fbody->graph, graph_.get());
+    NpuCustomizedOptimizeGraph(*(ctx->function_library()), &graph_);
+    PruneGraphByFunctionSignature(*fdef, *graph_.get(), true);
+
+    for (auto node : graph_->op_nodes()) {
+      if (!node->IsArg()) {
+        continue;
+      }
+      size_t index = static_cast<size_t>(node->attrs().Find("index")->i());
+      if (index >= args_.size()) {
+        args_.resize(index + 1);
+      }
+      args_[index] = node;
+    }
+    input_shapes_.resize(args_.size(), absl::nullopt);
+    initialized_ = true;
+    return tensorflow::Status::OK();
+  }
+
+  bool MaybeUpdateShape(const OpKernelContext *const ctx) {
+    DLOG() << "MaybeUpdateShape, compile_dynamic_mode: " << compile_dynamic_mode_ << ", jit_compile: "
+           << jit_compile_ << ", shape_generalization_mode: " << shape_generalization_mode_;
+    bool updated = false;
+    for (size_t i = 0UL; i < static_cast<size_t>(ctx->num_inputs()); i++) {
+      auto &shape = input_shapes_[i];
+      auto &value_shape = ctx->input(static_cast<int32_t>(i)).shape();
+      if (!shape.has_value()) {
+        // 第一次迭代时初始化shape
+        if (compile_dynamic_mode_ == "1") {
+          shape = MakeUnknownShape(value_shape.dims());
+        } else {
+          shape = value_shape;
+        }
+        DLOG() << "Init input " << i << " shape " << shape.value().DebugString();
+        args_[i]->ClearAttr("_output_shapes");
+        args_[i]->AddAttr("_output_shapes", std::vector<PartialTensorShape>{shape.value()});
+        updated = true;
+        continue;
+      }
+      if (!shape.value().IsCompatibleWith(value_shape)) {
+        updated = true;
+        DLOG() << "Compat input " << i << " shape " << shape.value().DebugString() << " vs. "
+                << value_shape.DebugString();
+        if (compile_dynamic_mode_ != "1" && jit_compile_ == "1" && shape_generalization_mode_ == "STRICT") {
+          shape = value_shape;
+          DLOG() << "Dynamic shape, recommended to configure jit_compile value to false or auto";
+        } else if (compile_dynamic_mode_ != "1" && jit_compile_ == "1" && shape_generalization_mode_ == "ADAPTIVE") {
+          shape = MakeAdaptiveShape(shape.value(), value_shape);
+        } else {
+          shape = MakeCompatShape(shape.value(), value_shape);
+        }
+        DLOG() << "Refresh input " << i << " shape to " << shape.value().DebugString();
+        args_[i]->ClearAttr("_output_shapes");
+        args_[i]->AddAttr("_output_shapes", std::vector<PartialTensorShape>{shape.value()});
+      }
+    }
+    return updated;
+  }
+
+  tensorflow::Status Build(const OpKernelContext *const ctx, bool &loaded) {
+    if (built_ && empty_ge_graph_) {
+      DLOG() << "Skip check re-build for empty ge graph " << attr_.name() << " of " << name();
+      return tensorflow::Status::OK();
+    }
+
+    TFE_Context *context;
+    NpuDevice *device;
+    auto status = std::unique_ptr<TF_Status, decltype(&TF_DeleteStatus)>(TF_NewStatus(), TF_DeleteStatus);
+    NPU_REQUIRES_OK(global::NpuCtx::GetDeviceCtx(device_id_, &context, &device));
+    bool shape_changed = MaybeUpdateShape(ctx);
+    if (!built_ || shape_changed) {
+      auto lib_def = ctx->function_library()->GetFunctionLibraryDefinition();
+      auto graph = std::make_unique<tensorflow::Graph>(lib_def);
+      CopyGraph(*graph_, graph.get());
+      AssembleParserAddons(lib_def, graph.get());
+      graph->ToGraphDef(graph_def_.get());
+      dumper_->DumpWithSubGraphs("NPU_FUNCTION.shape_refreshed", *graph_def_, *lib_def);
+    }
+
+    if (!built_) {
+      graph_id_ = device->AddGeGraph(context, attr_.name(), *graph_def_, status.get());
+      NPU_REQUIRES_OK(status->status);
+      empty_ge_graph_ = graph_id_ == kEmptyGeGraphId;
+      if (!empty_ge_graph_) {
+        DLOG() << "Add ge graph " << attr_.name() << " with id " << graph_id_ << " for " << name();
+      } else {
+        DLOG() << "Ge graph of " << attr_.name() << " is empty for " << name();
+      }
+      built_ = true;
+      loaded = true;
+    } else {
+      if (shape_changed || device->GeSession()->IsGraphNeedRebuild(static_cast<uint32_t>(graph_id_))) {
+        DLOG() << "Remove and re-add ge graph " << attr_.name() << " with id " << graph_id_ << " as "
+               << (shape_changed ? "shape changed" : "need rebuild");
+        [this, &status, &device]() {
+          NPU_CTX_REQUIRES_GE_OK(status, "Graph engine remove graph",
+                                 device->GeSession()->RemoveGraph(static_cast<uint32_t>(graph_id_)));
+        }();
+        NPU_REQUIRES_OK(status->status);
+        static std::map<std::string, std::string> kOptions;
+        (void)device->AddGeGraph(context, graph_id_, attr_.name(), *graph_def_, status.get(), kOptions);
+        NPU_REQUIRES_OK(status->status);
+        loaded = true;
+      }
+    }
+    return tensorflow::Status::OK();
+  }
+
+ private:
+  static PartialTensorShape MakeCompatShape(const PartialTensorShape &a, const PartialTensorShape &b) {
+    const static auto kUnknownRankShape = PartialTensorShape();
+    if (a.dims() != b.dims()) {
+      return kUnknownRankShape;
+    }
+    return MakeUnknownShape(b.dims());
+  }
+  static PartialTensorShape MakeAdaptiveShape(const PartialTensorShape &a, const PartialTensorShape &b) {
+    const static auto kUnknownRankShape = PartialTensorShape();
+    if (a.dims() != b.dims()) {
+      return kUnknownRankShape;
+    }
+    static constexpr int64 kUnknownDim = -1;
+    std::vector<int64> dims(a.dims(), kUnknownDim);
+    for (int32_t i = 0; i < a.dims(); i++) {
+      if (a.dim_size(i) == b.dim_size(i)) {
+        dims[i] = a.dim_size(i);
+      }
+    }
+    PartialTensorShape out_shape;
+    auto status = PartialTensorShape::MakePartialShape(dims.data(), static_cast<int32_t>(dims.size()), &out_shape);
+    return status.ok() ? out_shape : kUnknownRankShape;
+  }
+  static PartialTensorShape MakeUnknownShape(const int32_t &size) {
+    const static auto kUnknownRankShape = PartialTensorShape();
+    static constexpr int64 kUnknownDim = -1;
+    std::vector<int64> dims(size, kUnknownDim);
+    PartialTensorShape out_shape;
+    auto status = PartialTensorShape::MakePartialShape(dims.data(),
+        static_cast<int32_t>(dims.size()), &out_shape);
+    return status.ok() ? out_shape : kUnknownRankShape;
+  }
+
+  bool initialized_{false};
+  bool built_{false};
+  bool empty_ge_graph_{false};
+  int device_id_{0};
+  uint64_t graph_id_{0U};
+  NameAttrList attr_;
+  std::mutex mu_;
+  std::unique_ptr<OptimizeStageGraphDumper> dumper_{nullptr};
+  std::unique_ptr<tensorflow::Graph> graph_;
+  std::unique_ptr<tensorflow::GraphDef> graph_def_;
+  std::vector<tensorflow::Node *> args_;
+  std::vector<absl::optional<PartialTensorShape>> input_shapes_;
+  std::string jit_compile_{"2"};
+  std::string compile_dynamic_mode_{"0"};
+  std::string shape_generalization_mode_{"STRICT"};
+};
+
+REGISTER_KERNEL_BUILDER(Name("NpuCall").Device(DEVICE_CPU), NpuCallOp);
+}  // namespace npu

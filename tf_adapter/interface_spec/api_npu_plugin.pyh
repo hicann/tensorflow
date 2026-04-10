@@ -1,0 +1,21 @@
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+# source file:python/npu_bridge/estimator/npu/npu_plugin.py
+
+def npu_resource_init(graph_run_mode=1, op_debug_level=0, enable_profiling=False,
+                      profiling_options=None, precision_mode=None,
+                      enable_scope_fusion_passes=None,
+                      enable_exception_dump=2, aoe_mode=None, work_path=None,
+                      op_compiler_cache_mode=None, op_compiler_cache_dir=None, debug_dir=None,
+                      hcom_multi_mode=False, distribute_config=None, aoe_config_file=None,
+                      precision_mode_v2=None, export_compile_stat=1, aicore_num=None, oo_constant_folding=True,
+                      input_batch_cpy=False, oo_level="O3", optimization_switch=None):
+
+def npu_resource_shutdown():

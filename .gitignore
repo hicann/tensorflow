@@ -1,0 +1,17 @@
+/build
+/coverage
+/output
+/tools
+/tf_adapter_2.x/build
+/tf_adapter_2.x/tools
+/tf_adapter_2.x/tools/build
+/tf_adapter_2.x/tools/tools
+/.idea
+/adapter1_coverage.info
+/*.pbtxt
+
+# IDE
+/.vscode
+/.idea
+/cmake-build-debug
+/cmake-build-gcov

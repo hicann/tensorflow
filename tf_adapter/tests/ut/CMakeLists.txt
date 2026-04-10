@@ -1,0 +1,88 @@
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+project(ut_optimizers)
+
+set(CMAKE_CXX_STANDARD 14)
+
+file(GLOB_RECURSE UT_SOURCES
+    ${TFADAPTER_DIR}/tf_adapter/common/*.cc
+    ${TFADAPTER_DIR}/tf_adapter/ops/*.cc
+    ${TFADAPTER_DIR}/tf_adapter/optimizers/*.cc
+    ${TFADAPTER_DIR}/tf_adapter/util/*.cc
+    ${TFADAPTER_DIR}/tf_adapter/kernels/*.cc
+    "kernels/testcase/dataset/*.cc"
+    "optimizers/testcase/*.cc"
+    "util/testcase/*.cc"
+    "kernels/testcase/*.cc"
+    "common/testcase/*.cc"
+)
+
+add_executable(tfadapter_utest
+    "main.cc"
+    ${UT_SOURCES}
+)
+
+target_include_directories(tfadapter_utest PRIVATE
+    ${TF_INSTALL_LIB_PATH}/include/
+    ${TFADAPTER_DIR}/inc/external/
+    ${TFADAPTER_DIR}/inc/common/
+    ${TFADAPTER_DIR}/graphengine/inc/
+    ${TFADAPTER_DIR}/graphengine/inc/external/
+    ${TFADAPTER_DIR}/graphengine/inc/framework/
+    ${TFADAPTER_DIR}/metadef/inc/
+    ${TFADAPTER_DIR}/metadef/pkg_inc/
+    ${TFADAPTER_DIR}/metadef/inc/external/
+    ${TFADAPTER_DIR}/tf_adapter/kernels/aicpu
+    ${TFADAPTER_DIR}/tf_adapter/tests/depends/test_util
+    ${TFADAPTER_DIR}/tf_adapter/tests/depends/ascendcl/src
+    ${TFADAPTER_DIR}/tf_adapter/tests/depends/runtime/src
+    ${TFADAPTER_DIR}/tf_adapter/tests/depends/ge_runner/src/
+    ${TFADAPTER_DIR}/tf_adapter/tests/depends/alog/src/
+    ${TFADAPTER_DIR}/tf_adapter/tests
+)
+
+target_compile_options(tfadapter_utest PRIVATE
+    ${TFADAPTER_COMMON_COMPILE_OPTION}
+    -g -O2 --coverage -fprofile-arcs -ftest-coverage
+    -Werror=format
+    -Wno-missing-field-initializers
+    -Wno-sign-compare
+    -Wno-pointer-arith
+    -Wno-unused-but-set-parameter
+    -Wno-unused-function
+    -Wno-unused-result
+    -Wno-unused-variable
+    -Wno-maybe-uninitialized
+)
+
+add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+
+target_compile_definitions(tfadapter_utest PRIVATE
+    _FORTIFY_SOURCE=2
+    LOG_CPP
+    ONLY_COMPILE_OPEN_SRC
+)
+
+foreach (UT_LINK_FLAG ${UT_LINK_FLAGS})
+    target_link_libraries(tfadapter_utest PUBLIC "${UT_LINK_FLAG}")
+endforeach (UT_LINK_FLAG)
+
+string(STRIP ${PYTHON_LIB_PATH} PYTHON_LIB_PATH)
+message("python lib path ${PYTHON_LIB_PATH}")
+
+add_dependencies(tfadapter_utest aoe_tuning)
+
+target_link_libraries(tfadapter_utest PUBLIC
+    $<BUILD_INTERFACE:intf_pub_cxx14>
+    ${TFADAPTER_COMMON_LINK_OPTION}
+    gtest gtest_main c_sec mmpa_stub indextransform_stub alog_stub datatransfer_stub ge_runner_stub ascendcl_stub runtime_stub
+    ${PYTHON_LIB_PATH} -lrt -ldl -lgcov -lutil
+)

@@ -1,0 +1,60 @@
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+cmake_minimum_required(VERSION 3.14)
+project(AscendAdapter2Test)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -g --coverage -DNDEBUG -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -fno-common -pipe ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -g --coverage -DNDEBUG -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -fno-common -pipe ${CMAKE_CXX_FLAGS}")
+set(CMAKE_SKIP_RPATH FALSE)
+
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+    add_definitions(-Wno-builtin-macro-redefined)
+endif ()
+
+link_libraries(-lgcov)
+
+if (NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/tools/COMPILE_FLAGS OR
+    NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/tools/TF_INSTALLED_PATH OR
+    NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/tools/ASCEND_INSTALLED_PATH OR
+    NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/tools/PYTHON_BIN_PATH OR
+    NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/tools/PYTHON_LD_LIBRARY)
+    message(FATAL_ERROR "No validate configuration found. Did you forget to configure first?")
+endif ()
+
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/tools/TF_INSTALLED_PATH" TF_INSTALLED_PATH)
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/tools/ASCEND_INSTALLED_PATH" ASCEND_INSTALLED_PATH)
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/tools/PYTHON_BIN_PATH" PYTHON_BIN_PATH)
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/tools/COMPILE_FLAGS" CUSTOM_COMPILE_FLAGS)
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/tools/PYTHON_LD_LIBRARY" PYTHON_LD_LIBRARY)
+foreach (COMPILE_FLAG ${CUSTOM_COMPILE_FLAGS})
+    set(CMAKE_C_FLAGS "${COMPILE_FLAG} ${CMAKE_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${COMPILE_FLAG} ${CMAKE_CXX_FLAGS}")
+endforeach (COMPILE_FLAG)
+
+include_directories(${CMAKE_CURRENT_LIST_DIR}/stub/include)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../npu_device/core)
+include_directories(${ASCEND_INSTALLED_PATH}/include)
+include_directories(${ASCEND_INSTALLED_PATH}/include/aoe)
+include_directories(${ASCEND_INSTALLED_PATH}/pkg_inc)
+include_directories(${ASCEND_INSTALLED_PATH}/pkg_inc/runtime)
+include_directories(${ASCEND_INSTALLED_PATH}/pkg_inc/profiling)
+
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/gtest.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/nlohmann_json.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/acl/module.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/aoe/module.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/tensorflow/module.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/graph_engine/module.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/secure_c.cmake)
+
+add_subdirectory(ut)
+add_subdirectory(st)

@@ -1,0 +1,56 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd. All Rights Reserved.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+set -e
+set -o pipefail
+
+CONFIGURE_DIR="$(cd $(dirname "$0")/../../tf_adapter_2.x && pwd)"
+cd "${CONFIGURE_DIR}"
+
+if [ ! -f "/home/jenkins/tensorflow26/.env/bin/activate" ];then
+  echo "No venv for tensorflow2.x installed, skip CI build"
+  exit 0
+fi
+
+source /home/jenkins/tensorflow26/.env/bin/activate
+
+if [ "$1x" != "x" ];then
+  python_version=$1
+fi
+
+if [ -z "$python_version" ]; then
+  if [ "${OS_TYPE}" = "centos_aarch64" ]; then
+    PYTHON_BIN_PATH=$(which python3.7)
+  else
+    PYTHON_BIN_PATH=$(which python3.9)
+  fi
+else
+  PYTHON_BIN_PATH=$(which $python_version)
+fi
+
+export ADAPTER_TARGET_PYTHON_PATH="$PYTHON_BIN_PATH"
+
+echo "ADAPTER_TARGET_PYTHON_PATH set to $ADAPTER_TARGET_PYTHON_PATH"
+
+if ! "$PYTHON_BIN_PATH" "configure.py" "$@"; then
+  echo "ERROR: Failed to run configure.py!"
+  exit 1
+fi
+
+echo "Configuration finished"
+
+rm -rf build
+mkdir build
+cd build
+cmake -DASCEND_CI_LIMITED_PY37_ENABLE=ON ..
+make -j8
+
+deactivate
