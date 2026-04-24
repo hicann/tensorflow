@@ -473,8 +473,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
               return false;
             }
           } else {
-            if (memcpy_s(dst_ptr, dst_size, src_ptr, src_size) != EOK) {
-              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size;
+            uint64_t copy_dst_size = (dst_size >= SECUREC_MEM_MAX_LEN) ? src_size : dst_size;
+            if (memcpy_s(dst_ptr, copy_dst_size, src_ptr, src_size) != EOK) {
+              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size << ", copy_dst_size: " << copy_dst_size;
               return false;
             }
           }
