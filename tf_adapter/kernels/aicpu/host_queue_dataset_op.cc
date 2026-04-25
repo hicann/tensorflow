@@ -202,7 +202,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         return kStringTypeDepth;
       }
       if (IsUnknownShape(output_shapes_[i])) {
-        ADP_LOG(INFO) << " Output_shape is unknown shape";
+        ADP_LOG(INFO) << " Output_shape is unknow shape";
         return kUnknownShapeDepth;
       }
       int64_t element_number = GetTensorElementNum(i);
@@ -987,8 +987,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             } else if (tensor.dtype() == DT_STRING) {
               Status s = MappingDTStringTensor2DataItem(tensor, data_item, buff_list);
               if (!s.ok()) {
-                ADP_LOG(ERROR) << "mapping dt_string type tensor failed, current dims:" << tensor.dims();
-                LOG(ERROR) << "mapping dt_string type tensor failed, current dims:" << tensor.dims();
+                ADP_LOG(ERROR) << "mapping dt_stirng type tensor failed, current dims:" << tensor.dims();
+                LOG(ERROR) << "mapping dt_stirng type tensor failed, current dims:" << tensor.dims();
                 mutex_lock lck(mu_);
                 cancelled_ = true;
                 cond_var_.notify_all();

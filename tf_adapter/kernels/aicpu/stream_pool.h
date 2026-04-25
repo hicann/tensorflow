@@ -38,7 +38,7 @@ public:
     if (event_ != nullptr) {
       aclError rt = aclrtDestroyEvent(event_);
       if (rt != ACL_SUCCESS) {
-        ADP_LOG(ERROR) << "[StreamPool] Destroy event failed!";
+        ADP_LOG(ERROR) << "[StreamPool] Destroy event faild!";
         event_ = nullptr;
       }
     }
@@ -50,7 +50,7 @@ private:
     aclrtEvent event;
     aclError rt = aclrtCreateEvent(&event);
     if (rt != ACL_SUCCESS) {
-      ADP_LOG(ERROR) << "[StreamPool] Create stream failed!";
+      ADP_LOG(ERROR) << "[StreamPool] Create stream faild!";
       return nullptr;
     }
     return std::shared_ptr<StreamEvent>(new StreamEvent(stream, event), del);
@@ -63,8 +63,8 @@ private:
     aclrtEventStatus status;
     aclError rt = aclrtQueryEvent(event_, &status);
     if (rt != ACL_SUCCESS) {
-      ADP_LOG(ERROR) << "[StreamPool] Query event status failed.";
-      return errors::InvalidArgument("[StreamPool] Query event status failed: ", rt);
+      ADP_LOG(ERROR) << "[StreamPool] Query event status faild.";
+      return errors::InvalidArgument("[StreamPool] Query event status faild: ", rt);
     }
 
     if (status != ACL_EVENT_STATUS_COMPLETE) {
@@ -101,7 +101,7 @@ public:
     event_queue_.clear();
     aclError rt = aclrtDestroyStream(stream_);
     if (rt != ACL_SUCCESS) {
-      ADP_LOG(ERROR) << "[StreamPool] Destroy stream failed!";
+      ADP_LOG(ERROR) << "[StreamPool] Destroy stream faild!";
     }
   }
 
@@ -116,7 +116,7 @@ private:
     aclrtStream stream;
     aclError rt = aclrtCreateStream(&stream);
     if (rt != ACL_SUCCESS) {
-      ADP_LOG(ERROR) << "[StreamPool] Create stream failed!";
+      ADP_LOG(ERROR) << "[StreamPool] Create stream faild!";
       return nullptr;
     }
 
@@ -205,14 +205,14 @@ private:
 
 Status StreamEvent::RecordEvent(const std::function<void(Status status)> hook) {
   if (event_ == nullptr) {
-    ADP_LOG(ERROR) << "[StreamPool] Record event failed: event is null. ";
-    return errors::Internal("Record event failed: event is null.");
+    ADP_LOG(ERROR) << "[StreamPool] Record event faild: event is null. ";
+    return errors::Internal("Record event faild: event is null.");
   }
 
   aclError rt = aclrtRecordEvent(event_, stream_->GetStream());
   if (rt != ACL_SUCCESS) {
-    ADP_LOG(ERROR) << "[StreamPool] Record event failed, rt : " << rt;
-    return errors::InvalidArgument("[StreamPool] Record event failed: ", rt);
+    ADP_LOG(ERROR) << "[StreamPool] Record event faild, rt : " << rt;
+    return errors::InvalidArgument("[StreamPool] Record event faild: ", rt);
   }
   hook_ = hook;
   return Status::OK();
@@ -228,8 +228,8 @@ Status StreamEvent::Wait() {
 
   Status status = Status::OK();
   if (rt != ACL_SUCCESS) {
-    ADP_LOG(ERROR) << "[StreamPool] Syn event failed, rt = " << rt;
-    status = errors::InvalidArgument("[StreamPool] Syn event failed, rt: ", rt);
+    ADP_LOG(ERROR) << "[StreamPool] Syn event faild, rt = " << rt;
+    status = errors::InvalidArgument("[StreamPool] Syn event faild, rt: ", rt);
   }
   if (hook_ != nullptr) {
     hook_(status);

@@ -492,7 +492,7 @@ def compare_global_var_spec(spec1: GlobalVarSpec, spec2: GlobalVarSpec, file_nam
 
 
 def compare_file_spec(spec1: FileSpec, spec2: FileSpec):
-    print("[====] compare interface define: \"%s\", source file: \"%s\"" % (
+    print("\n[====] compare interface define: \"%s\", source file: \"%s\"" % (
         spec1.spec_file_name, spec1.source_file_name))
     compare_matched = True
 

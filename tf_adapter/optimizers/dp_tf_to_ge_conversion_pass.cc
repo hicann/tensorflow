@@ -858,7 +858,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
   }
   // Remove all edges flow to MakeIterator except the one from IteratorV2
   ADP_LOG(INFO) << "Start to combine geopdataset with iterator node and remove "
-                   "original edges";
+                   "orignal edges";
 
   // We must copy all topoend input edges as we can't modify it when combine
   // geopdataset an topoend
