@@ -254,7 +254,7 @@ Status InferShapeUtil::addShapeToAttr(ShapeRefiner &shapeRef, Node *pNode) {
 
   AttrSlice attrList = pNode->attrs();
   if (attrList.Find(KEY_SHAPE) != nullptr) {
-    ADP_LOG(INFO) << "Node " << pNode->name() << " already has omop_shape attribute.";
+    ADP_LOG(INFO) << "Node " << pNode->name() << " already has geop_shape attribute.";
     return Status::OK();
   }
 
