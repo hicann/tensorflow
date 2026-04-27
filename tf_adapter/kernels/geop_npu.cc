@@ -315,7 +315,7 @@ std::string CurrentTimeInStr() {
   std::tm *ptm = std::localtime(&now);
   if (ptm == nullptr) { return ""; }
 
-  const int time_buffer_len = 32;
+  const int32_t time_buffer_len = 32;
   char buffer[time_buffer_len] = {0};
   // format: 20171122042550
   std::strftime(buffer, time_buffer_len, "%Y%m%d%H%M%S", ptm);
@@ -363,7 +363,7 @@ GeOp::~GeOp() {
 void GeOp::Initialize(OpKernelConstruction *ctx) {
   mutex_lock lock{mu_};
   int64 startTime = InferShapeUtil::GetCurrentTimestap();
-  ADP_LOG(INFO) << "[GEOP] Begin GeOp initialize.";
+  ADP_LOG(INFO) << "[GEOP] Begin to GeOp initialize.";
   if (init_flag_) {
     ADP_LOG(WARNING) << "[GEOP] GEOP already Initialize.";
     return;
@@ -503,7 +503,7 @@ void GeOp::Initialize(OpKernelConstruction *ctx) {
 
 void GeOp::Finalize() {
   {
-    ADP_LOG(INFO) << "[GEOP] GeOp start to finalize, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
+    ADP_LOG(INFO) << "[GEOP] GeOp starts to finalize, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
     // global environment finalize, invoke once for each process
     {
       mutex_lock lock{mu_};
@@ -551,7 +551,7 @@ void GeOp::Finalize() {
     }
   }
   init_flag_ = false;
-  ADP_LOG(INFO) << "[GEOP] GeOp Finalize success, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
+  ADP_LOG(INFO) << "[GEOP] GeOp finalize success, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
   return;
 }
 
@@ -873,7 +873,7 @@ void GeOp::GetExecGraphId(uint32_t &cache_graph_id, const std::vector<std::strin
   } else {
     ADP_LOG(INFO) << "[GEOP] This is a dynamic shape neural network, we recommend setting jit_compile to false";
     if (num >= kMaxCacheNum) {
-      ADP_LOG(INFO) << "[GEOP] the cache vector size is : " << num << " , begin erase the least uesed";
+      ADP_LOG(INFO) << "[GEOP] the cache vector size is : " << num << " , begin erase the least used";
       std::sort(graph_counts_.begin(), graph_counts_.end(), CmpValue);
       uint32_t erased_graph_id = cache_graphs_[graph_counts_[0].first];
       cache_graphs_.erase(graph_counts_[0].first);
@@ -2279,20 +2279,20 @@ Status GeOp::GraphInputConvertToConst(OpKernelContext *ctx) {
   if (is_input_convert_) {
     return Status::OK();
   }
-  ADP_LOG(INFO) << "Begin to convet input to const.";
+  ADP_LOG(INFO) << "Begin to convert input to const.";
   is_input_convert_ = true;
   NPU_REQUIRES(ctx->function_library() != nullptr,
                errors::Internal("Function:", function_.name(), " ctx function is nullptr"));
-  FunctionLibraryDefinition *flib_def =
+  FunctionLibraryDefinition *func_lib_def =
       const_cast<FunctionLibraryDefinition *>(ctx->function_library()->GetFunctionLibraryDefinition());
-  NPU_REQUIRES(flib_def != nullptr,
-               errors::Internal("Function:", function_.name(), " flib def is nullptr"));
-  const FunctionDef *function_def = flib_def->Find(function_.name());
+  NPU_REQUIRES(func_lib_def != nullptr,
+               errors::Internal("Function:", function_.name(), " func_lib_def def is nullptr"));
+  const FunctionDef *function_def = func_lib_def->Find(function_.name());
   NPU_REQUIRES(function_def != nullptr,
                errors::Internal("Function:", function_.name(), " fdef is nullptr"));
 
   Graph graph(OpRegistry::Global());
-  TF_RETURN_IF_ERROR(InferShapeUtil::GetSubGraphFromFunctionDef(*flib_def, *function_def, &graph));
+  TF_RETURN_IF_ERROR(InferShapeUtil::GetSubGraphFromFunctionDef(*func_lib_def, *function_def, &graph));
   for (Node *node : graph.nodes()) {
     if (node->type_string() != "_Arg") {
       continue;
@@ -2331,7 +2331,7 @@ Status GeOp::GraphInputConvertToConst(OpKernelContext *ctx) {
   }
 
   if (remove_index_.size() == 0) {
-    ADP_LOG(INFO) << "[GEOP] Return for dont have const input.";
+    ADP_LOG(INFO) << "[GEOP] Return for don't have const input.";
     return Status::OK();
   }
 
@@ -2355,8 +2355,8 @@ Status GeOp::GraphInputConvertToConst(OpKernelContext *ctx) {
   FunctionDefLibrary fdeflib;
   FunctionDef *const_fdef = fdeflib.add_function();
   NPU_REQUIRES_OK(GraphToFunctionDef(graph, function_.name(), const_fdef));
-  NPU_REQUIRES_OK(flib_def->RemoveFunction(function_.name()));
-  NPU_REQUIRES_OK(flib_def->AddFunctionDef(*const_fdef));
+  NPU_REQUIRES_OK(func_lib_def->RemoveFunction(function_.name()));
+  NPU_REQUIRES_OK(func_lib_def->AddFunctionDef(*const_fdef));
   ADP_LOG(INFO) << "[GEOP] Convert input to const success.";
   return Status::OK();
 }
@@ -2386,12 +2386,12 @@ Status GeOp::GraphCheckInputEqualConstOp(Tensor &tensor, int32_t index, bool &is
 Status GeOp::BuildInputTensorInfo(OpKernelContext *const ctx, std::vector<Tensor> &input_vec,
                                   std::vector<std::string> &input_shapes, std::vector<ge::Tensor> &inputs) {
   // ctx is not nullptr
-  int num_inputs = ctx->num_inputs();
+  int32_t num_inputs = ctx->num_inputs();
   // populate inputs
   inputs.reserve(num_inputs);
   input_vec.reserve(num_inputs);
   const bool need_collect_shapes = (!IsDynamicConfig() && IsLazyCompile());
-  for (int i = 0; i < num_inputs; i++) {
+  for (int32_t i = 0; i < num_inputs; i++) {
     Tensor tensor(ctx->input(i));
     bool is_equal = false;
     if (GraphCheckInputEqualConstOp(tensor, i, is_equal) != Status::OK()) {
@@ -2473,7 +2473,7 @@ Status GeOp::GenerateDesc(Node *&node) {
   DataTypeVector outputs;
   TF_RETURN_IF_ERROR(tensorflow::InOutTypesForNode(node_def, op_def, &inputs, &outputs));
 
-  int num;
+  int32_t num;
   Node *in_node = nullptr;
   const Edge *in_edge = nullptr;
 
@@ -2482,7 +2482,7 @@ Status GeOp::GenerateDesc(Node *&node) {
   }
 
   // Create input Desc
-  int inputs_size = static_cast<int>(inputs.size());
+  int32_t inputs_size = static_cast<int32_t>(inputs.size());
   if (inputs_size > 0) {
     AttrValue input_tensor_descs;
     AttrValue input_tensor_descs_s;
@@ -2492,7 +2492,7 @@ Status GeOp::GenerateDesc(Node *&node) {
       node->input_edge(num, &in_edge);
       REQUIRES_NOT_NULL(in_node);
       REQUIRES_NOT_NULL(in_edge);
-      int src_output = in_edge->src_output();
+      int32_t src_output = in_edge->src_output();
       if (in_node->def().attr().find(OUTPUT_DESC) != in_node->def().attr().end()) {
         const AttrValue_ListValue &attr_list = in_node->def().attr().at(OUTPUT_DESC).list();
         if (attr_list.func_size() > src_output) {
@@ -2550,7 +2550,7 @@ Status GeOp::GenerateDesc(Node *&node) {
     // Create output Desc
     AttrValue output_tensor_descs;
     AttrValue output_tensor_descs_s;
-    int i = 0;
+    int32_t i = 0;
     num = 0;
     for (DataType data_type : outputs) {
       string desc_string_s;

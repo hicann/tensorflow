@@ -380,7 +380,7 @@ PYBIND11_MODULE(_npu_device_backends, m) {
 
   (void)m.def("SetDeviceSatMode", [](uint32_t mode) {
     if (mode > kDeviceSatModeLimit) {
-      LOG(ERROR) << "overflow mode is unvalid" << mode;
+      LOG(ERROR) << "overflow mode is invalid" << mode;
       return;
     }
     aclrtSetDeviceSatMode(aclrtFloatOverflowMode(mode));

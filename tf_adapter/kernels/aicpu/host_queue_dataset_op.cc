@@ -202,7 +202,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         return kStringTypeDepth;
       }
       if (IsUnknownShape(output_shapes_[i])) {
-        ADP_LOG(INFO) << " Output_shape is unknow shape";
+        ADP_LOG(INFO) << " Output_shape is unknown shape";
         return kUnknownShapeDepth;
       }
       int64_t element_number = GetTensorElementNum(i);
@@ -473,8 +473,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
               return false;
             }
           } else {
-            if (memcpy_s(dst_ptr, dst_size, src_ptr, src_size) != EOK) {
-              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size;
+            uint64_t copy_dst_size = (dst_size >= SECUREC_MEM_MAX_LEN) ? src_size : dst_size;
+            if (memcpy_s(dst_ptr, copy_dst_size, src_ptr, src_size) != EOK) {
+              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size << ", copy_dst_size: " << copy_dst_size;
               return false;
             }
           }
@@ -986,8 +987,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             } else if (tensor.dtype() == DT_STRING) {
               Status s = MappingDTStringTensor2DataItem(tensor, data_item, buff_list);
               if (!s.ok()) {
-                ADP_LOG(ERROR) << "mapping dt_stirng type tensor failed, current dims:" << tensor.dims();
-                LOG(ERROR) << "mapping dt_stirng type tensor failed, current dims:" << tensor.dims();
+                ADP_LOG(ERROR) << "mapping dt_string type tensor failed, current dims:" << tensor.dims();
+                LOG(ERROR) << "mapping dt_string type tensor failed, current dims:" << tensor.dims();
                 mutex_lock lck(mu_);
                 cancelled_ = true;
                 cond_var_.notify_all();

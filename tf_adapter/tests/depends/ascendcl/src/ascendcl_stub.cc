@@ -346,7 +346,7 @@ aclError aclrtCreateStream(aclrtStream *stream) {
   ADP_LOG(INFO) << "aclrtCreateStream stub enter";
   AclStreamStub *stream_ = new (std::nothrow)AclStreamStub();
   if (stream_ == nullptr) {
-    ADP_LOG(INFO) << "new AclStreamStub failed";
+    ADP_LOG(ERROR) << "new AclStreamStub failed";
     *stream = nullptr;
     return ACL_ERROR_INVALID_PARAM;
   }
