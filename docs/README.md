@@ -2,10 +2,10 @@
 
 ## 文档
 
-- [TensorFlow 1.15模型迁移指南](https://hiascend.com/document/redirect/canncommercial-tfmigr115)
-- [TensorFlow 2.6.5模型迁移指南](https://hiascend.com/document/redirect/canncommercial-tfmigr26)
-- [TF Adapter接口（1.x）](https://hiascend.com/document/redirect/canncommercial-tfadapter1.x)
-- [TF Adapter接口（2.x）](https://hiascend.com/document/redirect/canncommercial-tfadapter2.x)
+- [TensorFlow 1.15模型迁移指南](./zh/tfadapter_1/migration/README.md)
+- [TensorFlow 2.6.5模型迁移指南](./zh/tfadapter_2/migration/README.md)
+- [TF Adapter接口（1.x）](./zh/tfadapter_1/apiref/README.md)
+- [TF Adapter接口（2.x）](./zh/tfadapter_2/apiref/README.md)
 
 ## 在线课程
 

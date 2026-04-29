@@ -1,0 +1,15 @@
+# TF Adapter 2.x API
+
+- [TF Adapter接口简介](tfadapter_interface_overview.md)
+- [npu.open](npu-open.md)
+- [npu.global_options<a name="sub_menu"></a>](./npu-global_options/README.md)
+- [npu.distribute.all_reduce](npu-distribute-all_reduce.md)
+- [npu.distribute.broadcast](npu-distribute-broadcast.md)
+- [npu.distribute.npu_distributed_keras_optimizer_wrapper](npu-distribute-npu_distributed_keras_optimizer_wrapper.md)
+- [npu.distribute.shard_and_rebatch_dataset](npu-distribute-shard_and_rebatch_dataset.md)
+- [npu.keep_dtype_scope](npu-keep_dtype_scope.md)
+- [npu.set_npu_loop_size](npu-set_npu_loop_size.md)
+- [npu.train.optimizer.NpuLossScaleOptimizer](npu-train-optimizer-NpuLossScaleOptimizer.md)
+- [npu.ops.gelu](npu-ops-gelu.md)
+- [set_device_sat_mode](set_device_sat_mode.md)
+- [TensorFlow 2.6 API支持列表](tf-2.6-api-support-list.md)

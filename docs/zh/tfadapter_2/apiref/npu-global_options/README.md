@@ -1,0 +1,16 @@
+# npu.global_options
+
+- [简介](overview.md)
+- [基础功能](basic_options.md)
+- [内存管理](memory_management.md)
+- [动态shape](dynamic_shape.md)
+- [功能调试](debugging.md)
+- [精度调优](accuracy_tuning.md)
+- [精度比对](accuracy_comparison.md)
+- [性能调优](performance_tuning.md)
+- [Profiling](Profiling.md)
+- [AOE](AOE.md)
+- [算子编译与图编译](operator_and_graph_build.md)
+- [异常补救](exception_remedy.md)
+- [试验参数](experiment_options.md)
+- [后续版本废弃配置](deprecated_options.md)

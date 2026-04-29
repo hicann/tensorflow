@@ -1,0 +1,66 @@
+# TensorFlow 2.6.5模型迁移
+
+- [前言](../introduction.md)
+- [TF Adapter简介](../about_tf_adapter.md)
+- [环境准备<a name="sub_menu"></a>](../installation/README.md)
+- [自动迁移](./script_migration/automated_porting.md)
+- [手工迁移](./script_migration/manual_porting.md)
+- [compat.v1脚本手工迁移](./script_migration/compat-v1/manual_porting_of_compatv1.md)
+  - [迁移背景](./script_migration/compat-v1/context.md)
+  - [Estimator迁移](./script_migration/compat-v1/estimator_porting.md)
+  - [sess.run迁移](./script_migration/compat-v1/sessrun_porting.md)
+  - [Keras迁移](./script_migration/compat-v1/keras_porting.md)
+  - [Horovod脚本迁移](./script_migration/compat-v1/horovod_porting.md)
+
+- [模型训练](./model_training/model_training.md)
+  - [执行单Device训练](./model_training/single_device_training.md)
+  - [执行分布式训练](./model_training/distributed_training.md)
+
+- [精度调试](./accuracy_debugging/accuracy_debugging.md)
+  - [精度调试流程](./accuracy_debugging/accuracy_debugging_process.md)
+  - [调优前检查](./accuracy_debugging/pre-tuning_check.md)
+  - [精度分析工具部署](./accuracy_debugging/accuracy_analyzer_deployment.md)
+  - [浮点异常检测](./accuracy_debugging/floating-point_exception_detection.md)
+  - [融合异常检测](./accuracy_debugging/fusion_exception_detection.md)
+  - [整网数据比对](./accuracy_debugging/network_accuracy_comparison.md)
+  - [随机错误检测](./accuracy_debugging/random_error_detection.md)
+  - [跨版本精度问题检测](./accuracy_debugging/version-related_accuracy_issue_detection.md)
+  - [参考](./accuracy_debugging/references.md)
+    - [precision_tool命令参考](./accuracy_debugging/precision_tool_ommand_ref.md)
+    - [整网精度比对结果文件说明](./accuracy_debugging/network_accuracy_comparison_result_file.md)
+
+- [性能调优](./performance_tuning/performance_tuning.md)
+  - [性能调优流程](./performance_tuning/performance_tuning_process.md)
+  - [基本调优](./performance_tuning/basic_tuning.md)
+    - [混合精度训练](./performance_tuning/mixed_precision_training.md)
+    - [替换GELU激活函数](./performance_tuning/gelu_activation_function_replace.md)
+    - [AOE自动调优](./performance_tuning/automatic_aoe_tuning.md)
+    - [亲和性CPU自动绑核调优](./performance_tuning/cpu_core_binding.md)
+
+  - [Profiling数据采集与分析](./performance_tuning/profile_data_collection_and_analysis.md)
+  - [进阶调优](./performance_tuning/advanced_tuning.md)
+
+- [模型固化](model_freezing.md)
+- [模型推理](./model_inference/model_inference.md)
+  - [离线推理](./model_inference/offline_inference.md)
+  - [在线推理](./model_inference/onlne_inference.md)
+
+- [更多特性](./others/additional_features.md)
+  - [调整梯度切分策略](./others/adjust_gradient_split_strategy.md)
+  - [自定义算子开发](./others/developing_custom_operator.md)
+
+- [样例参考](./sample_ref/samples.md)
+  - [自动迁移与训练](./sample_ref/auto_porting_and_training.md)
+  - [手工迁移与训练](./sample_ref/manual_porting_and_training.md)
+
+- [常用操作](./common_operation/common_operations.md)
+  - [调用TensorFlow的C++接口在NPU设备执行方法](./common_operation/call_cpp_apis_of_tf.md)
+  - [安装Python版本的proto](./common_operation/install_python_protobuf.md)
+
+- [FAQ](./faq/FAQ.md)
+  - [compat.v1模式下使用工具迁移Horovod脚本后，执行失败](./faq/hvrovod-compat-v1-migration-failed.md)
+  - [网络调测时ReduceSum算子性能差](./faq/networktest_reducesum_low_performance.md)
+  - [安装TensorFlow 2.6.5后，执行import tensorflow时报错](./faq/tensorFlow-2-6-5_import_error.md)
+  - [多Device上执行模型不同导致应用程序出错](./faq/multi-device_model_error.md)
+
+- [TF Adapter 2.x API<a name="sub_menu"></a>](../apiref/README.md)

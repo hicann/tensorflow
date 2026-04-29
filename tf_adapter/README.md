@@ -6,7 +6,7 @@ Ascend Adapter for TF1.X 致力于将NPU的运算能力便捷地提供给使用T
 
 开发者只需安装TF Adapter插件，并在现有TensorFlow脚本中添加少量配置，即可实现在NPU上加速自己的训练任务。
 
-![tfadapter1](../docs/figures/tfadapter1.png)
+![tfadapter1](../docs/zh/figures/tfadapter1.png)
 
 上图左侧是TensorFlow 1.15框架架构示例，右侧为TF Adapter架构示例，可以看出TensorFlow框架的每一层在TF Adapter中都有对应的实现。
 
@@ -45,7 +45,7 @@ Ascend Adapter 软件包需要在Linux OS环境上进行编译，同时环境上
 
 - **CANN开发套件包（cann-toolkit）**
 
-  请根据"[CANN版本配套说明](../README.md#cannversionmap)"获取对应的CANN软件版本号，并在“[CANN下载页面](https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/master/)”下载并安装对应版本的`Ascend-cann-toolkit_<cann_version>_linux-<arch>.run`。
+  请获取对应的CANN软件版本号，并在“[CANN下载页面](https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/master/)”下载并安装对应版本的`Ascend-cann-toolkit_<cann_version>_linux-<arch>.run`。
 
   CANN开发套件包（cann-toolkit）安装命令示例如下：
 
@@ -97,8 +97,9 @@ bash tf_adapter/build.sh -c
 ### 执行UT/ST
 
 **前置条件**：
-- 确保 `lcov` 工具已正确安装
-- 编译运行环境上的 `gcc` 和 `gcov` 必须是配套版本
+
+- 确保 `lcov` 工具已正确安装。
+- 编译运行环境上的 `gcc` 和 `gcov` 必须是配套版本。
 
 执行如下命令运行UT：
 
@@ -125,7 +126,7 @@ pip3 install ./build/tfadapter/dist/python/dist/npu_bridge-1.15.0-py3-none-manyl
 执行完成后，TF Adapter相关文件安装到python解释器搜索路径下，例如“/usr/local/python3.7.5/lib/python3.7/site-packages”路径，安装后文件夹为“npu_bridge”与“npu_bridge-1.15.0.dist-info”。
 
 > [!NOTE]说明
->  若您需要卸载TF Adapter软件包，可以执行如下命令：
+> 若您需要卸载TF Adapter软件包，可以执行如下命令：
 >
 > `pip3 uninstall -y npu_bridge`
 
@@ -151,15 +152,15 @@ pip3 install swig
 
 在部分场景下，您可能会把自己定制或者修改过的TensorFlow与TF Adapter软件包配合使用，由于TF Adapter默认链接的是TensorFlow官方网站的源码，因此您在使用TF Adapter软件包的时候，可能会因为符号不匹配而出现coredump问题。为了使TF Adapter能适配您的TensorFlow源码，您需要将TF Adapter源码下的tensorflow/cmake/tensorflow.cmake文件稍作修改，详细修改点如下：
 
-![修改前TF_Adapter链接的是tensorflow官网源码](../docs/figures/tensorflow_cmake.png)
+![修改前TF_Adapter链接的是tensorflow官网源码](../docs/zh/figures/tensorflow_cmake.png)
 
 修改图中FetchContent_Declare下的URL和URL_HASH MD5，将其替换成您自己环境上的tensorflow软件包的地址和MD5值。
 例如，您的tensorflow软件包如果放在/opt/hw路径下，则您此处tensorflow.cmake的源码可以修改为
 
-![修改后TF_Adapter链接您环境上的tensorflow定制源码](../docs/figures/revise_tensorflow.png)
+![修改后TF_Adapter链接您环境上的tensorflow定制源码](../docs/zh/figures/revise_tensorflow.png)
 
 ### 4. TF Adapter源码定制（可选）
 
 如果您想对TF Adapter的源码进行修改，比如添加链接路径，或链接其他so等操作，您可以修改TF Adapter源码下的tensorflow/CMakeLists.txt文件，只需要将ENABLE_OPEN_SRC分支下的编译配置做修改，便可以生效
 
-![CMakeList.txt文件](../docs/figures/cmake.png)
+![CMakeList.txt文件](../docs/zh/figures/cmake.png)

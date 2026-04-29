@@ -5,7 +5,7 @@
 Ascend Adapter for TF2.X 致力于将NPU运算能力便捷地提供给使用Tensorflow 2.x框架的开发者。开发者只需安装Ascend Adapter for
 TF2.X插件，并在现有Tensorflow 2.x脚本中添加少量配置，即可实现在NPU上加速自己的训练任务。
 
-![tfadapter2](../docs/figures/tfadapter2.png)
+![tfadapter2](../docs/zh/figures/tfadapter2.png)
 
 ## 编译与安装
 
@@ -42,7 +42,7 @@ Ascend Adapter 软件包需要在Linux OS环境上进行编译，同时环境上
 
 - **CANN开发套件包（cann-toolkit）**
 
-  请根据"[CANN版本配套说明](../README.md#cannversionmap)"获取对应的CANN软件版本号，并在“[CANN下载页面](https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/master/)”下载并安装对应版本的`Ascend-cann-toolkit_<cann_version>_linux-<arch>.run`。
+  请获取对应的CANN软件版本号，并在“[CANN下载页面](https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/master/)”下载并安装对应版本的`Ascend-cann-toolkit_<cann_version>_linux-<arch>.run`。
 
   CANN开发套件包（cann-toolkit）安装命令示例如下：
 
@@ -59,14 +59,14 @@ Ascend Adapter 软件包需要在Linux OS环境上进行编译，同时环境上
 
 ### 源码下载
 
-```
+```bash
 git clone https://gitcode.com/cann/tensorflow.git
 cd tensorflow/tf_adapter_2.x
 ```
 
 ### 执行编译
 
-```BASH
+```bash
 bash build.sh -c
 ```
 
@@ -83,7 +83,7 @@ bash build.sh -c
 
 编译结束后，安装包会生成在
 
-```
+```bash
 ./build/dist/python/dist/npu_device-2.6.5-py3-none-manylinux2014_<arch>.whl
 ```
 
@@ -94,8 +94,9 @@ bash build.sh -c
 执行如下命令运行UT：
 
 **前置条件**：
-- 确保 `lcov` 工具已正确安装
-- 编译运行环境上的 `gcc` 和 `gcov` 必须是配套版本
+
+- 确保 `lcov` 工具已正确安装。
+- 编译运行环境上的 `gcc` 和 `gcov` 必须是配套版本。
 
 ```bash
 bash build.sh -u
@@ -113,10 +114,11 @@ UT/ST执行完成后，可根据输出日志查看测试执行情况。用例执
 
 执行如下命令安装TF Adapter，请注意替换为实际的包名。
 
-```
+```bash
 pip3 install ./build/dist/python/dist/npu_device-2.6.5-py3-none-manylinux2014_<arch>.whl --upgrade
 ```
+
 > [!NOTE]说明
->  若您需要卸载TF Adapter软件包，可以执行如下命令：
+> 若您需要卸载TF Adapter软件包，可以执行如下命令：
 >
 > `pip3 uninstall -y npu_device`
