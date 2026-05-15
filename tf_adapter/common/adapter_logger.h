@@ -12,7 +12,14 @@
 #define TENSORFLOW_ADP_LOGGER_H
 
 #include <sstream>
+#include <cstring>
 #include "mmpa/mmpa_api.h"
+
+#if defined(__FILE_NAME__)
+#define ADP_FILE_NAME __FILE_NAME__
+#else
+#define ADP_FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
 
 #define FMK_MODULE_NAME static_cast<int>(FMK)
 
@@ -61,12 +68,12 @@ class AdapterLogger : public std::basic_ostringstream<char> {
 };
 }  // namespace npu
 
-#define ADP_LOG_INFO npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_INFO)
-#define ADP_LOG_WARNING npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_WARNING)
-#define ADP_LOG_ERROR npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_ERROR)
-#define ADP_LOG_EVENT npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_RUN_INFO)
-#define ADP_LOG_DEBUG npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_DEBUG)
-#define ADP_LOG_FATAL npu::AdapterLogger(__FILE__, __LINE__, npu::ADP_FATAL)
+#define ADP_LOG_INFO npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_INFO)
+#define ADP_LOG_WARNING npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_WARNING)
+#define ADP_LOG_ERROR npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_ERROR)
+#define ADP_LOG_EVENT npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_RUN_INFO)
+#define ADP_LOG_DEBUG npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_DEBUG)
+#define ADP_LOG_FATAL npu::AdapterLogger(ADP_FILE_NAME, __LINE__, npu::ADP_FATAL)
 
 #define ADP_LOG(LEVEL) ADP_LOG_##LEVEL
 #endif
