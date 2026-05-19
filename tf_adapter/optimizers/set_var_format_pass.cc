@@ -50,7 +50,7 @@ static void AddNodeVarFormat(Node &node, const string &var_format) {
 
 Status SetVarFormatPass::AssignApplyMomentumInNodesFormat(const Node *node, const string &var_format) const {
   if (node == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
   for (const Edge *in_edge : node->in_edges()) {
     REQUIRES_NOT_NULL(in_edge);
@@ -70,7 +70,7 @@ Status SetVarFormatPass::AssignApplyMomentumInNodesFormat(const Node *node, cons
       break;
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarFormatPass::GetFormat(const Node *node, string &format) const {
@@ -83,10 +83,10 @@ Status SetVarFormatPass::GetFormat(const Node *node, string &format) const {
          (dst_node->type_string() == KEY_CONV2D_BACKPROP_INPUT_VALUE));
     if (is_fz_node) {
       format = KEY_FZ_ATTR_VALUE;
-      return Status::OK();
+      return OkStatus();
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarFormatPass::AssignFormatToVarOutNodes(Node *node) const {
@@ -121,20 +121,20 @@ Status SetVarFormatPass::AssignFormatToVarOutNodes(Node *node) const {
 
   TF_RETURN_IF_ERROR(AssignApplyMomentumInNodesFormat(apply_momentum, var_format));
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarFormatPass::Run(const GraphOptimizationPassOptions &options) {
   Graph *graph_in = (options.graph)->get();
   if (graph_in == nullptr || options.session_options == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   std::map<std::string, std::string> pass_options = NpuAttrs::GetPassOptions(options);
   std::string job = pass_options["job"];
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : SetVarFormatPass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   static std::atomic<int32_t> num{0};
@@ -161,7 +161,7 @@ Status SetVarFormatPass::Run(const GraphOptimizationPassOptions &options) {
   }
   num.fetch_add(1);
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::PRE_PLACEMENT, 1, SetVarFormatPass);

@@ -39,7 +39,7 @@ Status SetVarMaxSizePass::SetMaxSizeListNodes(Node *node) const {
     }
   }
   node->AddAttr(ATTR_NAME_OP_MAX_SIZE, attr_values);
-  return Status::OK();
+  return OkStatus();
 }
 Status SetVarMaxSizePass::AssignMaxSizeToVarOutNodes(const Node *node) const {
   for (const Edge *out : node->out_edges()) {
@@ -58,7 +58,7 @@ Status SetVarMaxSizePass::AssignMaxSizeToVarOutNodes(const Node *node) const {
       (void) SetMaxSizeListNodes(dst_node);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarMaxSizePass::SetConstListNodes(Node *node, std::vector<std::string> &input_names) const {
@@ -80,7 +80,7 @@ Status SetVarMaxSizePass::SetConstListNodes(Node *node, std::vector<std::string>
     }
   }
   node->AddAttr(ATTR_NAME_CONST_INPUT_NAME, const_inputs);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarMaxSizePass::AssignConstToVarOutNodes(const Node *node, std::vector<std::string> &input_names) const {
@@ -103,13 +103,13 @@ Status SetVarMaxSizePass::AssignConstToVarOutNodes(const Node *node, std::vector
       (void)SetConstListNodes(dst_node, input_names);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SetVarMaxSizePass::Run(const GraphOptimizationPassOptions &options) {
   Graph *graph_in = (options.graph)->get();
   if (graph_in == nullptr || options.session_options == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   std::map<std::string, std::string> pass_options = NpuAttrs::GetPassOptions(options);
@@ -123,7 +123,7 @@ Status SetVarMaxSizePass::Run(const GraphOptimizationPassOptions &options) {
       (void) AssignConstToVarOutNodes(node, const_input_names);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::PRE_PLACEMENT, 2, SetVarMaxSizePass);

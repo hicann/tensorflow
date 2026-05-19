@@ -17,7 +17,7 @@
 #include "tensorflow/core/common_runtime/graph_constructor.h"
 #include "tensorflow/core/framework/graph.pb.h"
 #include "tensorflow/core/graph/graph.h"
-#include "tensorflow/core/platform/default/logging.h"
+#include "tensorflow/core/platform/logging.h"
 
 namespace domi {
 const std::map<uint32_t, ge::DataType> data_type_map = {

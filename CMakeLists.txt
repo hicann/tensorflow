@@ -17,9 +17,9 @@ if (ENABLE_OPEN_SRC)
     cmake_minimum_required(VERSION 3.14)
     project(TFAdapter)
 
-    set(CMAKE_CXX_STANDARD 11)
-    set(CMAKE_C_FLAGS "-O2 -DNDEBUG -Werror -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,-z,relro,-z,now,-z,noexecstack -s -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wstrict-prototypes ${CMAKE_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -DNDEBUG -Werror -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,-z,relro,-z,now,-z,noexecstack -s -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wno-overloaded-virtual ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_C_FLAGS "-O2 -DNDEBUG -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,-z,relro,-z,now,-z,noexecstack -s -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wstrict-prototypes ${CMAKE_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -DNDEBUG -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,-z,relro,-z,now,-z,noexecstack -s -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wno-overloaded-virtual ${CMAKE_CXX_FLAGS}")
 
     add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
 
@@ -198,7 +198,6 @@ else()
         -Wno-overloaded-virtual
         -Wno-shadow
         -Wunused
-        -Werror
         -Wno-undef
         -Wno-unused-parameter
         -Wno-address
@@ -284,7 +283,7 @@ else()
                             -DASCEND_CI_BUILD_DIR=${TOP_DIR}
                             <SOURCE_DIR>
                         BUILD_COMMAND $(MAKE)
-                        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/dist/python/dist/npu_device-2.6.5-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl ${CMAKE_CURRENT_BINARY_DIR}
+                        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/dist/python/dist/npu_device-2.13.0-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl ${CMAKE_CURRENT_BINARY_DIR}
                         EXCLUDE_FROM_ALL TRUE
     )
     ###################################################################################################
@@ -294,7 +293,7 @@ else()
         LIBRARY DESTINATION ${INSTALL_LIBRARY_DIR}
     )
 
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NPU_BRIDGE_WHL} ${CMAKE_CURRENT_BINARY_DIR}/npu_device-2.6.5-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl OPTIONAL
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NPU_BRIDGE_WHL} ${CMAKE_CURRENT_BINARY_DIR}/npu_device-2.13.0-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl OPTIONAL
         DESTINATION ${INSTALL_LIBRARY_DIR}
     )
 endif()

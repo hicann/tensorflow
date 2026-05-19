@@ -38,12 +38,12 @@ tensorflow::Status RtsCtx::CreateGlobalCtx(int32_t device_index) {
     tensorflow::tf_shared_lock read_lock(global_ctx_mutex_);
     if (global_ctx_ != nullptr) {
       DLOG() << "Global context has been created.";
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     }
   }
   tensorflow::mutex_lock write_lock(global_ctx_mutex_);
   NPU_REQUIRES_ACL_OK("Acl create rts ctx failed", aclrtCreateContext(&global_ctx_, device_index));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 // 存在rtMalloc和rtFree在不同线程操作的情况，也存在同一线程会切换context的场景
@@ -53,7 +53,7 @@ tensorflow::Status RtsCtx::EnsureInitialized() {
   if (global_ctx_ != nullptr) {
     NPU_REQUIRES_ACL_OK("Acl set current thread ctx failed", aclrtSetCurrentContext(global_ctx_));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status RtsCtx::DestroyGlobalCtx() {
@@ -62,7 +62,7 @@ tensorflow::Status RtsCtx::DestroyGlobalCtx() {
     NPU_REQUIRES_ACL_OK("Acl Destroy global ctx failed", aclrtDestroyContext(global_ctx_));
   }
   global_ctx_ = nullptr;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::mutex RtsCtx::global_ctx_mutex_;
@@ -81,7 +81,7 @@ tensorflow::Status NpuCtx::GetDeviceCtx(int id, TFE_Context **ctx, NpuDevice **d
                tensorflow::errors::Internal("Device instance on device ", id, " has not been created"));
   *ctx = iter->second.ctx;
   *device = iter->second.device;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void GlobalHdcChannel::Get(const std::string &name, std::vector<std::shared_ptr<npu::HdcChannel>> &channels) {
@@ -113,13 +113,13 @@ tensorflow::Status GlobalHdcChannel::Create(const std::string &name, int64_t cha
     DLOG() << "Create hdc channel with capacity success.";
   } else if (count == 0U) {
     DLOG() << "Current version not support create hdc channel with capacity by acl.";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   } else {
     return tensorflow::errors::Internal("Failed create hdc channel with capacity.");
   }
   std::unique_lock<std::mutex> lk(global_channels_mu_);
   (void)global_channels_.insert(std::make_pair(name, channels));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void GlobalHdcChannel::Destroy(const std::string &name) {

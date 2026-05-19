@@ -213,12 +213,12 @@ std::string NpuDevice::CreateDevice(const char *name, int device_index,
   auto status = (*device)->LoadSupportedOps();
   if (!status.ok()) {
     // We do not raise error for compat with old version
-    LOG(ERROR) << "Could not load npu supported ops " << status.error_message();
+    LOG(ERROR) << "Could not load npu supported ops " << status.message();
   }
   status = (*device)->LoadCustomSupportedOps();
   if (!status.ok()) {
     // We do not raise error for compat with old version
-    LOG(WARNING) << "Could not load custom npu supported ops " << status.error_message();
+    LOG(WARNING) << "Could not load custom npu supported ops " << status.message();
   }
   (*device)->npu_stdout_receiver_ = std::make_unique<NpuStdoutReceiver>(device_index);
   (*device)->npu_stdout_receiver_->Start();
@@ -278,7 +278,7 @@ tensorflow::Status NpuDevice::ValidateOutputTypes(const TensorDataTypes &data_ty
   if (!ss.str().empty()) {
     return tensorflow::errors::Unimplemented(ss.str());
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuDevice::ValidateInputTypes(const TensorDataTypes &data_types) const {
@@ -292,7 +292,7 @@ tensorflow::Status NpuDevice::ValidateInputTypes(const TensorDataTypes &data_typ
   if (!ss.str().empty()) {
     return tensorflow::errors::Unimplemented(ss.str());
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 /**
  * @brief: new device tensor handle
@@ -518,7 +518,7 @@ tensorflow::Status NpuDevice::InferShape(const TFE_Context *const context,
     }
     NPU_REQUIRES_OK(tensorflow::PartialTensorShape::MakePartialShape(dims.data(), num_dims, &shapes[i]));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void NpuDevice::GetConcreteGraph(TFE_Context *context, const tensorflow::NodeDef &ndef, int num_inputs,
@@ -708,7 +708,7 @@ tensorflow::Status AddVarInitToGraph(const TFE_Context *const context, std::stri
   AssembleOutputDesc(TensorShapes({tensor.shape()}), {tensor.dtype()}, *value);
   AssembleInputDesc(TensorShapes({kScalarShape, tensor.shape()}), {tensorflow::DT_RESOURCE, tensor.dtype()},
                     *assign_variable);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 
@@ -721,7 +721,7 @@ tensorflow::Status AddVarInitToGraph(const TFE_Context *const context, std::stri
 void NpuDevice::SetNpuLoopSize(TFE_Context *context, int64_t loop, TF_Status *status) {
   static std::atomic_bool initialized{false};
   static std::atomic_int64_t current_loop_size{1};
-  static tensorflow::Status init_status = tensorflow::Status::OK();
+  static tensorflow::Status init_status = tensorflow::OkStatus();
   static std::uint64_t loop_var_graph_id = 0;
   const static std::string kLoopVarName = "npu_runconfig/iterations_per_loop";
 
@@ -848,7 +848,7 @@ void NpuDevice::RunGeGraphAsync(TFE_Context *context, uint64_t graph_id, int num
       if (!tf_status.ok()) {
         done(tensorflow::errors::Internal("Graph engine process graph succeed but output ", i, " dims invalid ",
                                           VecToString(ge_tensor.GetTensorDesc().GetShape().GetDims()), " ",
-                                          tf_status.error_message()));
+                                          tf_status.message()));
         return;
       }
       DLOG() << "    output " << i << " ge type enum " << ge_tensor.GetTensorDesc().GetDataType() << " tf type "
@@ -889,12 +889,12 @@ void NpuDevice::RunGeGraphAsync(TFE_Context *context, uint64_t graph_id, int num
         if (TF_GetCode(status) != TF_OK) {
           done(tensorflow::Status(status->status.code(),
                                   std::string("Graph engine process graph succeed but copy output ") +
-                                    std::to_string(i) + " to npu failed " + status->status.error_message()));
+                                    std::to_string(i) + " to npu failed " + std::string(status->status.message())));
           return;
         }
       }
     }
-    done(tensorflow::Status::OK());
+    done(tensorflow::OkStatus());
   };
   NPU_CTX_REQUIRES_GE_OK(status, "NPU Schedule graph to graph engine",
                          ge_session_->RunGraphAsync(graph_id, ge_inputs, ge_callback));
@@ -1016,7 +1016,7 @@ tensorflow::Status NpuDevice::TransTfGraph2GeGraph(TFE_Context *context, const s
     ge_graph = GeApiWrapper_CreateGraphFromComputeGraph(ge_compute_graph);
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -1299,7 +1299,7 @@ tensorflow::Status LoadOpsFromJson(const std::string json_file_path, std::unorde
     ops.insert(iter.key());
   }
   fs.close();
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuDevice::LoadCustomSupportedOps() {
@@ -1329,7 +1329,7 @@ tensorflow::Status NpuDevice::LoadCustomSupportedOps() {
       DLOG() << "custom_path '" << custom_ops_json_path << "' is invalid, which is skipped.";
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuDevice::LoadSupportedOps() {
@@ -1350,7 +1350,7 @@ tensorflow::Status NpuDevice::LoadSupportedOps() {
   }
   const static std::vector<std::string> kAddonOps{"IteratorV2", "IteratorGetNext"};
   npu_supported_ops_.insert(kAddonOps.cbegin(), kAddonOps.cend());
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -1433,6 +1433,6 @@ tensorflow::Status NpuDevice::GetMirroredIteratorShapesAndTypes(const tensorflow
   }
   shapes.assign(iter->second.first.cbegin(), iter->second.first.cend());
   types.assign(iter->second.second.cbegin(), iter->second.second.cend());
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace npu

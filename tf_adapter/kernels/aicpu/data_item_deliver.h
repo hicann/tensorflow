@@ -117,13 +117,13 @@ Status DataItemDeliver::ParallelInitSocketClient() {
       pools_->Enqueue(&DataItemDeliver::InitSocketClient, this, i));
   }
   for (auto &&result : init_status) {
-    if (result.get() != Status::OK()) {
+    if (result.get() != OkStatus()) {
       ADP_LOG(ERROR) << "Init socket client failed.";
       LOG(ERROR) << "Init socket client failed.";
       return errors::Internal("Init socket client failed.");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::InitSocketClient(int device_id) {
@@ -135,7 +135,7 @@ Status DataItemDeliver::InitSocketClient(int device_id) {
   }
   struct sockaddr_un peer_addr = {};
   if (CreateSockAddr(peer_addr, SOCKET_SERVER_PATH, device_id) !=
-      Status::OK()) {
+      OkStatus()) {
     ADP_LOG(ERROR) << "Failed to create socket.";
     LOG(ERROR) << "Failed to create socket.";
     close(fd);
@@ -163,7 +163,7 @@ Status DataItemDeliver::InitSocketClient(int device_id) {
     client_fd_list_.push_back(fd);
   }
   ADP_LOG(INFO) << "device:" << device_id << "connect to server success.";
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::InitSocketServer() {
@@ -174,7 +174,7 @@ Status DataItemDeliver::InitSocketServer() {
     return errors::Internal("Failed to open unix domain socket.");
   }
   if (CreateSockAddr(local_addr_, SOCKET_SERVER_PATH, static_cast<int>(device_id_)) !=
-      Status::OK()) {
+      OkStatus()) {
     ADP_LOG(ERROR) << "Failed to create socket.";
     LOG(ERROR) << "Failed to create socket.";
     close(fd);
@@ -218,7 +218,7 @@ Status DataItemDeliver::InitSocketServer() {
   ADP_LOG(INFO) << "Socket server connect success, path:"
                 << local_addr_.sun_path;
   close(fd);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::CheckHead(const char *check_value) {
@@ -249,39 +249,39 @@ Status DataItemDeliver::CheckHead(const char *check_value) {
     return errors::Internal("Check head failed.");
   }
   free(head);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::RecvDataVec(std::vector<tdt::DataItem> &items) {
-  if (CheckHead(MESSAGE_HEAD) != Status::OK()) {
+  if (CheckHead(MESSAGE_HEAD) != OkStatus()) {
     ADP_LOG(ERROR) << "Cancel recv data for head check failed.";
     LOG(ERROR) << "Cancel recv data for head check failed.";
     return errors::Internal("Cancel recv data for head check failed.");
   }
   uint32_t vec_size = 0;
-  if (GetDataLen(vec_size, UINT32_SIZE) != Status::OK() || vec_size == 0) {
+  if (GetDataLen(vec_size, UINT32_SIZE) != OkStatus() || vec_size == 0) {
     return errors::Internal("Get vector size failed.");
   }
   for (uint32_t i = 0; i < vec_size; i++) {
     tdt::DataItem data_item;
-    if (GetTensorType(data_item.dataType_) != Status::OK()) {
+    if (GetTensorType(data_item.dataType_) != OkStatus()) {
       return errors::Internal("Get tensor type failed.");
     }
-    if (GetTensorString(data_item.tensorName_) != Status::OK()) {
+    if (GetTensorString(data_item.tensorName_) != OkStatus()) {
       return errors::Internal("Get tensor name failed.");
     }
-    if (GetTensorString(data_item.tensorShape_) != Status::OK()) {
+    if (GetTensorString(data_item.tensorShape_) != OkStatus()) {
       return errors::Internal("Get tensor shape failed.");
     }
-    if (GetTensorString(data_item.tensorType_) != Status::OK()) {
+    if (GetTensorString(data_item.tensorType_) != OkStatus()) {
       return errors::Internal("Get tensor type failed.");
     }
-    if (GetTensorData(data_item.dataLen_, data_item.dataPtr_) != Status::OK()) {
+    if (GetTensorData(data_item.dataLen_, data_item.dataPtr_) != OkStatus()) {
       return errors::Internal("Get tensor name failed.");
     }
     items.push_back(data_item);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 uint64_t DataItemDeliver::Recv(uint8_t *buffer, size_t data_len) const {
@@ -320,7 +320,7 @@ Status DataItemDeliver::GetDataLen(T &value, size_t size) const {
   if (recvn != static_cast<uint64_t>(size)) {
     return errors::Internal("Failed to recv data length.");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::GetTensorType(tdt::TdtDataType &data_type) {
@@ -328,7 +328,7 @@ Status DataItemDeliver::GetTensorType(tdt::TdtDataType &data_type) {
   if (recvn != static_cast<uint64_t>(UINT32_SIZE)) {
     return errors::Internal("Failed to recv data length.");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::GetTensorData(uint64_t &data_len,
@@ -358,7 +358,7 @@ Status DataItemDeliver::GetTensorData(uint64_t &data_len,
     return errors::Internal("Failed to receive data.");
   }
   data_ptr = std::shared_ptr<void>(buff, [](void *elem) { free(elem); });
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DataItemDeliver::GetTensorString(std::string &str) {
@@ -389,7 +389,7 @@ Status DataItemDeliver::GetTensorString(std::string &str) {
   }
   str = static_cast<char *>(buff);
   free(buff);
-  return Status::OK();
+  return OkStatus();
 }
 
 void DataItemDeliver::ParallelSendDataVec(
@@ -459,7 +459,7 @@ Status DataItemDeliver::SendDataVec(std::vector<tdt::DataItem> &data_items,
     item_info[kIndex8].iov_len = data_item.dataLen_;
     SocketSend(item_info, ITEM_INFO_SIZE, fd);
   }
-  return Status::OK();
+  return OkStatus();
 }
 Status DataItemDeliver::CreateSockAddr(struct sockaddr_un &sock_addr,
   const char *path, int device_id) const {
@@ -472,7 +472,7 @@ Status DataItemDeliver::CreateSockAddr(struct sockaddr_un &sock_addr,
     LOG(ERROR) << "Set sun_path failed.";
     return errors::Internal("Set sun_path failed.");
   }
-  return Status::OK();
+  return OkStatus();
 }
 void DataItemDeliver::SocketSend(struct iovec temp_items[], int vector_size,
                                  int fd) const {

@@ -24,7 +24,7 @@ Status GradFusionOptimizer::Optimize(Cluster *cluster, const GrapplerItem &item,
   REQUIRES_NOT_NULL(optimizedGraph);
   *optimizedGraph = item.graph;
   ADP_LOG(INFO) << "INFO: GradFusionOptimizer::Optimize end";
-  return Status::OK();
+  return OkStatus();
 }
 REGISTER_GRAPH_OPTIMIZER(GradFusionOptimizer);
 }  // end namespace grappler

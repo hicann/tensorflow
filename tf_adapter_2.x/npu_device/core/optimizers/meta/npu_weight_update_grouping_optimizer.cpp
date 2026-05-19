@@ -116,7 +116,7 @@ tensorflow::Status WeightUpdateGroupingOptimizeInner(tensorflow::FunctionLibrary
     }
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 

@@ -11,7 +11,7 @@
 #include "tensorflow/core/common_runtime/function.h"
 #include "tensorflow/core/framework/dataset.h"
 #include "tensorflow/core/framework/node_def_builder.h"
-#include "tensorflow/core/lib/core/blocking_counter.h"
+#include "tensorflow/core/platform/blocking_counter.h"
 #include "tensorflow/core/lib/io/buffered_inputstream.h"
 #include "tf_adapter/common/common.h"
 #include "tf_adapter/common/compat_tf1_tf2.h"
@@ -62,7 +62,7 @@ class DeviceQueueDatasetOp : public DatasetOpKernel {
     }
 
     Status AsGraphDefInternal(SerializationContext *ctx, DatasetGraphDefBuilder *b, Node **output) const override {
-      return Status::OK();
+      return OkStatus();
     }
 
    private:
@@ -75,7 +75,7 @@ class DeviceQueueDatasetOp : public DatasetOpKernel {
      protected:
       Status GetNextInternal(IteratorContext *ctx, std::vector<Tensor> *out_tensors, bool *end_of_sequence) override {
         *end_of_sequence = false;
-        return Status::OK();
+        return OkStatus();
       };
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF2(RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override);

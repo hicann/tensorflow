@@ -14,6 +14,7 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <string>
 
 #include "acl/acl_base.h"
 #include "acl/acl_op_compiler.h"

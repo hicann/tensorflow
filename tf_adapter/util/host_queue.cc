@@ -88,7 +88,7 @@ Status GetDataTypeByTensorType(acltdtTensorType tensor_type, int32_t &data_type)
   data_type = ret->second;
   ADP_LOG(INFO) << "get data type[" << data_type << "] by tensor type[" << static_cast<int32_t>(tensor_type)
     << "] success.";
-  return Status::OK();
+  return OkStatus();
 }
 
 Status AddDataItemInfo(acltdtTensorType tdt_data_type, int32_t tensor_type, const int64_t *dims, size_t dim_size,
@@ -106,7 +106,7 @@ Status AddDataItemInfo(acltdtTensorType tdt_data_type, int32_t tensor_type, cons
   }
   item.data_ptr = data_ptr;
   items.push_back(item);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MappingTensors2DataItemInfos(acltdtTensorType acl_type, const std::vector<Tensor> &tensors,
@@ -142,7 +142,7 @@ Status MappingTensors2DataItemInfos(acltdtTensorType acl_type, const std::vector
       return errors::Internal("unexpected data type ", DataTypeString(tensor.dtype()));
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status SerializeDataItemInfo(std::vector<DataItemInfo> &items, void *&buff, const acltdtTensorType &acl_type) {
@@ -226,7 +226,7 @@ Status SerializeDataItemInfo(std::vector<DataItemInfo> &items, void *&buff, cons
     offset += items[i].ctrl_info.data_len;
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 }  // namespace
 
@@ -241,7 +241,7 @@ Status HostQueueSetTransId(const uint32_t queue_id, void *&buff) {
     msg_info->trans_id = ++queue_id_to_trans_id_map[queue_id];
     ADP_LOG(INFO) << "host queue[" << queue_id << "] set trans id[" << msg_info->trans_id << "] success.";
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status HostQueueInit(const std::string &name, const uint32_t &depth, uint32_t &queue_id) {
@@ -286,7 +286,7 @@ Status HostQueueInit(const std::string &name, const uint32_t &depth, uint32_t &q
 
   const std::lock_guard<std::mutex> lk(queue_id_to_trans_id_map_mutex);
   (void) queue_id_to_trans_id_map.emplace(queue_id, 0UL);
-  return Status::OK();
+  return OkStatus();
 }
 
 void HostQueueDestroy(const uint32_t &queue_id) {
@@ -311,7 +311,7 @@ Status MappingTensor2Buff(const acltdtTensorType &acl_type, const std::vector<te
   std::vector<std::unique_ptr<uint8_t[]>> buff_list;
   TF_RETURN_IF_ERROR(MappingTensors2DataItemInfos(acl_type, tensors, items, buff_list));
   TF_RETURN_IF_ERROR(SerializeDataItemInfo(items, buff, acl_type));
-  return Status::OK();
+  return OkStatus();
 }
 
 Status HostQueueSendData(uint32_t queue_id, void *buff, bool &need_resend) {
@@ -320,7 +320,7 @@ Status HostQueueSendData(uint32_t queue_id, void *buff, bool &need_resend) {
   NPU_REQUIRES(rt_error == ACL_RT_SUCCESS, errors::Internal("call rtSetDevice device[0] failed, ret=", rt_error));
   rt_error = rtMemQueueEnQueue(0, queue_id, buff);
   if (rt_error == RT_ERROR_NONE) {
-    return Status::OK();
+    return OkStatus();
   } else if (rt_error == ACL_ERROR_RT_QUEUE_FULL) {
     need_resend = true;
     ADP_LOG(INFO) << "queue[" << queue_id << "] is full, need call rtMemQueueEnQueue again";
@@ -329,7 +329,7 @@ Status HostQueueSendData(uint32_t queue_id, void *buff, bool &need_resend) {
     return errors::Internal("host enqueue queue[", queue_id, "] failed, ret = ", rt_error);
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 void HostQueueFreeBuff(void *buff) {

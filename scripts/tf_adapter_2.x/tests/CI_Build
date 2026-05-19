@@ -16,13 +16,22 @@ CONFIGURE_DIR="$(cd $(dirname "$0")/../../../tf_adapter_2.x/tests && pwd)"
 cd "${CONFIGURE_DIR}"
 
 TARGET="$1"
+TF_VERSION="$2"
 
-if [ ! -f "/home/jenkins/tensorflow26/.env/bin/activate" ];then
-  echo "No venv for tensorflow2.x installed, skip CI build"
-  exit 0
+if [ "$TF_VERSION" == "tf2.6" ]; then
+  if [ ! -f "/home/jenkins/tensorflow26/.env/bin/activate" ]; then
+    echo "No venv for tensorflow2.6 installed, skip CI build"
+    exit 0
+  fi
+  source /home/jenkins/tensorflow26/.env/bin/activate
+
+elif [ "$TF_VERSION" == "tf2.13" ]; then
+  if [ ! -f "/home/jenkins/tensorflow213/.env/bin/activate" ]; then
+    echo "No venv for tensorflow2.13 installed, skip CI build"
+    exit 0
+  fi
+  source /home/jenkins/tensorflow213/.env/bin/activate
 fi
-
-source /home/jenkins/tensorflow26/.env/bin/activate
 
 if ! ./configure; then
   exit 1

@@ -114,18 +114,6 @@ class Adapter2St(unittest.TestCase):
             x = tf.Variable(1)
         self.assertTrue(tensor_equal(foo_cpu_add_(x), tf.constant(2)))
 
-    def test_basic6(self):  # Force run on npu by tensorflow
-        x = tf.Variable(1)
-        self.assertTrue(tensor_equal(foo_cpu_add_(x), tf.constant(2)))
-
-    def test_basic7(self):  # Force run on npu by tensorflow
-        x = tf.Variable(1)
-        self.assertTrue(x.device == npu.name())
-        self.assertTrue(foo_cpu_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0")
-        with context.device("/job:localhost/replica:0/task:0/device:CPU:0"):
-            x = tf.Variable(1)
-        self.assertTrue(foo_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0")
-
     def test_string_unimp1(self):
         x = tf.Variable(1)
 

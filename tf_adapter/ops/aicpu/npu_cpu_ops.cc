@@ -18,6 +18,12 @@ using shape_inference::DimensionHandle;
 using shape_inference::InferenceContext;
 using shape_inference::ShapeHandle;
 
+#ifdef TF_VERSION_TF2
+#define TF_STATUS_OK OkStatus()
+#else
+#define TF_STATUS_OK OkStatus()
+#endif
+
 REGISTER_OP("EmbeddingRankId")
   .Input("addr_table: uint64")
   .Input("index: T")
@@ -29,7 +35,7 @@ REGISTER_OP("EmbeddingRankId")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     auto out_shape = c->MakeShape({c->Dim(c->input(1), 0), c->Dim(c->input(0), 1)});
     c->set_output(0, out_shape);
-    return Status::OK();
+    return TF_STATUS_OK;
   })
   .Doc(R"doc(
     Traverse the index calculation server and its position in the server.
@@ -56,7 +62,7 @@ REGISTER_OP("EmbeddingLocalIndex")
     auto nums_shape = c->MakeShape({c->Dim(c->input(0), 0)});
     c->set_output(1, nums_shape);
     c->set_output(2, index_shape);
-    return Status::OK();
+    return TF_STATUS_OK;
   })
   .Doc(R"doc(
     Traverse the index calculation server and its position in the server.
@@ -93,7 +99,7 @@ REGISTER_OP("CacheAdd")
     c->set_output(1, c->Vector(c->UnknownDim()));
     c->set_output(2, c->Vector(c->UnknownDim()));
     c->set_output(3, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 // regist cache remote index to local op
 REGISTER_OP("CacheRemoteIndexToLocal")
@@ -103,7 +109,7 @@ REGISTER_OP("CacheRemoteIndexToLocal")
   .Attr("T: {int64, int32, uint32, uint64}")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Vector(c->Rank(c->input(1))));
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 // regist cache all index to local op
 REGISTER_OP("CacheAllIndexToLocal")
@@ -112,7 +118,7 @@ REGISTER_OP("CacheAllIndexToLocal")
   .Attr("dtype: {int64, int32, uint32, uint64}")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 
 // regist deformable offsets op
@@ -166,7 +172,7 @@ REGISTER_OP("DeformableOffsets")
     out_dims[pos_h] = c->MakeDim(input_offsets_h * kh);
     out_dims[pos_w] = c->MakeDim(input_offsets_w * kw);
     c->set_output(0, c->MakeShape(out_dims));
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 // regist deformable offsets grad op
 REGISTER_OP("DeformableOffsetsGrad")
@@ -188,7 +194,7 @@ REGISTER_OP("DeformableOffsetsGrad")
     auto input_offsets_shape = c->input(2);
     c->set_output(0, input_x_shape);
     c->set_output(1, input_offsets_shape);
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 // regist Random Choice With Mask op
 REGISTER_OP("RandomChoiceWithMask")
@@ -212,7 +218,7 @@ REGISTER_OP("RandomChoiceWithMask")
               "input count must greater or equal to 0 but instead is ",
               count);
     }
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 
 // regist dense image warp op
@@ -225,7 +231,7 @@ REGISTER_OP("DenseImageWarp")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     auto input_image_shape = c->input(0);
     c->set_output(0, input_image_shape);
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 // regist dense image warp grad op
 REGISTER_OP("DenseImageWarpGrad")
@@ -241,7 +247,7 @@ REGISTER_OP("DenseImageWarpGrad")
     auto input_flow_shape = c->input(2);
     c->set_output(0, input_image_shape);
     c->set_output(1, input_flow_shape);
-    return Status::OK();
+    return TF_STATUS_OK;
   });
 
 REGISTER_OP("ScatterElements")
@@ -255,7 +261,7 @@ REGISTER_OP("ScatterElements")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     auto data_shape = c->input(0);
     c->set_output(0, data_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ScatterElementsV2")
@@ -298,7 +304,7 @@ REGISTER_OP("OCRRecognitionPreHandle")
     c->set_output(1, c->Vector(c->UnknownDim()));
     c->set_output(2, c->Vector(c->UnknownDim()));
     c->set_output(3, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("OCRDetectionPreHandle")
@@ -350,7 +356,7 @@ REGISTER_OP("OCRDetectionPreHandle")
     c->set_output(0, c->MakeShape(out_dims));
     c->set_output(1, c->Scalar());
     c->set_output(2, c->Scalar());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("OCRIdentifyPreHandle")
@@ -414,7 +420,7 @@ REGISTER_OP("OCRIdentifyPreHandle")
       out_dims[3] = c->MakeDim(k2);
     }
     c->set_output(0, c->MakeShape(out_dims));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("BatchDilatePolys")
@@ -433,7 +439,7 @@ REGISTER_OP("BatchDilatePolys")
     c->set_output(0, c->Vector(c->UnknownDim()));
     c->set_output(1, c->Vector(c->UnknownDim()));
     c->set_output(2, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("OCRFindContours")
@@ -446,7 +452,7 @@ REGISTER_OP("OCRFindContours")
     c->set_output(0, c->Vector(c->UnknownDim()));
     c->set_output(1, c->Vector(c->UnknownDim()));
     c->set_output(2, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("Dequeue")
@@ -465,7 +471,7 @@ REGISTER_OP("Dequeue")
       out_dims[i] = c->MakeDim(output_shape[i]);
     }
     c->set_output(0, c->MakeShape(out_dims));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("OCRDetectionPostHandle")
@@ -489,7 +495,7 @@ REGISTER_OP("OCRDetectionPostHandle")
     out_dims[1] = c->MakeDim(4);
     out_dims[2] = c->MakeDim(2);
     c->set_output(3, c->MakeShape(out_dims));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("WarpAffineV2")
@@ -511,7 +517,7 @@ REGISTER_OP("WarpAffineV2")
     out_dims[1] = c->Dim(dst_shape, 1);
     out_dims[2] = c->Dim(src_shape, 2);
     c->set_output(0, c->MakeShape(out_dims));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ResizeV2")
@@ -530,7 +536,7 @@ REGISTER_OP("ResizeV2")
     out_dims[1] = c->Dim(dst_shape, 1);
     out_dims[2] = c->Dim(src_shape, 2);
     c->set_output(0, c->MakeShape(out_dims));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ResizeAndClipPolys")
@@ -550,7 +556,7 @@ REGISTER_OP("ResizeAndClipPolys")
     c->set_output(1, c->Vector(c->UnknownDim()));
     c->set_output(2, c->Vector(c->UnknownDim()));
     c->set_output(3, c->Scalar());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("NonZeroWithValueShape")
@@ -564,7 +570,7 @@ REGISTER_OP("NonZeroWithValueShape")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Vector(c->UnknownDim()));
     c->set_output(1, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("NonZeroWithValueShapeV2")
@@ -578,7 +584,7 @@ REGISTER_OP("NonZeroWithValueShapeV2")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Vector(c->UnknownDim()));
     c->set_output(1, c->Vector(c->UnknownDim()));
-    return Status::OK();
+    return OkStatus();
   });
 
 Status DecodeImageV3ShapeFn(InferenceContext* c) {
@@ -606,12 +612,12 @@ Status DecodeImageV3ShapeFn(InferenceContext* c) {
   // will always return 3-D shapes for all (jpg, png, bmp, gif).
   if (expand_animations) {
     c->set_output(0, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   } else {
     c->set_output(0,
                   c->MakeShape({InferenceContext::kUnknownDim,
                                 InferenceContext::kUnknownDim, channels_dim}));
-    return Status::OK();
+    return OkStatus();
   }
 }
 

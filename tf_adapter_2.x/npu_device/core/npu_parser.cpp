@@ -147,7 +147,7 @@ void AssembleParserAddons(const tensorflow::FunctionLibraryDefinition *lib_def, 
     AssembleOpDef(*node);
     auto status = shape_refiner.AddNode(node);
     if (!status.ok()) {
-      LOG(INFO) << "  " << node->name() << "[" << node->type_string() << "] Skip infer " << status.error_message();
+      LOG(INFO) << "  " << node->name() << "[" << node->type_string() << "] Skip infer " << status.message();
       return;
     }
     auto node_ctx = shape_refiner.GetContext(node);

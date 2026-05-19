@@ -15,9 +15,9 @@
 from setuptools import setup, find_namespace_packages
 
 setup(name='npu_device',
-      version='2.6.5',
-      description='npu device for tensorflow v2.6.5, tag version v0.0.33',
-      long_description='npu device for tensorflow v2.6.5, tag version v0.0.33',
+      version='2.13.0',
+      description='npu device for tensorflow v2.13.0, tag version v0.0.33',
+      long_description='npu device for tensorflow v2.13.0, tag version v0.0.33',
       packages=find_namespace_packages(include=['npu_device*']),
       include_package_data=True,
       ext_modules=[],

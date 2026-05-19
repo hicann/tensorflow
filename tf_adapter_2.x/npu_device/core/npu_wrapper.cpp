@@ -29,7 +29,7 @@
 #include "tensorflow/python/lib/core/py_exception_registry.h"
 #include "tensorflow/python/lib/core/pybind11_lib.h"
 #include "tensorflow/python/lib/core/pybind11_status.h"
-#include "tensorflow/python/lib/core/safe_ptr.h"
+#include "tensorflow/c/safe_ptr.h"
 #include "tensorflow/python/util/util.h"
 #include "tensorflow/core/platform/tensor_float_32_utils.h"
 
@@ -283,16 +283,16 @@ PYBIND11_MODULE(_npu_device_backends, m) {
                     auto status = npu::NpuAoe::GetInstance().AoeTuningInitialize(global_options["ge.tuningPath"],
                                                                                  global_options["ge.jobType"]);
                     if (!status.ok()) {
-                      return status.error_message();
+                      return std::string(status.message());
                     }
                   }
                   auto status = npu::global::RtsCtx::CreateGlobalCtx(device_index);
                   if (!status.ok()) {
-                    return status.error_message();
+                    return std::string(status.message());
                   }
                   status = npu::global::RtsCtx::EnsureInitialized();
                   if (!status.ok()) {
-                    return status.error_message();
+                    return std::string(status.message());
                   }
                 }
 

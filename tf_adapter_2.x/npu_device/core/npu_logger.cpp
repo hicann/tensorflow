@@ -17,7 +17,7 @@ tensorflow::Status NpuStdoutReceiver::Start() {
   std::unique_lock<std::mutex> lk(mu_);
   if (started_) {
     LOG(INFO) << "Npu stdout receiver has already started on device " << device_id_;
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   const static size_t kNpuCerrChannelCapacity = 32U;
   NPU_REQUIRES_OK(npu::HdcChannel::Create(device_id_, "_npu_log", kNpuCerrChannelCapacity, &channel_));
@@ -31,7 +31,7 @@ tensorflow::Status NpuStdoutReceiver::Start() {
         break;
       }
       if (!status.ok()) {
-        LOG(ERROR) << "Npu stdout receiver on device " << device_id_ << " error " << status.error_message();
+        LOG(ERROR) << "Npu stdout receiver on device " << device_id_ << " error " << status.message();
         break;
       }
       for (auto &tensor : tensors) {
@@ -43,13 +43,13 @@ tensorflow::Status NpuStdoutReceiver::Start() {
   thread_.swap(t);
   started_ = true;
   LOG(INFO) << "Npu stdout receiver of device " << device_id_ << " started";
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuStdoutReceiver::Stop() {
   std::unique_lock<std::mutex> lk(mu_);
   if (!started_) {
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   LOG(INFO) << "Stopping npu stdout receiver of device " << device_id_;
   (void)stopping_.exchange(true);
@@ -57,6 +57,6 @@ tensorflow::Status NpuStdoutReceiver::Stop() {
   thread_.join();
   started_ = false;
   DLOG() << "Npu stdout receiver of device " << device_id_ << " stopped";
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace npu

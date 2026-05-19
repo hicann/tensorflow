@@ -25,7 +25,7 @@ try:
 except ImportError:
     from distutils.spawn import find_executable as which
 
-_COMPAT_TENSORFLOW_VERSION = "2.6"
+_COMPAT_TENSORFLOW_VERSION = "2."
 _COMPAT_SWIG_VERSION = "SWIG Version "
 _PYTHON_BIN_PATH_ENV = "ADAPTER_TARGET_PYTHON_PATH"
 _ASCEND_HOME_PATH_ENV = "ASCEND_HOME_PATH"

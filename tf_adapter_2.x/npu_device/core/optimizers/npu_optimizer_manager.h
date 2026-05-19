@@ -74,7 +74,7 @@ class NpuOptimizerManager {
                                        *lib_def);
       }
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   tensorflow::Status RuntimeOptimize(TFE_Context *context, NpuMutableConcreteGraph *graph,
@@ -88,7 +88,7 @@ class NpuOptimizerManager {
         dumper.DumpWithSubGraphs("after_runtime_optimizer_" + name2optimizer.first, graph->GraphDef(), *lib_def);
       }
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
  private:

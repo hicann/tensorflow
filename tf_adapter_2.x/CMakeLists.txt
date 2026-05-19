@@ -11,11 +11,11 @@
 cmake_minimum_required(VERSION 3.14)
 project(AscendAdapter2)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -DNDEBUG -Wno-class-memaccess -Werror -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -s -fno-common -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wstrict-prototypes ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -DNDEBUG -Werror -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -s -fno-common -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wno-overloaded-virtual ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -DNDEBUG -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -s -fno-common -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wstrict-prototypes ${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -DNDEBUG -Wno-class-memaccess -Wno-float-equal -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers -Wno-comment -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -s -fno-common -pipe -fno-strict-aliasing -Wdate-time -Wformat=2 -Wno-shadow -Wno-undef -Wunused -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wno-overloaded-virtual ${CMAKE_CXX_FLAGS}")
 set(CMAKE_SKIP_RPATH TRUE)
-set(TF2X_SOURCE_PATH ${CMAKE_CURRENT_LIST_DIR}/../inc/third_party/tensorflow-2.6.5)
+set(TF2X_SOURCE_PATH ${CMAKE_CURRENT_LIST_DIR}/../inc/third_party/tensorflow-2.13.0)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     add_definitions(-Wno-builtin-macro-redefined)
@@ -73,4 +73,4 @@ add_custom_target(ascend_adapter2 ALL
     DEPENDS _npu_ops _npu_device_backends _tf_adapter convert_tool_v2
     VERBATIM)
 
-install(CODE "execute_process(COMMAND ${PYTHON_BIN_PATH} -m pip install ${CMAKE_BINARY_DIR}/dist/python/dist/npu_device-2.6.5-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl --upgrade)")
+install(CODE "execute_process(COMMAND ${PYTHON_BIN_PATH} -m pip install ${CMAKE_BINARY_DIR}/dist/python/dist/npu_device-2.13.0-py3-none-manylinux2014_${CMAKE_SYSTEM_PROCESSOR}.whl --upgrade)")

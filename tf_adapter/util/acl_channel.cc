@@ -34,7 +34,7 @@ Status MappingTfDtypeToAcl(const tensorflow::DataType tf_type, aclDataType &acl_
     return errors::Internal("Unsupported tf data type[", DataTypeString(tf_type), "] by acl");
   }
   acl_type = found->second;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MappingAclDtypeToTf(const aclDataType &acl_type, tensorflow::DataType &tf_type) {
@@ -49,7 +49,7 @@ Status MappingAclDtypeToTf(const aclDataType &acl_type, tensorflow::DataType &tf
     return errors::Internal("Acl channel receive unsupported data type[", acl_type, "]");
   }
   tf_type = found->second;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> &tensors,
@@ -57,10 +57,10 @@ Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> 
   acltdtTensorType acl_type = acltdtGetTensorTypeFromItem(item);
   if (acl_type == ACL_TENSOR_DATA_END_OF_SEQUENCE) {
     LOG(INFO) << "Acl channel received end-of-sequence for out-feed op.";
-    return Status::OK();
+    return OkStatus();
   } else if (acl_type == ACL_TENSOR_DATA_ABNORMAL) {
     LOG(INFO) << "Acl channel received abnormal for out-feed op.";
-    return Status::OK();
+    return OkStatus();
   } else if (acl_type == ACL_TENSOR_DATA_UNDEFINED) {
     LOG(INFO) << "Acl channel received undefined message type for out-feed op.";
     return errors::Internal("Acl channel received undefined message type for out-feed op.");
@@ -111,7 +111,7 @@ Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> 
   } else {
     return errors::InvalidArgument("Acl channel receive uncopyable tf data type[", DataTypeString(tf_type), "]");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status AssembleAclDataset2Tensors(const acltdtDataset *acl_dataset, std::vector<Tensor> &out_tensors,
@@ -123,7 +123,7 @@ Status AssembleAclDataset2Tensors(const acltdtDataset *acl_dataset, std::vector<
     }
     TF_RETURN_IF_ERROR(AssembleAclTensor2Tensor(acl_data, out_tensors, call_by_channel_receive));
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status AssembleTensors2AclDataset(acltdtTensorType acl_type, const std::vector<Tensor> &tensors,
@@ -139,7 +139,7 @@ Status AssembleTensors2AclDataset(acltdtTensorType acl_type, const std::vector<T
     return dataset_status;
   }
   *output_acl_dataset = acl_dataset;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status AssembleTensors2AclDataset(acltdtTensorType acl_type, const std::vector<Tensor> &tensors,
@@ -157,7 +157,7 @@ Status AssembleTensors2AclDataset(acltdtTensorType acl_type, const std::vector<T
       }
       return errors::Internal("Acl add tensor data to dataset failed when send data with type ", acl_type);
     }
-    return Status::OK();
+    return OkStatus();
   }
   for (auto &tensor : tensors) {
     aclDataType acl_data_type;
@@ -183,7 +183,7 @@ Status AssembleTensors2AclDataset(acltdtTensorType acl_type, const std::vector<T
       return errors::Internal("Acl add tensor data to dataset failed when send tensor data.");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DestroyAclDataset(acltdtDataset *acl_dataset, bool include_data_item) {
@@ -197,7 +197,7 @@ Status DestroyAclDataset(acltdtDataset *acl_dataset, bool include_data_item) {
   if (acltdtDestroyDataset(acl_dataset) != ACL_ERROR_NONE) {
     return errors::Internal("Acl destroy tensor dataset failed.");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status RecvTensorByAcl(const acltdtChannelHandle *acl_handle, std::vector<Tensor> &tensors) {
@@ -217,7 +217,7 @@ Status RecvTensorByAcl(const acltdtChannelHandle *acl_handle, std::vector<Tensor
     return as_status;
   }
   TF_RETURN_IF_ERROR(DestroyAclDataset(acl_dataset, false));
-  return Status::OK();
+  return OkStatus();
 }
 // When calling SendTensorsByAcl and its'return is the queue is full or
 // empty (actually no event, drv wants us to treat it as a no event,
@@ -235,7 +235,7 @@ Status SendTensorsByAcl(const acltdtChannelHandle *acl_handle, acltdtTensorType 
   if (acl_status == ACL_ERROR_RT_QUEUE_FULL) {
     need_resend = true;
     ADP_LOG(INFO) << "Queue is full , try to send data again.";
-    return Status::OK();
+    return OkStatus();
   }
   if (acl_status != ACL_ERROR_NONE) {
     sleep(kWaitingForLogRecord);
@@ -243,7 +243,7 @@ Status SendTensorsByAcl(const acltdtChannelHandle *acl_handle, acltdtTensorType 
                << "Error Message is " << std::endl << ge::GEGetErrorMsgV2().GetString();
     return errors::Internal("Acl send data failed, acl status:", acl_status);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 acltdtChannelHandle *CreateAclTdtRecvChannel(uint32_t device_id, const std::string &channel_name,
@@ -268,6 +268,6 @@ Status StopRecvTensorByAcl(acltdtChannelHandle **handle, const std::string &chan
     }
   }
   ADP_LOG(INFO) << "Success to stop recv tensor by acl.";
-  return Status::OK();
+  return OkStatus();
 }
 }  // namespace tensorflow

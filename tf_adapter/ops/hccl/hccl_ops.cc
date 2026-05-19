@@ -27,7 +27,7 @@ REGISTER_OP("HcomAllReduce")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 Outputs a tensor containing the reduction across all input tensors passed to ops.
@@ -55,13 +55,13 @@ REGISTER_OP("HcomAllGather")
     int rankSize = 0;
     TF_RETURN_IF_ERROR(c->GetAttr("rank_size", &rankSize));
     Status rankSizeStatus =
-      ((rankSize > 0) ? (Status::OK()) : (errors::InvalidArgument("rank_size should be greater than 0.")));
+      ((rankSize > 0) ? (OkStatus()) : (errors::InvalidArgument("rank_size should be greater than 0.")));
     TF_RETURN_IF_ERROR(rankSizeStatus);
 
     int32 inputRank = c->Rank(c->input(0));
     if (InferenceContext::kUnknownRank == inputRank) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     }
 
     shape_inference::ShapeHandle unused;
@@ -73,7 +73,7 @@ REGISTER_OP("HcomAllGather")
     auto inputFirstDimValue = c->Value(c->Dim(c->input(0), 0));
     if (InferenceContext::kUnknownDim == inputFirstDimValue) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     }
 
     shape_inference::ShapeHandle outputFirstDimAsShape;
@@ -83,7 +83,7 @@ REGISTER_OP("HcomAllGather")
     shape_inference::ShapeHandle output;
     TF_RETURN_IF_ERROR(c->Concatenate(outputFirstDimAsShape, inSubshape, &output));
     c->set_output(0, output);
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -100,7 +100,7 @@ REGISTER_OP("HcomBroadcast")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     for (int i = 0; i < c->num_inputs(); i++) { c->set_output(i, c->input(i)); }
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 Sends `input` to all devices that are connected to the output.
@@ -124,7 +124,7 @@ REGISTER_OP("HcomReduce")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 Outputs a tensor containing the reduction across all input tensors passed to ops.
@@ -153,13 +153,13 @@ REGISTER_OP("HcomReduceScatter")
     int rankSize = 0;
     TF_RETURN_IF_ERROR(c->GetAttr("rank_size", &rankSize));
     Status rankSizeStatus =
-      ((rankSize > 0) ? (Status::OK()) : (errors::InvalidArgument("rank_size should be greater than 0.")));
+      ((rankSize > 0) ? (OkStatus()) : (errors::InvalidArgument("rank_size should be greater than 0.")));
     TF_RETURN_IF_ERROR(rankSizeStatus);
 
     int32 inputRank = c->Rank(c->input(0));
     if (InferenceContext::kUnknownRank == inputRank) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     }
 
     shape_inference::ShapeHandle unused;
@@ -171,12 +171,12 @@ REGISTER_OP("HcomReduceScatter")
     auto inputFirstDimValue = c->Value(c->Dim(c->input(0), 0));
     if (InferenceContext::kUnknownDim == inputFirstDimValue) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     }
 
     shape_inference::ShapeHandle outputFirstDimAsShape;
     Status outputFirstDimStatus = ((inputFirstDimValue % rankSize) == 0)
-      ? (Status::OK())
+      ? (OkStatus())
       : (errors::InvalidArgument("input first dim should be N * rank_size."));
     TF_CHECK_OK(outputFirstDimStatus);
     std::vector<shape_inference::DimensionHandle> outputFirstDim;
@@ -185,7 +185,7 @@ REGISTER_OP("HcomReduceScatter")
     shape_inference::ShapeHandle output;
     TF_RETURN_IF_ERROR(c->Concatenate(outputFirstDimAsShape, inSubshape, &output));
     c->set_output(0, output);
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -224,7 +224,7 @@ REGISTER_OP("HcomRemoteRead")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext* c) {
     c->set_output(0, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -240,7 +240,7 @@ REGISTER_OP("HcomRemoteRefRead")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext* c) {
     c->set_output(0, c->input(1));
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -281,7 +281,7 @@ REGISTER_OP("HcomAllToAllV")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext* c) {
     c->set_output(0, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -299,7 +299,7 @@ REGISTER_OP("HcomAllToAllVC")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext* c) {
     c->set_output(0, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 
@@ -319,7 +319,7 @@ REGISTER_OP("HcomGatherAllToAllV")
   .SetShapeFn([](shape_inference::InferenceContext* c) {
     c->set_output(0, c->UnknownShape());
     c->set_output(1, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   })
   .Doc(R"doc(
 

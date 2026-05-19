@@ -20,7 +20,7 @@ RELEASE_TARGET="tfadapter.tar"
 # print usage message
 usage() {
   echo "Usage:"
-  echo "    bash build.sh [-h] [-j[n]] [-v] [-g] [-u] [-s] [-c] [-x] [-a]"
+  echo "    bash build.sh [-h] [-j[n]] [-v] [-g] [-u] [-s] [-c] [-x] [-a] [-z]"
   echo ""
   echo "Options:"
   echo "    -h Print usage"
@@ -31,7 +31,8 @@ usage() {
   echo "    -s TF_adapter stest"
   echo "    -c TF_adapter ci build"
   echo "    -x TF_adapter2.x ci build"
-  echo "    -a TF_adapter2.x use python3.7"
+  echo "    -a TF_adapter2.6 use python3.7"
+  echo "    -z TF_adapter2.13 use python3.9"
   echo "to be continued ..."
 }
 
@@ -49,8 +50,9 @@ checkopts() {
   ENABLE_CI_BUILD="off"
   ENABLE_2X_CI_BUILD="off"
   TFADAPTER_2X_PY37="off"
+  TFADAPTER_213_PY39="off"
   # Process the options
-  while getopts 'hj:vuscg:xa' opt
+  while getopts 'hj:vuscg:xaz' opt
   do
     case "${opt}" in
       h) usage
@@ -63,6 +65,7 @@ checkopts() {
       c) ENABLE_CI_BUILD="on" ;;
       x) ENABLE_2X_CI_BUILD="on" ;;
       a) TFADAPTER_2X_PY37="on" ;;
+      z) TFADAPTER_213_PY39="on" ;;
       *) logging "Undefined option: ${opt}"
          usage
          exit 1 ;;
@@ -126,9 +129,11 @@ main() {
   if [[ "X$ENABLE_2X_CI_BUILD" = "Xon" ]]; then
     chmod +x "${CUR_PATH}/tf_adapter_2.x/CI_Build"
     if [[ "X$TFADAPTER_2X_PY37" = "Xon" ]]; then
-      sh "${CUR_PATH}/tf_adapter_2.x/CI_Build" "python3.7"
+      sh "${CUR_PATH}/tf_adapter_2.x/CI_Build" "python3.7" "tf2.6"
+    elif [[ "X$TFADAPTER_213_PY39" = "Xon" ]]; then
+      sh "${CUR_PATH}/tf_adapter_2.x/CI_Build" "python3.9" "tf2.13"
     else
-      sh "${CUR_PATH}/tf_adapter_2.x/CI_Build" "python3.9"
+      sh "${CUR_PATH}/tf_adapter_2.x/CI_Build" "python3.9" "tf2.6"
     fi
   else
     build_tfadapter
@@ -157,7 +162,11 @@ main() {
       '*/inc/*' '*/output/*' '*/usr/*' '*/Eigen/*' '*/absl/*' '*/google/*' '*/tensorflow/core/*' \
       -o adapter1_coverage.info
     export LD_LIBRARY_PATH=${BASE_PATH}/tf_adapter_2.x/tests/build/:$LD_LIBRARY_PATH
-    bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_ut
+    if [[ "X$TFADAPTER_213_PY39" = "Xon" ]]; then
+      bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_ut tf2.13
+    else
+      bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_ut tf2.6
+    fi
     lcov -o coverage/coverage.info -a ${BASE_PATH}/tf_adapter_2.x/tests/build/ut/ut.coverage -a adapter1_coverage.info
   fi
   if [[ "X$ENABLE_TFADAPTER_ST" = "Xon" ]]; then
@@ -180,7 +189,11 @@ main() {
       '*/inc/*' '*/output/*' '*/usr/*' '*/Eigen/*' '*/absl/*' '*/google/*' '*/tensorflow/core/*' \
       -o adapter1_coverage.info
     export LD_LIBRARY_PATH=${BASE_PATH}/tf_adapter_2.x/tests/build/:$LD_LIBRARY_PATH
-    bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_st
+    if [[ "X$TFADAPTER_213_PY39" = "Xon" ]]; then
+      bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_st tf2.13
+    else
+      bash ${CUR_PATH}/tf_adapter_2.x/tests/CI_Build adapter2_st tf2.6
+    fi
     lcov -o coverage/coverage.info -a ${BASE_PATH}/tf_adapter_2.x/tests/build/st/st.coverage -a adapter1_coverage.info
   fi
   logging "---------------- tfadapter build finished ----------------"

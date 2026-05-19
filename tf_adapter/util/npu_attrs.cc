@@ -180,14 +180,14 @@ Status GetEnvDeviceID(uint32_t &device_id) {
       return errors::InvalidArgument("get logic device id by DEVICE_ID failed.");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 // device_id setting priority: seesion_device_id > ASCEND_DEVICE_ID > DEVICE_ID > default 0
 Status GetDeviceID(uint32_t &device_id) {
   if (kSessionDeviceID >= 0) {
     device_id = static_cast<uint32_t>(kSessionDeviceID);
-    return Status::OK();
+    return OkStatus();
   }
   return GetEnvDeviceID(device_id);
 }
@@ -205,7 +205,7 @@ Status GetStepFromEnv(const std::string &env_name, uint32_t &step) {
       return errors::InvalidArgument(ss.str());
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status GetLossFromEnv(const std::string &env_name, float &loss) {
@@ -221,7 +221,7 @@ Status GetLossFromEnv(const std::string &env_name, float &loss) {
       return errors::InvalidArgument(ss.str());
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 void Split(const std::string &s, std::vector<std::string> &result, const char *delchar) {
@@ -290,13 +290,13 @@ inline Status checkDumpStep(const std::string &dump_step) {
       return errors::InvalidArgument(kErrMsgInvalidStepFormat);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 inline Status checkDumpMode(const std::string &dump_mode) {
   std::set<string> dump_mode_list = {"input", "output", "all"};
   if (dump_mode_list.find(dump_mode) != dump_mode_list.cend()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     return errors::InvalidArgument("dump mode should be one of the list:[input, output, all]");
   }
@@ -305,7 +305,7 @@ inline Status checkDumpMode(const std::string &dump_mode) {
 inline Status checkDumpDebugMode(const std::string &dump_debug_mode) {
   std::set<string> dump_debug_mode_list = {"aicore_overflow", "atomic_overflow", "all"};
   if (dump_debug_mode_list.find(dump_debug_mode) != dump_debug_mode_list.cend()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     return errors::InvalidArgument("dump debug mode should be one of the list:[aicore_overflow, atomic_overflow, all]");
   }
@@ -323,14 +323,14 @@ inline Status CheckPath(const std::string &input, std::string &output) {
     return errors::InvalidArgument("the path ", input.c_str(), " does't have read, write permissions.");
   }
   output = trusted_path;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status CheckOpImplMode(const std::string &op_select_implmode) {
   std::set<string> op_impl_mode_list = {"high_precision", "high_performance", "high_precision_for_all",
                                         "high_performance_for_all"};
   if (op_impl_mode_list.find(op_select_implmode) != op_impl_mode_list.end()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     return errors::InvalidArgument("op select impl mode should be one of the list:[high_precision, "
                                    "high_performance, high_precision_for_all, high_performance_for_all]");
@@ -340,7 +340,7 @@ Status CheckOpImplMode(const std::string &op_select_implmode) {
 Status CheckVariablePlacement(const std::string &variable_placement) {
   std::set<string> variable_placement_list = {"Host", "Device"};
   if (variable_placement_list.find(variable_placement) != variable_placement_list.end()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     return errors::InvalidArgument("variable placement should be one of the list:[Host, Device]");
   }
@@ -350,7 +350,7 @@ inline Status CheckAoeMode(const std::string &aoe_mode) {
   std::set<string> aoe_mode_list = {"1", "2", "4"};
 
   if (aoe_mode_list.find(aoe_mode) != aoe_mode_list.end()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     return errors::InvalidArgument("aoe mode:", aoe_mode.c_str(),
                                    " is invalid, aoe mode should be one of the list:['1', '2', '4']");
@@ -370,7 +370,7 @@ inline Status CheckInputShape(const std::string &input_shape) {
       return errors::InvalidArgument("input_shape string style is invalid");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 inline Status CheckDynamicDims(const std::string &dynamic_dims) {
@@ -386,7 +386,7 @@ inline Status CheckDynamicDims(const std::string &dynamic_dims) {
       return errors::InvalidArgument("dynamic_dims string style is invalid");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 inline Status CheckLocalRankId(int64_t local_rank_id) {
@@ -394,7 +394,7 @@ inline Status CheckLocalRankId(int64_t local_rank_id) {
   if (local_rank_id < 0LL || local_rank_id > kMaxDeviceId) {
     return errors::InvalidArgument("local rank id should be in [0,7]");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 inline Status CheckDeviceList(const std::string &local_device_list) {
@@ -403,7 +403,7 @@ inline Status CheckDeviceList(const std::string &local_device_list) {
   if (!regex_match(tmp_device_list, pattern)) {
     return errors::InvalidArgument("local_device_list style is invalid, example:'1,2,3'");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 bool NpuAttrs::GetUseTdtStatus(int32_t device_id) {
@@ -535,7 +535,7 @@ std::map<std::string, std::string> NpuAttrs::GetSessOptions(const OpKernelConstr
   std::string auto_multistream_parallel_mode;
   std::string oo_level;
   std::string optimization_switch;
-  const bool is_npu_optimizer_valid = (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK());
+  const bool is_npu_optimizer_valid = (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == OkStatus());
   if (is_npu_optimizer_valid) {
     (void) ctx->GetAttr("_variable_format_optimize", &variable_format_optimize);
     (void) ctx->GetAttr("_hcom_parallel", &hcom_parallel);
@@ -549,27 +549,27 @@ std::map<std::string, std::string> NpuAttrs::GetSessOptions(const OpKernelConstr
       (void) ctx->GetAttr("_dump_path", &dump_path);
     }
     if (enable_dump != "0") {
-      const bool is_valid_dump_step = ctx->GetAttr("_dump_step", &dump_step) == Status::OK() && !dump_step.empty();
+      const bool is_valid_dump_step = ctx->GetAttr("_dump_step", &dump_step) == OkStatus() && !dump_step.empty();
       if (is_valid_dump_step) {
         Status s = checkDumpStep(dump_step);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
         }
       }
-      if (ctx->GetAttr("_dump_mode", &dump_mode) == Status::OK()) {
+      if (ctx->GetAttr("_dump_mode", &dump_mode) == OkStatus()) {
         Status s = checkDumpMode(dump_mode);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
     }
     if (enable_dump_debug != "0") {
-      if (ctx->GetAttr("_dump_debug_mode", &dump_debug_mode) == Status::OK()) {
+      if (ctx->GetAttr("_dump_debug_mode", &dump_debug_mode) == OkStatus()) {
         Status s = checkDumpDebugMode(dump_debug_mode);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
     }
@@ -763,7 +763,7 @@ std::map<std::string, std::string> NpuAttrs::GetInitOptions(const OpKernelConstr
   std::string oo_level;
   std::string optimization_switch;
 
-  if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK()) {
+  if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == OkStatus()) {
     (void) ctx->GetAttr("_precision_mode", &precision_mode);
     (void) ctx->GetAttr("_precision_mode_v2", &precision_mode_v2);
     (void) ctx->GetAttr("_auto_tune_mode", &auto_tune_mode);
@@ -958,16 +958,16 @@ std::map<std::string, std::string> NpuAttrs::GetPassOptions(const GraphOptimizat
         local_rank_id = params.at("local_rank_id").i();
         Status s = CheckLocalRankId(local_rank_id);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(ERROR) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
       if (params.count("local_device_list") > 0) {
         local_device_list = params.at("local_device_list").s();
         Status s = CheckDeviceList(local_device_list);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(ERROR) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
       if (params.count("in_out_pair_flag") > 0) {
@@ -986,8 +986,8 @@ std::map<std::string, std::string> NpuAttrs::GetPassOptions(const GraphOptimizat
         variable_location = params.at("variable_placement").s();
         Status s = CheckVariablePlacement(variable_location);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(ERROR) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
       if (params.count("shape_generalization_mode")) {
@@ -1054,14 +1054,14 @@ std::map<std::string, std::string> NpuAttrs::GetPassOptions(const OpKernelConstr
   std::string accelerate_train_mode;
   std::string shape_generalization_mode = "STRICT";
 
-  if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK()) {
+  if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == OkStatus()) {
     do_npu_optimizer = "1";
     (void) ctx->GetAttr("_enable_data_pre_proc", &enable_dp);
-    if (ctx->GetAttr("_use_off_line", &use_off_line) == Status::OK()) {
+    if (ctx->GetAttr("_use_off_line", &use_off_line) == OkStatus()) {
       (void) ctx->GetAttr("_mix_compile_mode", &mix_compile_mode);
       (void) ctx->GetAttr("_iterations_per_loop", &iterations_per_loop);
       (void) ctx->GetAttr("_lower_functional_ops", &lower_functional_ops);
-      if (ctx->GetAttr("_job", &job) != Status::OK()) {
+      if (ctx->GetAttr("_job", &job) != OkStatus()) {
         job = "localhost";
       }
       (void) ctx->GetAttr("_task_index", &task_index);
@@ -1508,7 +1508,7 @@ std::map<std::string, std::string> NpuAttrs::GetAllAttrOptions(const AttrSlice &
         if (!dump_step.empty()) {
           Status s = checkDumpStep(dump_step);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
+            ADP_LOG(FATAL) << s.message();
           }
         }
       }
@@ -1516,8 +1516,8 @@ std::map<std::string, std::string> NpuAttrs::GetAllAttrOptions(const AttrSlice &
         dump_mode = dump_mode_value->s();
         Status s = checkDumpMode(dump_mode);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
     }
@@ -1526,8 +1526,8 @@ std::map<std::string, std::string> NpuAttrs::GetAllAttrOptions(const AttrSlice &
         dump_debug_mode = dump_debug_mode_value->s();
         Status s = checkDumpDebugMode(dump_debug_mode);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
       }
     }
@@ -2069,9 +2069,9 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
           std::string tmp_path = params.at("dump_path").s();
           Status s = CheckPath(tmp_path, dump_path);
           if (!s.ok()) {
-            ADP_LOG(ERROR) << s.error_message();
-            LOG(ERROR) << s.error_message();
-            return errors::Internal(s.error_message());
+            ADP_LOG(ERROR) << s.message();
+            LOG(ERROR) << s.message();
+            return errors::Internal(s.message());
           }
         } else {
           ADP_LOG(ERROR) << "if use dump function, dump_path must be set.";
@@ -2084,16 +2084,16 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
           dump_step = params.at("dump_step").s();
           Status s = checkDumpStep(dump_step);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
-            return errors::Internal(s.error_message());
+            ADP_LOG(FATAL) << s.message();
+            return errors::Internal(s.message());
           }
         }
         if (params.count("dump_mode") > 0) {
           dump_mode = params.at("dump_mode").s();
           Status s = checkDumpMode(dump_mode);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
-            LOG(FATAL) << s.error_message();
+            ADP_LOG(FATAL) << s.message();
+            LOG(FATAL) << s.message();
           }
         }
       }
@@ -2102,8 +2102,8 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
           dump_debug_mode = params.at("dump_debug_mode").s();
           Status s = checkDumpDebugMode(dump_debug_mode);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
-            LOG(FATAL) << s.error_message();
+            ADP_LOG(FATAL) << s.message();
+            LOG(FATAL) << s.message();
           }
         }
       }
@@ -2161,23 +2161,23 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       if (!aoe_mode.empty()) {
         Status s = CheckAoeMode(aoe_mode);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(ERROR) << s.error_message();
-          return errors::Internal(s.error_message());
+          ADP_LOG(ERROR) << s.message();
+          LOG(ERROR) << s.message();
+          return errors::Internal(s.message());
         }
         if (params.count("work_path") > 0) {
           std::string tmp_path = params.at("work_path").s();
           s = CheckPath(tmp_path, work_path);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
-            LOG(FATAL) << s.error_message();
+            ADP_LOG(FATAL) << s.message();
+            LOG(FATAL) << s.message();
           }
         } else {
           std::string tmp_path = work_path;
           s = CheckPath(tmp_path, work_path);
           if (!s.ok()) {
-            ADP_LOG(FATAL) << s.error_message();
-            LOG(FATAL) << s.error_message();
+            ADP_LOG(FATAL) << s.message();
+            LOG(FATAL) << s.message();
           }
         }
         if (params.count("distribute_config") > 0) {
@@ -2269,18 +2269,18 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         local_rank_id = params.at("local_rank_id").i();
         Status s = CheckLocalRankId(local_rank_id);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(ERROR) << s.error_message();
-          return errors::Internal(s.error_message());
+          ADP_LOG(ERROR) << s.message();
+          LOG(ERROR) << s.message();
+          return errors::Internal(s.message());
         }
       }
       if (params.count("local_device_list") > 0) {
         local_device_list = params.at("local_device_list").s();
         Status s = CheckDeviceList(local_device_list);
         if (!s.ok()) {
-          ADP_LOG(ERROR) << s.error_message();
-          LOG(ERROR) << s.error_message();
-          return errors::Internal(s.error_message());
+          ADP_LOG(ERROR) << s.message();
+          LOG(ERROR) << s.message();
+          return errors::Internal(s.message());
         }
       }
       if (params.count("in_out_pair_flag") > 0) {
@@ -2315,8 +2315,8 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         op_select_implmode = params.at("op_select_implmode").s();
         Status s = CheckOpImplMode(op_select_implmode);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
         if (params.count("optypelist_for_implmode") > 0) {
           LOG_DEPRECATED_WITH_REPLACEMENT(optypelist_for_implmode, op_precision_mode);
@@ -2328,14 +2328,14 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         input_shape = params.at("input_shape").s();
         Status s = CheckInputShape(input_shape);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
         dynamic_dims = params.at("dynamic_dims").s();
         s = CheckDynamicDims(dynamic_dims);
         if (!s.ok()) {
-          ADP_LOG(FATAL) << s.error_message();
-          LOG(FATAL) << s.error_message();
+          ADP_LOG(FATAL) << s.message();
+          LOG(FATAL) << s.message();
         }
         dynamic_node_type = params.at("dynamic_node_type").i();
         if (dynamic_node_type < 0 || dynamic_node_type > 1) {
@@ -2855,7 +2855,7 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
   }
   node->AddAttr("_NpuOptimizer", "NpuOptimizer");
 
-  return Status::OK();
+  return OkStatus();
 }
 
 void NpuAttrs::LogOptions(const std::map<std::string, std::string> &options) {

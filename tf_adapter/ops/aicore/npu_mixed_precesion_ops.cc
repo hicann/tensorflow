@@ -20,7 +20,7 @@ REGISTER_OP("NpuAllocFloatStatus")
     .Output("float_status: float")
     .SetShapeFn([](shape_inference::InferenceContext *c) {
       c->set_output(0, c->Vector(1));
-      return Status::OK();
+      return OkStatus();
     })
     .Doc(R"doc(
     Allocate the float status tensor for getting float status from scalar buffer.
@@ -56,7 +56,7 @@ REGISTER_OP("NpuGetFloatStatusV2")
         output_dims.emplace_back(c->MakeDim(8));
         auto output_shape = c->MakeShape(output_dims);
         c->set_output(0, output_shape);
-        return Status::OK();
+        return OkStatus();
     });
 
 

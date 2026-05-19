@@ -26,7 +26,7 @@ Status ControlFlowConversionPass::Run(const GraphOptimizationPassOptions &option
     return errors::Internal("Lowering If/While ops should happen before partitioning.");
   }
   if (options.graph == nullptr || options.session_options == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   Graph *graph = options.graph->get();
@@ -34,7 +34,7 @@ Status ControlFlowConversionPass::Run(const GraphOptimizationPassOptions &option
   std::string job = pass_options["job"];
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : ControlFlowConversionPass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   FunctionLibraryDefinition *flib_def = options.flib_def;
@@ -46,7 +46,7 @@ Status ControlFlowConversionPass::Run(const GraphOptimizationPassOptions &option
   bool lower_functional_ops = pass_options["lower_functional_ops"] == "1";
   if (!use_off_line || lower_functional_ops) {
     ADP_LOG(INFO) << "Skip the optimizer";
-    return Status::OK();
+    return OkStatus();
   }
 
   // Delete _lower_using_switch_merge before LowerFunctionalOpsPass
@@ -73,7 +73,7 @@ Status ControlFlowConversionPass::Run(const GraphOptimizationPassOptions &option
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::PRE_PLACEMENT, -1, ControlFlowConversionPass);

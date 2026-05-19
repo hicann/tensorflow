@@ -17,7 +17,7 @@ from tensorflow.python.eager import context
 from tensorflow.python.ops import nn_ops
 from tensorflow.python.framework import ops
 from tensorflow.python.util import nest
-from keras.engine import keras_tensor
+from keras.src.engine import keras_tensor
 from npu_device.utils import npu_wrapper
 
 

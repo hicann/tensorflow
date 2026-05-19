@@ -35,7 +35,7 @@ namespace tensorflow {
             Env::Default()->StartThread({}, thread_name, [this]() { ParallelForCopyThread(); }));
       }
     }
-    return Status::OK();
+    return OkStatus();
   }
 
   void HostThreadPool::ParallelForCopyThread() {

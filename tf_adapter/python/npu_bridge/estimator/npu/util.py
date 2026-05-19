@@ -156,13 +156,23 @@ def check_aoe_mode(aoe_mode):
         raise ValueError("aoe_mode:%s is invalid, should be in ['1', '2', '4']" % (aoe_mode))
 
 
+def to_proto_fn(var):
+    tensor = tf.convert_to_tensor(var)
+    return tf.raw_ops.TensorToProto(tensor=tensor)
+
+
+def from_proto_fn(proto_tensor):
+    tensor = tf.raw_ops.TensorFromProto(tensor_proto=proto_tensor)
+    return tf.Variable(tensor)
+
+
 def register_func(var_name):
     """Resiger function to NPU"""
     ops.register_proto_function(
         '{}_{}'.format(_NPU_RUNCONFIG, var_name),
         proto_type=variable_pb2.VariableDef,
-        to_proto=resource_variable_ops._to_proto_fn,
-        from_proto=resource_variable_ops._from_proto_fn)
+        to_proto=to_proto_fn,
+        from_proto=from_proto_fn)
 
 
 def create_or_get_var(var_name):

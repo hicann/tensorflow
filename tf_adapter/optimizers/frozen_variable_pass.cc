@@ -30,7 +30,7 @@ class DummyDevice : public ThreadPoolDevice {
     ThreadPoolDevice({}, name, Bytes(INT64_MAX), DeviceLocality(), cpu_allocator()),
     wrapped_rmgr_(rmgr) {}
   ~DummyDevice() override { wrapped_rmgr_ = nullptr; };
-  Status Sync() override { return Status::OK(); }
+  Status Sync() override { return OkStatus(); }
   ResourceMgr *resource_manager() override { return wrapped_rmgr_; }
  private:
   ResourceMgr *wrapped_rmgr_;
@@ -142,21 +142,21 @@ Status FrozenVariablePass::DoConstantFolding(const GraphOptimizationPassOptions 
     WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
   ADP_LOG(INFO) << "FrozenVariablePass Run";
   bool not_need_process = (options.graph == nullptr || options.session_options == nullptr);
   if (not_need_process) {
-    return Status::OK();
+    return OkStatus();
   }
 
   std::map<std::string, std::string> pass_options = NpuAttrs::GetPassOptions(options);
   std::string is_need_frozen = pass_options["frozen_variable"];
   if (is_need_frozen != "1") {
     ADP_LOG(INFO) << " Skip the optimizer : FrozenVariablePass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   Graph *graph_in = (options.graph)->get();
@@ -267,7 +267,7 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
     TF_RETURN_IF_ERROR(DoConstantFolding(options, index));
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, -2, FrozenVariablePass);

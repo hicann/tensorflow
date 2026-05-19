@@ -56,7 +56,7 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
   bool not_need_process =
     (options.graph == nullptr || options.flib_def == nullptr || options.session_options == nullptr);
   if (not_need_process) {
-    return Status::OK();
+    return OkStatus();
   }
 
   std::map<std::string, std::string> pass_options = NpuAttrs::GetPassOptions(options);
@@ -64,7 +64,7 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
   bool skip_flag = (job == "ps" || job == "default" || job == "localhost") ;
   if (skip_flag) {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : MarkStartNodePass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   std::unique_ptr<Graph> *graph = options.graph;
@@ -73,12 +73,12 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
       ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip MarkStartNodePass.";
-      return Status::OK();
+      return OkStatus();
     }
 
     if (n->attrs().Find("_StartNodeName")) {
       ADP_LOG(INFO) << "Found mark of startnode optimize on node [" << n->name() << "], skip MarkStartNodePass.";
-      return Status::OK();
+      return OkStatus();
     }
   }
 
@@ -125,7 +125,7 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
           }
           n->AddAttr("_StartNodeName", start_node_name);
           Status s = TraverseNode(n);
-          if (s != Status::OK()) {
+          if (s != OkStatus()) {
             return s;
           }
         }
@@ -144,12 +144,12 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
   ADP_LOG(INFO) << "MarkStartNodePass_" << std::to_string(graph_num) << " success. ["
                 << ((endTime - startTime) / kMicrosToMillis) << " ms]";
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MarkStartNodePass::TraverseNode(const Node *start_node) {
   REQUIRES_NOT_NULL(start_node);
-  Status s = Status::OK();
+  Status s = OkStatus();
   for (Node *n : start_node->out_nodes()) {
     REQUIRES_NOT_NULL(n);
     std::string start_node_name;
@@ -172,12 +172,12 @@ Status MarkStartNodePass::TraverseNode(const Node *start_node) {
     }
     n->AddAttr("_StartNodeName", start_node_name);
     s = TraverseNode(n);
-    if (s != Status::OK()) {
+    if (s != OkStatus()) {
       ADP_LOG(INFO) << "traverse node : " << start_node->name() << " can't to add start node name.";
       return s;
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, -1, MarkStartNodePass);

@@ -50,7 +50,7 @@ Status ModelProcess::PrepareProcess() {
   TF_RETURN_IF_ERROR(LoadModelFromFile());
   TF_RETURN_IF_ERROR(CreateInput());
   TF_RETURN_IF_ERROR(CreateOutput());
-  return Status::OK();
+  return OkStatus();
 }
 
 bool ModelProcess::IsDynamic(const aclmdlIODims &dims) const {
@@ -94,9 +94,9 @@ Status ModelProcess::GetDynamicGearInfo() {
       ADP_LOG(ERROR) << "dynamic_gear_shape_index_ size is invalid, its value is " << dynamic_gear_shape_index_.size();
       return tensorflow::errors::Internal("get dynamic gear shape index fail");
     }
-    return Status::OK();
+    return OkStatus();
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::LoadModelFromFile() {
@@ -124,7 +124,7 @@ Status ModelProcess::LoadModelFromFile() {
     ADP_LOG(INFO) << "this "<< j << " output is " << is_output_dynamic_[j];
   }
   TF_RETURN_IF_ERROR(GetDynamicGearInfo());
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::CreateInput() {
@@ -150,7 +150,7 @@ Status ModelProcess::CreateInput() {
       return tensorflow::errors::Internal("aclmdlAddDatasetBuffer fail");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::CreateOutput() {
@@ -177,19 +177,19 @@ Status ModelProcess::CreateOutput() {
       return tensorflow::errors::Internal("aclmdlAddDatasetBuffer fail");
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::Execute(const std::vector<Tensor> &inputs, std::vector<Tensor> &outputs) {
   TF_RETURN_IF_ERROR(ProcessInput(inputs));
   REQUIRES_ACL_STATUS_OK(aclmdlExecute(model_id_, input_, output_), aclmdlExecute);
   TF_RETURN_IF_ERROR(ProcessOutput(outputs));
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::ProcessDynamicGearInput(const std::vector<Tensor> &inputs) const {
   if (dymainc_gear_type_ == DynamicGearType::DYNAMIC_UNDEFINED) {
-    return Status::OK();
+    return OkStatus();
   }
   if (dymainc_gear_type_ == DynamicGearType::DYNAMIC_BATCH) {
     if (inputs.size() <= dynamic_gear_input_index_) {
@@ -213,9 +213,9 @@ Status ModelProcess::ProcessDynamicGearInput(const std::vector<Tensor> &inputs) 
       ", dynamic_batch_index is " << dynamic_batch_index;
     REQUIRES_ACL_STATUS_OK(aclmdlSetDynamicBatchSize(model_id_, input_, dynamic_batch_index, current_batch),
       aclmdlSetDynamicBatchSize);
-    return Status::OK();
+    return OkStatus();
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
@@ -262,7 +262,7 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
     REQUIRES_ACL_STATUS_OK(ret, aclmdlSetDatasetTensorDesc);
   }
   TF_RETURN_IF_ERROR(ProcessDynamicGearInput(inputs));
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::ProcessStaticOutput(const size_t index, const tensorflow::DataType tf_type,
@@ -287,7 +287,7 @@ Status ModelProcess::ProcessStaticOutput(const size_t index, const tensorflow::D
   REQUIRES_ACL_STATUS_OK(
     aclrtMemcpy(tensor_data, tensor_size, dev_ptr, tensor_size, ACL_MEMCPY_DEVICE_TO_HOST), aclrtMemcpy);
   outputs.emplace_back(std::move(tensor));
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::ProcessDynamicOutput(const size_t index, const tensorflow::DataType tf_type,
@@ -319,7 +319,7 @@ Status ModelProcess::ProcessDynamicOutput(const size_t index, const tensorflow::
     (void)aclrtFree(dev_ptr);
     (void)aclUpdateDataBuffer(data_buf, nullptr, 0);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::ProcessOutput(std::vector<Tensor> &outputs) {
@@ -337,7 +337,7 @@ Status ModelProcess::ProcessOutput(std::vector<Tensor> &outputs) {
       TF_RETURN_IF_ERROR(ProcessDynamicOutput(i, tf_type, data_buf, outputs));
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 void ModelProcess::WorkThread() {
@@ -358,7 +358,7 @@ void ModelProcess::WorkThread() {
     }
     if (!is_prepared) {
       thread_ret_ = PrepareProcess();
-      if (thread_ret_ == Status::OK()) {
+      if (thread_ret_ == OkStatus()) {
         is_prepared = true;
       } else {
         DestroyResource();
@@ -397,7 +397,7 @@ Status ModelProcess::MappingTfDtToAcl(const tensorflow::DataType tf_type, aclDat
     return errors::Internal("Unsupported tf data type", DataTypeString(tf_type), " by acl.");
   }
   acl_type = found->second;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status ModelProcess::MappingAclDtToTf(const aclDataType &acl_type, tensorflow::DataType &tf_type) const {
@@ -411,7 +411,7 @@ Status ModelProcess::MappingAclDtToTf(const aclDataType &acl_type, tensorflow::D
     return errors::Internal("Acl channel receive unsupported data type", acl_type);
   }
   tf_type = found->second;
-  return Status::OK();
+  return OkStatus();
 }
 
 void ModelProcess::UnloadModel() {
@@ -486,7 +486,7 @@ Status OmExecutor::Create(const std::string &model_data, std::unique_ptr<OmExecu
   }
   executor->model_process_ = std::unique_ptr<ModelProcess> (new (std::nothrow) ModelProcess(model_data));
   REQUIRES_NOT_NULL(executor->model_process_);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OmExecutor::Execute(const std::vector<Tensor> &inputs, std::vector<Tensor> &outputs) {

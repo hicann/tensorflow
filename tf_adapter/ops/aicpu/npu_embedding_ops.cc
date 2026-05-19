@@ -27,7 +27,7 @@ REGISTER_OP("InitEmbeddingHashmapV2")
   .Attr("dtype: type = DT_FLOAT")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Scalar());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DeinitEmbeddingHashmapV2")
@@ -39,7 +39,7 @@ REGISTER_OP("TableToResourceV2")
   .Output("table_handle: int64")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->Scalar());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("EmbeddingHashmapExport")
@@ -62,7 +62,7 @@ REGISTER_OP("EmbeddingHashmapSize")
   .Attr("export_mode: {'all', 'old', 'new', 'specifiednew'} = 'all'")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("EmbeddingHashmapFileSize")
@@ -75,7 +75,7 @@ REGISTER_OP("EmbeddingHashmapFileSize")
   .Attr("TStep: {int32, int64}")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(1));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("EmbeddingHashmapImport")
@@ -100,6 +100,6 @@ REGISTER_OP("EmbeddingHashmapImport")
       c->set_output(i + 2 * num, c->Vector(c->UnknownDim()));
       c->set_output(i + 3 * num, c->Vector(c->UnknownDim()));
     }
-    return Status::OK();
+    return OkStatus();
   });
 }  // namespace tensorflow

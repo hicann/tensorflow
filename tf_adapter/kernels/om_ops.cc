@@ -48,12 +48,12 @@ class LoadAndExecuteOmOp : public OpKernel {
  private:
   Status Initialize() {
     if (initialized_) {
-      return Status::OK();
+      return OkStatus();
     }
     // todo: 将om_path_转换为绝对路径
     TF_RETURN_IF_ERROR(OmExecutor::Create(model_data_, executor_));
     initialized_ = true;
-    return Status::OK();
+    return OkStatus();
   }
 
   std::mutex mu_;

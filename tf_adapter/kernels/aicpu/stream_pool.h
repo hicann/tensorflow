@@ -72,10 +72,10 @@ private:
     }
 
     if (hook_ != nullptr) {
-      hook_(Status::OK());
+      hook_(OkStatus());
       hook_ = nullptr;
     }
-    return Status::OK();
+    return OkStatus();
   }
 
   StreamEvent(Stream *stream, aclrtEvent event)
@@ -173,7 +173,7 @@ private:
       std::unique_lock<std::mutex> lck(mtx_);
       count = ProcessAllReadyEvent();
       if (count > 0) {
-        return Status::OK();
+        return OkStatus();
       }
 
       if (waiting_event_queue_.empty()) {
@@ -184,7 +184,7 @@ private:
     }
 
     (void)event->Wait();
-    return Status::OK();
+    return OkStatus();
   }
 
   explicit Stream(StreamPool *owner, uint64_t stream_id, aclrtStream stream)
@@ -215,7 +215,7 @@ Status StreamEvent::RecordEvent(const std::function<void(Status status)> hook) {
     return errors::InvalidArgument("[StreamPool] Record event faild: ", rt);
   }
   hook_ = hook;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status StreamEvent::Wait() {
@@ -226,7 +226,7 @@ Status StreamEvent::Wait() {
     rt = aclrtSynchronizeStream(stream_->GetStream());
   }
 
-  Status status = Status::OK();
+  Status status = OkStatus();
   if (rt != ACL_SUCCESS) {
     ADP_LOG(ERROR) << "[StreamPool] Syn event faild, rt = " << rt;
     status = errors::InvalidArgument("[StreamPool] Syn event faild, rt: ", rt);

@@ -21,6 +21,8 @@
 #include "runtime/rt_mem_queue.h"
 #include "infershape_util.h"
 #include "runtime/dev.h"
+#include "tensorflow/tsl/platform/thread_annotations.h"
+#include "tensorflow/tsl/platform/mutex.h"
 
 namespace tensorflow {
 namespace {
@@ -36,7 +38,7 @@ static mutex mtx;
 #ifdef TF_VERSION_TF2
 static bool isMbufInit TF_GUARDED_BY(mtx) = false;
 #else
-static bool isMbufInit GUARDED_BY(mtx) = false;
+static bool isMbufInit TF_GUARDED_BY(mtx) = false;
 #endif
 static const int32 kTimeOut = 3000;
 const int64_t kRuntimeTensorDescSize = 1024UL;
@@ -75,19 +77,19 @@ Status MemGroupInit(string &group_name) {
   }
 
   ADP_LOG(INFO) << "MemGroupInit success, group_name:" << group_name.c_str();
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MbufInit() {
   mutex_lock lock(mtx);
   if (isMbufInit) {
     ADP_LOG(INFO) << "MbufInit function is already executed.";
-    return Status::OK();
+    return OkStatus();
   }
   ADP_LOG(INFO) << "MemGroupInit begin.";
   std::string group_name = std::string("DM_QS_GROUP_") + std::to_string(getpid());
   auto ret = MemGroupInit(group_name);
-  if (ret != Status::OK()) {
+  if (ret != OkStatus()) {
     return errors::Internal("Call MemGroupInit failed, ret:", ret, ", group_name:", group_name.c_str());
   }
   ADP_LOG(INFO) << "MemGroupInit success.";
@@ -99,7 +101,7 @@ Status MbufInit() {
   }
   isMbufInit = true;
   ADP_LOG(INFO) << "MbufInit success.";
-  return Status::OK();
+  return OkStatus();
 }
 
 namespace {
@@ -165,13 +167,13 @@ private:
 class MbufAllocatorFactory : public AllocatorFactory {
 public:
     Allocator *CreateAllocator() override {
-      if (MbufInit() != Status::OK()) {
+      if (MbufInit() != OkStatus()) {
         return nullptr;
       }
       return new MbufAllocator;
     }
     SubAllocator *CreateSubAllocator(int numa_node) override {
-      if (MbufInit() != Status::OK()) {
+      if (MbufInit() != OkStatus()) {
         return nullptr;
       }
       return new CPUSubAllocator(new MbufAllocator);

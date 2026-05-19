@@ -88,11 +88,11 @@ std::shared_ptr<OpExecutor> OpExecutor::Create(TFE_Context *context, NpuDevice *
 
   tensorflow::Status status;
   if (!(status = device->ValidateOutputTypes(output_types)).ok()) {
-    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, status.error_message());
+    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, std::string(status.message()));
   }
 
   if (!(status = device->ValidateInputTypes(input_types)).ok()) {
-    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, status.error_message());
+    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, std::string(status.message()));
   }
 
   if (op_reg_data->shape_inference_fn == nullptr) {
@@ -104,7 +104,7 @@ std::shared_ptr<OpExecutor> OpExecutor::Create(TFE_Context *context, NpuDevice *
     std::vector<tensorflow::shape_inference::ShapeHandle>(input_shapes.size()), {}, {}, {});
 
   if (!(status = ic.construction_status()).ok()) {
-    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, status.error_message());
+    return std::make_shared<NpuUnsupportedOp>(op_reg_data, ndef, input_shapes, std::string(status.message()));
   }
 
   for (size_t i = 0; i < input_shapes.size(); i++) {

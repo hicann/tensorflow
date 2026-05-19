@@ -86,7 +86,7 @@ class NpuAttrs {
   template<typename T>
   static Status CheckValueAllowed(const std::string &option, const T &v, const std::vector<T> &allowed_values) {
     if (find(allowed_values.begin(), allowed_values.end(), v) != allowed_values.cend()) {
-      return Status::OK();
+      return OkStatus();
     } else {
       std::stringstream ss;
       ss << "option " << option << " value '" << v << "' is invalid, it should be one of the list:";

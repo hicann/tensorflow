@@ -51,7 +51,7 @@ Status GenerateReport::AddUnSupportedInfo(const Node &node, const Details &infos
 
 Status GenerateReport::AddUnSupportedInfo(const std::string &name, const std::string &type, const Details &infos) {
   if (check_info_map_.find(name) != check_info_map_.end()) {
-    return Status::OK();
+    return OkStatus();
   } else {
     UnSupportedInfo unsupported_info;
     unsupported_info.name = name;
@@ -59,13 +59,13 @@ Status GenerateReport::AddUnSupportedInfo(const std::string &name, const std::st
     unsupported_info.info_details = infos;
     check_info_map_[name] = unsupported_info;
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status GenerateReport::SaveUnsupportedInfo() {
   if (check_info_map_.empty()) {
     ADP_LOG(INFO) << "[GenerateReport] All nodes are supported, no need to save report.";
-    return Status::OK();
+    return OkStatus();
   }
   Json graph_info;
   std::string info_str;

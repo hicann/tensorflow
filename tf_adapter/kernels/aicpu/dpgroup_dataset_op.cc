@@ -13,6 +13,8 @@
 #include "tf_adapter/common/adapter_logger.h"
 #include "tf_adapter/common/common.h"
 #include "tf_adapter/common/compat_tf1_tf2.h"
+#include "tensorflow/tsl/platform/thread_annotations.h"
+#include "tensorflow/tsl/platform/mutex.h"
 
 namespace tensorflow {
 namespace data {
@@ -66,7 +68,7 @@ private:
 #ifdef TF_VERSION_TF2
     Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
       for (const auto &input : inputs_) { inputs->push_back(input); }
-      return Status::OK();
+      return OkStatus();
     }
 #endif
 
@@ -77,7 +79,7 @@ private:
 #ifdef TF_VERSION_TF2
       return errors::Unimplemented(DebugString(), " does not support serialization");
 #else
-      return Status::OK();
+      return OkStatus();
 #endif
     }
 
@@ -104,23 +106,23 @@ private:
           );
 #endif
         }
-        return Status::OK();
+        return OkStatus();
       }
 
       Status GetNextInternal(IteratorContext *ctx, std::vector<Tensor> *out_tensors, bool *end_of_sequence) override {
         *end_of_sequence = true;
-        return Status::OK();
+        return OkStatus();
       }
 
     protected:
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return OkStatus(); }
 
     private:
       mutex mu_;
-      std::vector<std::unique_ptr<IteratorBase>> input_impls_ GUARDED_BY(mu_);
+      std::vector<std::unique_ptr<IteratorBase>> input_impls_ TF_GUARDED_BY(mu_);
     };
     const std::vector<DatasetBase *> inputs_;
     DataTypeVector output_types_;

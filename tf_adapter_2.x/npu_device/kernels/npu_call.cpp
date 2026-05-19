@@ -107,7 +107,7 @@ class NpuCallOp : public OpKernel {
 
   tensorflow::Status Initilize(OpKernelContext *ctx) {
     if (initialized_) {
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     }
 
     const tensorflow::FunctionLibraryDefinition *lib_def = ctx->function_library()->GetFunctionLibraryDefinition();
@@ -135,7 +135,7 @@ class NpuCallOp : public OpKernel {
     }
     input_shapes_.resize(args_.size(), absl::nullopt);
     initialized_ = true;
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   bool MaybeUpdateShape(const OpKernelContext *const ctx) {
@@ -181,7 +181,7 @@ class NpuCallOp : public OpKernel {
   tensorflow::Status Build(const OpKernelContext *const ctx, bool &loaded) {
     if (built_ && empty_ge_graph_) {
       DLOG() << "Skip check re-build for empty ge graph " << attr_.name() << " of " << name();
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     }
 
     TFE_Context *context;
@@ -224,7 +224,7 @@ class NpuCallOp : public OpKernel {
         loaded = true;
       }
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
  private:

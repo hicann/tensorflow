@@ -37,7 +37,7 @@ tensorflow::Status SetShapeToOutputDesc(const std::vector<std::string> &input_sh
   }
   if (shape.back().empty()) {
     // scale node has no shape
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   // e.g. dims:["2,3,4"] -> ["2", "3", "4"]
   std::vector<std::string> dims = tensorflow::str_util::Split(shape.back(), ",");
@@ -48,7 +48,7 @@ tensorflow::Status SetShapeToOutputDesc(const std::vector<std::string> &input_sh
     }
     attr_shape_value.mutable_list()->add_i(digit_dim);
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void GetOutputDataIndex(const tensorflow::Node *const node, std::vector<int32_t> &ordered_indexes) {
@@ -81,7 +81,7 @@ tensorflow::Status BuildGetNextShape(tensorflow::Graph *graph, tensorflow::Node 
     npu::AssembleOpDef(*shape_node);
     npu::AssembleOpDef(*identity_node);
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status UpdateTensorDescForDynDims(const std::vector<std::string> &all_input_shapes,
@@ -97,7 +97,7 @@ tensorflow::Status UpdateTensorDescForDynDims(const std::vector<std::string> &al
     (*out_tensor_desc.mutable_list()->mutable_func(ordered_indexes[i])->mutable_attr())[npu::kShape] = attr_shape_value;
   }
   DLOG() << "Change input shapes desc successfully for node: " << dynamic_dims_node->name();
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status TryToBuildShapeForDynDims(const std::map<std::string, std::string> &options,
@@ -110,7 +110,7 @@ tensorflow::Status TryToBuildShapeForDynDims(const std::map<std::string, std::st
   if ((!need_dyn_proc) || (dynamic_node_type == kDynamicNodeTypeData)) {
     DLOG() << "Skip dynamic dims. Option configuration is complete:" << (need_dyn_proc ? "true" : "false")
            << ", dynamic_node_type(0 for GetNext, 1 for Data):" << dynamic_node_type;
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   DLOG() << "Enable dynamic dims for graph";
@@ -129,10 +129,10 @@ tensorflow::Status TryToBuildShapeForDynDims(const std::map<std::string, std::st
       }
       NPU_REQUIRES_OK(BuildGetNextShape(graph, node, ordered_indexes));
       NPU_REQUIRES_OK(UpdateTensorDescForDynDims(all_input_shapes, ordered_indexes, node));
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 
@@ -143,8 +143,8 @@ tensorflow::Status BuildNpuOpOptimize(TFE_Context *context, NpuMutableConcreteGr
   (void)num_inputs;
   (void)inputs;
   std::stringstream ss;
-  ss << device->ValidateInputTypes(graph->ConsumedTypes()).error_message();
-  ss << device->ValidateOutputTypes(graph->ProducedTypes()).error_message();
+  ss << device->ValidateInputTypes(graph->ConsumedTypes()).message();
+  ss << device->ValidateOutputTypes(graph->ProducedTypes()).message();
   std::set<std::string> unsupported_ops;
   NPU_REQUIRES_OK(GetGraphUnsupportedOps(*device, *(graph->MutableGraph()), *(npu::UnwrapCtx(context)->FuncLibDef()),
                                          unsupported_ops));
@@ -174,7 +174,7 @@ tensorflow::Status BuildNpuOpOptimize(TFE_Context *context, NpuMutableConcreteGr
     AssembleParserAddons(context, graph->MutableGraph());
     NPU_REQUIRES_OK(TryToBuildShapeForDynDims(options, graph->MutableGraph()));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 NPU_REGISTER_RT_OPTIMIZER(999, "BuildNpuOpOptimizer", BuildNpuOpOptimize);

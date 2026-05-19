@@ -56,7 +56,7 @@ tensorflow::Status MapGeType2Tf(ge::DataType ge_type, tensorflow::DataType &tf_t
     return tensorflow::errors::InvalidArgument("Unsupported ge data type enmu value ", ge_type, " by tf");
   }
   tf_type = kGeType2Tf[ge_type];
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -83,7 +83,7 @@ tensorflow::Status MapTfType2Ge(tensorflow::DataType tf_type, ge::DataType &ge_t
     return tensorflow::errors::InvalidArgument("Unsupported tf type ", tensorflow::DataTypeString(tf_type), " by ge");
   }
   ge_type = kTfType2Ge[tf_type];
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -103,7 +103,7 @@ tensorflow::Status MapGeType2Acl(ge::DataType ge_type, aclDataType &acl_type) {
     return tensorflow::errors::InvalidArgument("Unsupport ge data type enmu value ", ge_type, " by acl");
   }
   acl_type = kGeType2Acl[ge_type];
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -127,7 +127,7 @@ tensorflow::Status MapGeFormat2Acl(ge::Format ge_format, aclFormat &acl_format) 
     return tensorflow::errors::InvalidArgument("Unsupport ge format enmu value ", ge_format, " by acl");
   }
   acl_format = kGeFormat2Acl[ge_format];
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 std::string WrapResourceName(const std::string &name) {
@@ -317,7 +317,7 @@ tensorflow::Status GetSubgraphUnsupportedOps(const NpuDevice &device, const tens
       }
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status GetGraphUnsupportedOps(const NpuDevice &device, const tensorflow::Graph &graph,
@@ -329,7 +329,7 @@ tensorflow::Status GetGraphUnsupportedOps(const NpuDevice &device, const tensorf
     }
     NPU_REQUIRES_OK(GetSubgraphUnsupportedOps(device, *node, lib_def, unsupported_ops));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 namespace {
@@ -351,7 +351,7 @@ bool IsGraphHasAnyUnknownShapeNode(const tensorflow::Graph &graph, const tensorf
     auto status = shape_refiner.AddNode(node);
     if (!status.ok()) {
       has_unknown_shape_node = true;
-      LOG(ERROR) << node->name() << "[" << node->type_string() << "] infer shape failed " << status.error_message();
+      LOG(ERROR) << node->name() << "[" << node->type_string() << "] infer shape failed " << status.message();
       return;
     }
     auto node_ctx = shape_refiner.GetContext(node);
@@ -380,7 +380,7 @@ bool IsGraphHasAnyUnknownShapeNode(const tensorflow::Graph &graph, const tensorf
         if (!status.ok()) {
           has_unknown_shape_node = true;
           LOG(ERROR) << node->name() << "[" << node->type_string()
-                     << "] convert function to graph for infer shape failed " << status.error_message();
+                     << "] convert function to graph for infer shape failed " << status.message();
           return;
         }
         auto fg = fbody->graph->Clone();
@@ -509,7 +509,7 @@ tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
   std::string def_str = def->SerializeAsString();
   if (!def_str.empty()) {
     partition_graph.push_back(ge::AscendString(def_str.c_str(), def_str.length()));
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   LOG(INFO) << "GraphDef is beyond 2G, which is need separate weight from model";
   DLOG() << "GraphDef is beyond 2G, which is need separate weight from model";
@@ -530,7 +530,7 @@ tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
   }
   def_str = def->SerializeAsString();
   partition_graph.push_back(ge::AscendString(def_str.c_str(), def_str.length()));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size) {
@@ -550,7 +550,7 @@ tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_
     src_ptr += src_copy_size;
     src_size -= src_copy_size;
   } while (copy_size < org_src_size);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 std::map<ge::AscendString, ge::AscendString> StringToAscendString(

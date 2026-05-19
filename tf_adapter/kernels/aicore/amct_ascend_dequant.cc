@@ -82,7 +82,7 @@ class AscendDequantOp : public OpKernel {
     input_param.size = static_cast<int>(input_tensor.NumElements());
     input_param.input = input_tensor.flat<T>().data();
     input_param.out = output_tensor->flat<T>().data();
-    input_param.deqscale = deqscale_tensor.flat<uint64>().data();
+    input_param.deqscale = reinterpret_cast<const uint64_t *>(deqscale_tensor.flat<uint64>().data());
 
     std::vector<int> input_shape, deqscale_shape;
     input_shape.resize(input_tensor_shape.dim_sizes().size());

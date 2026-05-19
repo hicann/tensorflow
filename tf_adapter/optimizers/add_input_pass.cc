@@ -38,7 +38,7 @@ class AddInputPass : public GraphOptimizationPass {
 
 Status AddInputPass::Run(const GraphOptimizationPassOptions &options) {
   if (options.partition_graphs == nullptr || options.flib_def == nullptr) {  // in ps mode : session_options may be null
-    return Status::OK();
+    return OkStatus();
   }
 
   for (auto &partition : *options.partition_graphs) {
@@ -116,7 +116,7 @@ Status AddInputPass::Run(const GraphOptimizationPassOptions &options) {
                   << ((endTime - startTime) / kMicrosToMillis) << " ms]";
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_PARTITIONING, 103, AddInputPass);

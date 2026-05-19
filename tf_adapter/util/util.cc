@@ -50,7 +50,7 @@ Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t 
   }
   data_ptr = buff_list.back().get();
   data_size = buff_size;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
@@ -61,7 +61,7 @@ Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
     item.dataPtr_ = std::shared_ptr<void>(const_cast<char *>(value.data()), [](const void *elem) {
       (void)elem;
     });
-    return Status::OK();
+    return OkStatus();
   }
 
   uint8_t *data_ptr = nullptr;
@@ -72,7 +72,7 @@ Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
     (void)ptr;
   });
   item.dataLen_ = data_size;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MappingDtStringTensor2AclDataItem(const Tensor &tensor, acltdtDataItem *&acl_data,
@@ -82,7 +82,7 @@ Status MappingDtStringTensor2AclDataItem(const Tensor &tensor, acltdtDataItem *&
     // for scalar type, *dims is nullptr and dim_num is 0
     acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING,
                                     const_cast<char *>(value->c_str()), value->size());
-    return Status::OK();
+    return OkStatus();
   }
 
   uint8_t *data_ptr = nullptr;
@@ -91,7 +91,7 @@ Status MappingDtStringTensor2AclDataItem(const Tensor &tensor, acltdtDataItem *&
   TF_RETURN_IF_ERROR(GetDtStringTensorData(tensor, data_ptr, data_size, dims, buff_list));
   acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, dims.data(), dims.size(),
                                   ACL_STRING, data_ptr, data_size);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size) {
@@ -112,7 +112,7 @@ Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size) 
     src_ptr += src_copy_size;
     src_size -= src_copy_size;
   } while (copy_size < org_src_size);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 bool IsWithoutNpuScope(const NodeDef &node_def) {

@@ -65,7 +65,7 @@ REGISTER_OP("LARS")
       for (int i = 0; i < ((c->num_inputs() - 1) / 2); i++) {
         c->set_output(i, c->input(i));
       }
-      return Status::OK();
+      return OkStatus();
     })
     .Doc(R"doc(
     Perform Lars on multi tensors. inputs_g have the same shape as `inputs_w`.
@@ -90,7 +90,7 @@ REGISTER_OP("LarsV2")
     .Attr("use_clip: bool = false")
     .SetShapeFn([](shape_inference::InferenceContext *c) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     })
     .Doc(R"doc(
     Perform LarsV2 on single output. input_weight have the same shape
@@ -119,7 +119,7 @@ Status OutfeedDequeueShapeFn(shape_inference::InferenceContext *c) {
     TF_RETURN_IF_ERROR(c->MakeShapeFromPartialTensorShape(output_shapes[i], &output_shape_handle));
     c->set_output(static_cast<int>(i), output_shape_handle);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OP("OutfeedEnqueueOp")
@@ -146,7 +146,7 @@ REGISTER_OP("DropOutDoMask")
     .SetIsStateful()
     .SetShapeFn([](shape_inference::InferenceContext *c) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("DropOutGenMask")
@@ -169,7 +169,7 @@ REGISTER_OP("DropOutGenMask")
       if (rank == InferenceContext::kUnknownRank) {
         ShapeHandle out = c->UnknownShapeOfRank(1);
         c->set_output(0, out);
-        return Status::OK();
+        return OkStatus();
       }
 
       bool unknownDimExist = false;
@@ -185,7 +185,7 @@ REGISTER_OP("DropOutGenMask")
       if (unknownDimExist) {
         ShapeHandle out = c->UnknownShapeOfRank(1);
         c->set_output(0, out);
-        return Status::OK();
+        return OkStatus();
       }
 
       int64 bitCount = 0;
@@ -205,7 +205,7 @@ REGISTER_OP("DropOutGenMask")
 
       ShapeHandle out = c->Vector(nBytes);
       c->set_output(0, out);
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("DropOutGenMaskV3")
@@ -226,7 +226,7 @@ REGISTER_OP("DropOutGenMaskV3")
       if (!c->FullyDefined(input_shape_handle)) {
         ShapeHandle out = c->UnknownShape();
         c->set_output(0, out);
-        return Status::OK();
+        return OkStatus();
       }
       int32 rank = InferenceContext::Rank(input_shape_handle);
       // [*batch, M, N] -> [*batch, N/16, M/16, 16, 16]
@@ -247,7 +247,7 @@ REGISTER_OP("DropOutGenMaskV3")
           ShapeHandle tmp_shape_handle = c->Matrix(align, align);
           TF_RETURN_IF_ERROR(c->Concatenate(out_shape_handle, tmp_shape_handle, &out_shape_handle));
           c->set_output(0, out_shape_handle);
-          return Status::OK();
+          return OkStatus();
         }
       }
 
@@ -260,7 +260,7 @@ REGISTER_OP("DropOutGenMaskV3")
       random_count = (random_count + 15) & (~15);
       ShapeHandle out = c->Vector(static_cast<int64>(random_count));
       c->set_output(0, out);
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("DropOutGenMaskV4")
@@ -275,7 +275,7 @@ REGISTER_OP("DropOutGenMaskV4")
     .SetIsStateful()
     .SetShapeFn([](shape_inference::InferenceContext *c) {
       c->set_output(0, c->input(0));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("BasicLSTMCell")
@@ -305,7 +305,7 @@ REGISTER_OP("BasicLSTMCell")
       c->set_output(4, c->input(2));
       c->set_output(5, c->input(2));
       c->set_output(6, c->input(2));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("BasicLSTMCellCStateGrad")
@@ -332,7 +332,7 @@ REGISTER_OP("BasicLSTMCellCStateGrad")
       auto output_shape = c->MakeShape({batch_size, output_size});
       c->set_output(0, output_shape);
       c->set_output(1, c->input(2));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("BasicLSTMCellWeightGrad")
@@ -356,7 +356,7 @@ REGISTER_OP("BasicLSTMCellWeightGrad")
       auto output_db_shape = c->MakeShape({four_hidden_size});
       c->set_output(0, output_dw_shape);
       c->set_output(1, output_db_shape);
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("BasicLSTMCellInputGrad")
@@ -381,7 +381,7 @@ REGISTER_OP("BasicLSTMCellInputGrad")
       auto output_dxt_shape = c->MakeShape({batch_size, output_input_size});
       c->set_output(0, output_dxt_shape);
       c->set_output(1, output_dht_shape);
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("AdamApplyOneAssign")
@@ -420,7 +420,7 @@ REGISTER_OP("LambApplyOptimizerAssign")
       c->set_output(0, c->input(0));
       c->set_output(1, c->input(1));
       c->set_output(2, c->input(2));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("LambApplyWeightAssign")
@@ -434,7 +434,7 @@ REGISTER_OP("LambApplyWeightAssign")
     .SetIsStateful()
     .SetShapeFn([](shape_inference::InferenceContext *c) {
       c->set_output(0, c->input(4));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("AdamApplyOneWithDecayAssign")
@@ -477,7 +477,7 @@ REGISTER_OP("KMeansCentroids")
       c->set_output(0, c->MakeShape({n, d}));
       c->set_output(1, c->MakeShape({n, 1}));
       c->set_output(2, c->MakeShape({1}));
-      return Status::OK();
+      return OkStatus();
     });
 
 REGISTER_OP("KMeansCentroidsV2")
@@ -496,7 +496,7 @@ REGISTER_OP("KMeansCentroidsV2")
       c->set_output(0, c->MakeShape({n, d}));
       c->set_output(1, c->MakeShape({n, 1}));
       c->set_output(2, c->MakeShape({1}));
-      return Status::OK();
+      return OkStatus();
     });
 
 
@@ -516,7 +516,7 @@ REGISTER_OP("FileConstant")
         out_dims[i] = c->MakeDim(shape_inference::DimensionOrConstant(output_shape[i]));
       }
       c->set_output(0, c->MakeShape(out_dims));
-      return Status::OK();
+      return OkStatus();
     });
 }  // namespace
 }  // namespace tensorflow

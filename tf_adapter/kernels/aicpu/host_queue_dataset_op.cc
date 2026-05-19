@@ -41,6 +41,8 @@
 #include "tf_adapter/util/host_allocator.h"
 #include "tf_adapter/kernels/aicpu/data_item_deliver.h"
 #include "tf_adapter/kernels/aicpu/npu_tensor.h"
+#include "tensorflow/tsl/platform/thread_annotations.h"
+#include "tensorflow/tsl/platform/mutex.h"
 
 namespace tensorflow {
 namespace data {
@@ -225,7 +227,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     }
     ADP_LOG(INFO) << "Channel name is: " << queue_name << ", Channel depth is: " << channel_depth;
     Status ret = HostQueueInit(queue_name, channel_depth, queue_id_);
-    OP_REQUIRES(ctx, ret == Status::OK(), errors::InvalidArgument("Failed to create host queue."));
+    OP_REQUIRES(ctx, ret == OkStatus(), errors::InvalidArgument("Failed to create host queue."));
     queue_name_ = queue_name;
   }
 
@@ -261,7 +263,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 #ifdef TF_VERSION_TF2
     Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
       for (const auto &input : inputs_) { inputs->push_back(input); }
-      return Status::OK();
+      return OkStatus();
     }
 #endif
 
@@ -269,7 +271,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
    protected:
     Status AsGraphDefInternal(SerializationContext *ctx, DatasetGraphDefBuilder *b, Node **output) const override {
-      return Status::OK();
+      return OkStatus();
     }
 
    private:
@@ -732,7 +734,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
       Status SendDataByAclQueue(const vector<Tensor> &args, const acltdtTensorType &data_type,
                                 const uint64_t args_total_bytes, const uint32_t buff_size) {
-        Status status = Status::OK();
+        Status status = OkStatus();
         bool need_resend = false;
 
         while (!finish_send_) {
@@ -808,7 +810,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
       void SendAbnormalData() {
         // Try to send one abnormal data to device to avoid GetNext time out.
         // This will add an additional DataThreadPerf statistics.
-        Status status = Status::OK();
+        Status status = OkStatus();
         std::vector<Tensor> tensors;
         if (dataset()->channel_type_ == ChannelType::ACL_QUEUE) {
           status = SendDataByAclQueue(tensors, ACL_TENSOR_DATA_ABNORMAL, 0, UINT32_MAX);
@@ -850,7 +852,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         while (true) {
           std::vector<Tensor> args;
           acltdtTensorType data_type = ACL_TENSOR_DATA_TENSOR;
-          Status ab_status = Status::OK();
+          Status ab_status = OkStatus();
           uint64_t args_total_bytes = 0ULL;
           uint32_t buff_size = 0;
           {
@@ -1023,7 +1025,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         }
       }
 
-      Status EnsureReceiveThreadStarted(IteratorContext *ctx) EXCLUSIVE_LOCKS_REQUIRED(mu_) {
+      Status EnsureReceiveThreadStarted(IteratorContext *ctx) TF_EXCLUSIVE_LOCKS_REQUIRED(mu_) {
         // ctx is not nullptr
         if (!receive_thread_) {
           std::shared_ptr<IteratorContext> new_ctx(new (std::nothrow) IteratorContext(*ctx));
@@ -1032,10 +1034,10 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           receive_thread_.reset(
             ctx->env()->StartThread({}, "receive_thread", [this, new_ctx]() { GetDataThread(new_ctx); }));
         }
-        return Status::OK();
+        return OkStatus();
       }
 
-      Status EnsureSendThreadStarted(IteratorContext *ctx) EXCLUSIVE_LOCKS_REQUIRED(mu_) {
+      Status EnsureSendThreadStarted(IteratorContext *ctx) TF_EXCLUSIVE_LOCKS_REQUIRED(mu_) {
         if (!send_thread_) {
           std::shared_ptr<IteratorContext> new_ctx(new (std::nothrow) IteratorContext(*ctx));
           REQUIRES_NOT_NULL(new_ctx);
@@ -1054,7 +1056,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             }
           }
         }
-        return Status::OK();
+        return OkStatus();
       }
 
       Status CreateChannel() {
@@ -1070,7 +1072,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           return errors::InvalidArgument("Call acltdtCreateChannelWithCapacity failed.");
         }
         ADP_LOG(INFO) << "Create Channel success. channel_name:" << channel_name;
-        return Status::OK();
+        return OkStatus();
       }
 
       Status Initialize(IteratorContext *ctx) override {
@@ -1121,20 +1123,20 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           TF_RETURN_IF_ERROR(EnsureSendThreadStarted(ctx));
         }
         ADP_LOG(INFO) << "HostQueue success to Initialize. channel_name_:" << dataset()->channel_name_;
-        return Status::OK();
+        return OkStatus();
       }
 
       Status GetNextInternal(IteratorContext *ctx, vector<Tensor> *outTensors, bool *endOfSequence) override {
         *endOfSequence = false;
         ADP_LOG(INFO) << "HostQueue GetNextInternal End.";
-        return Status::OK();
+        return OkStatus();
       }
 
      protected:
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return OkStatus(); }
 
      private:
       struct BufferElement {
@@ -1148,28 +1150,28 @@ class HostQueueDatasetOp : public DatasetOpKernel {
       // This mutex is used to ensure exclusivity between multiple threads
       // accessing the parent iterator. We keep this separate from `mu_` to
       // allow prefetching to run in parallel with GetNext calls.
-      mutex parent_mu_ ACQUIRED_BEFORE(mu_);
-      std::vector<std::unique_ptr<IteratorBase>> input_impls_ GUARDED_BY(mu_);
+      mutex parent_mu_ TF_ACQUIRED_BEFORE(mu_);
+      std::vector<std::unique_ptr<IteratorBase>> input_impls_ TF_GUARDED_BY(mu_);
       condition_variable cond_var_;
       condition_variable destory_var_;
       condition_variable cond_error_;
-      std::deque<BufferElement> buffer_ GUARDED_BY(mu_);
+      std::deque<BufferElement> buffer_ TF_GUARDED_BY(mu_);
       MemoryPool mem_pool_;
       HostThreadPool thread_pool_;
       std::atomic<uint32_t> event_num_;
       mutex event_finish_mu_;
-      bool event_finish_flag_ GUARDED_BY(event_finish_mu_) = false;
+      bool event_finish_flag_ TF_GUARDED_BY(event_finish_mu_) = false;
       condition_variable event_finish_var_;
-      bool cancelled_ GUARDED_BY(mu_) = true;
-      bool finish_send_ GUARDED_BY(mu_) = false;
-      uint64_t total_bytes_ GUARDED_BY(mu_) = 0;
+      bool cancelled_ TF_GUARDED_BY(mu_) = true;
+      bool finish_send_ TF_GUARDED_BY(mu_) = false;
+      uint64_t total_bytes_ TF_GUARDED_BY(mu_) = 0;
       // The following two thread must be the first member to be destructed,
       // because tensorflow::Thread does not provide an explicit join function.
       // If the thread is destructed after other members, such as buffer_, when
       // the thread joins, it will access the already destructed buffer_ ,
       // Resulting in an unknown error.
-      std::unique_ptr<Thread> receive_thread_ GUARDED_BY(mu_);
-      std::unique_ptr<Thread> send_thread_ GUARDED_BY(mu_);
+      std::unique_ptr<Thread> receive_thread_ TF_GUARDED_BY(mu_);
+      std::unique_ptr<Thread> send_thread_ TF_GUARDED_BY(mu_);
       DataItemDeliver *data_deliver_;
       acltdtChannelHandle *acl_handle_;
       uint32_t queue_id_;

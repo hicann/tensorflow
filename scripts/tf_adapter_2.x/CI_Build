@@ -15,15 +15,27 @@ set -o pipefail
 CONFIGURE_DIR="$(cd $(dirname "$0")/../../tf_adapter_2.x && pwd)"
 cd "${CONFIGURE_DIR}"
 
-if [ ! -f "/home/jenkins/tensorflow26/.env/bin/activate" ];then
-  echo "No venv for tensorflow2.x installed, skip CI build"
-  exit 0
-fi
-
-source /home/jenkins/tensorflow26/.env/bin/activate
-
 if [ "$1x" != "x" ];then
   python_version=$1
+fi
+
+if [ "$2x" != "x" ];then
+  tf_version=$2
+fi
+
+if [ "$tf_version" == "tf2.6" ]; then
+  if [ ! -f "/home/jenkins/tensorflow26/.env/bin/activate" ]; then
+    echo "No venv for tensorflow2.6 installed, skip CI build"
+    exit 0
+  fi
+  source /home/jenkins/tensorflow26/.env/bin/activate
+
+elif [ "$tf_version" == "tf2.13" ]; then
+  if [ ! -f "/home/jenkins/tensorflow213/.env/bin/activate" ]; then
+    echo "No venv for tensorflow2.13 installed, skip CI build"
+    exit 0
+  fi
+  source /home/jenkins/tensorflow213/.env/bin/activate
 fi
 
 if [ -z "$python_version" ]; then

@@ -31,7 +31,7 @@ tensorflow::Status Copy2ContinuousMem(void *dst_ptr, const size_t dst_size, void
       return tensorflow::errors::Internal("memory copy failed before hdc send data, dst:", dst_ptr,
                                           ", dst_size:", src_size, ", src:", src_ptr, ", src_size:", src_size);
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   std::atomic<uint32_t> parallel_cpy_count{0U};
@@ -62,7 +62,7 @@ tensorflow::Status Copy2ContinuousMem(void *dst_ptr, const size_t dst_size, void
       return ret;
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 
@@ -84,7 +84,7 @@ tensorflow::Status HdcChannel::MappingAclDtypeToTf(const aclDataType &acl_type, 
     return tensorflow::errors::Internal("Hdc channel receive unsupported data type", acl_type);
   }
   tf_type = found->second;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -98,10 +98,10 @@ tensorflow::Status HdcChannel::AssembleAclTensor2Tensor(const acltdtDataItem *it
   acltdtTensorType acl_type = acltdtGetTensorTypeFromItem(item);
   if (acl_type == ACL_TENSOR_DATA_END_OF_SEQUENCE) {
     LOG(INFO) << "Hdc channel received end-of-sequence for out-feed op.";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   } else if (acl_type == ACL_TENSOR_DATA_ABNORMAL) {
     LOG(INFO) << "Hdc channel received abnormal for out-feed op.";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   } else if (acl_type == ACL_TENSOR_DATA_UNDEFINED) {
     LOG(INFO) << "Hdc channel received undefined message type for out-feed op.";
     return tensorflow::errors::Internal("Hdc channel received undefined message type for out-feed op.");
@@ -148,7 +148,7 @@ tensorflow::Status HdcChannel::AssembleAclTensor2Tensor(const acltdtDataItem *it
     return tensorflow::errors::InvalidArgument("Hdc channel receive un-copyable tensorflow data type",
                                                DataTypeString(tf_type));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -166,7 +166,7 @@ tensorflow::Status HdcChannel::AssembleAclDataset2Tensors(const acltdtDataset *a
     }
     TF_RETURN_IF_ERROR(AssembleAclTensor2Tensor(acl_data, out_tensors));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -185,7 +185,7 @@ tensorflow::Status HdcChannel::DestroyAclDataset(acltdtDataset *acl_dataset, boo
   if (acltdtDestroyDataset(acl_dataset) != ACL_ERROR_NONE) {
     return tensorflow::errors::Internal("Acl destroy tensor dataset failed.");
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -210,7 +210,7 @@ tensorflow::Status HdcChannel::RecvTensorByAcl(std::vector<tensorflow::Tensor> &
     return status;
   }
   TF_RETURN_IF_ERROR(DestroyAclDataset(acl_dataset, false));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -230,7 +230,7 @@ tensorflow::Status HdcChannel::MappingTfDtypeToAcl(const tensorflow::DataType tf
     return tensorflow::errors::Internal("Unsupported tensorflow data type ", DataTypeString(tf_type), " by acl.");
   }
   acl_type = found->second;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -255,7 +255,7 @@ tensorflow::Status HdcChannel::AssembleTensors2AclDataset(acltdtTensorType acl_t
       }
       return tensorflow::errors::Internal("Acl add tensor data to dataset failed when send data with type ", acl_type);
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   size_t total_size = 0UL;
   for (auto &tensor : tensors) {
@@ -306,7 +306,7 @@ tensorflow::Status HdcChannel::AssembleTensors2AclDataset(acltdtTensorType acl_t
       return tensorflow::errors::Internal("Acl add tensor data to dataset failed when send tensor data.");
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -328,7 +328,7 @@ tensorflow::Status HdcChannel::AssembleTensors2AclDataset(acltdtTensorType acl_t
     return status;
   }
   *output_acl_dataset = acl_dataset;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -351,7 +351,7 @@ tensorflow::Status HdcChannel::SendTensorsByAcl(acltdtTensorType acl_type,
     return tensorflow::errors::Internal("Acl send data failed, acl status:", acl_status);
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -366,7 +366,7 @@ tensorflow::Status HdcChannel::Create(uint32_t device_id, const std::string &nam
   NPU_REQUIRES(*guarded_channel,
                tensorflow::errors::Internal("Failed create hdc channel ", name, " on device ", device_id));
   NPU_REQUIRES_OK((*guarded_channel)->Init());
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status HdcChannel::Create(uint32_t device_id, const std::string &name, size_t capacity,
@@ -433,6 +433,6 @@ tensorflow::Status HdcChannel::Init() {
   if (handle_.acl_handle == nullptr) {
     return tensorflow::errors::Internal("Failed create hdc channel by acl");
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace npu

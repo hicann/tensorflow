@@ -29,7 +29,7 @@ class GradFusionOptimizer : public CustomGraphOptimizer {
 
   Status Init(const tensorflow::RewriterConfig_CustomGraphOptimizer *config) override {
     (void) config;
-    return Status::OK();
+    return OkStatus();
   }
 
   bool UsesFunctionLibrary() const override {

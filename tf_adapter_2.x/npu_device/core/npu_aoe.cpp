@@ -70,7 +70,7 @@ tensorflow::Status NpuAoe::RunAoeTuning(NpuDevice &device, TFE_Context *context,
   NPU_REQUIRES(ret == Aoe::AOE_SUCCESS, tensorflow::errors::Internal("exec aoe destroy session func failed"));
 
   DLOG() << "Success to tune graph: " << graph_id;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuAoe::AoeTuningInitialize(const std::string &work_path, const std::string &job_type) {
@@ -90,7 +90,7 @@ tensorflow::Status NpuAoe::AoeTuningInitialize(const std::string &work_path, con
   NPU_REQUIRES(ret == Aoe::AOE_SUCCESS, tensorflow::errors::Internal("exec aoe initialize func failed"));
 
   DLOG() << "Run aoe initialize success";
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuAoe::LoadAoeFunc() {
@@ -148,7 +148,7 @@ tensorflow::Status NpuAoe::LoadAoeFunc() {
                tensorflow::errors::Internal("dlsym Aoe set tuning graph inputs API failed"));
 
   DLOG() << "Load aoe function success";
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NpuAoe::AoeTuningFinalize() {
@@ -162,7 +162,7 @@ tensorflow::Status NpuAoe::AoeTuningFinalize() {
     DLOG() << "Run aoe finalize success";
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 NpuAoe::~NpuAoe() {

@@ -194,8 +194,8 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
 
   Status s = GetEnvDeviceID(device_id_);
   if (!s.ok()) {
-    ADP_LOG(FATAL) << s.error_message();
-    LOG(FATAL) << s.error_message();
+    ADP_LOG(FATAL) << s.message();
+    LOG(FATAL) << s.message();
   }
   init_options[ge::OPTION_EXEC_DEVICE_ID] = std::to_string(device_id_);
   ADP_LOG(INFO) << "[GePlugin] device id : " << init_options[ge::OPTION_EXEC_DEVICE_ID];
@@ -481,7 +481,7 @@ Status RegisterNpuCancellationCallback(std::function<void()> callback, std::func
     return errors::Cancelled("Operation was cancelled");
   }
   *deregister_fn = [token]() { g_cancellationManager.DeregisterCallback(token); };
-  return Status::OK();
+  return OkStatus();
 }
 
 void PluginInit(std::map<std::string, std::string> &init_options) {

@@ -14,10 +14,10 @@
 const std::string ProfilerStart(const std::string &level,
     const std::string &aic_metrics,
     const std::string &output_path) {
-  return tensorflow::Profiler::GetInstance().Enable(level, aic_metrics, output_path).error_message();
+  return std::string(tensorflow::Profiler::GetInstance().Enable(level, aic_metrics, output_path).message());
 }
 
 const std::string ProfilerStop() {
   tensorflow::Profiler::GetInstance().Disable();
-  return tensorflow::Profiler::GetInstance().Stop().error_message();
+  return std::string(tensorflow::Profiler::GetInstance().Stop().message());
 }

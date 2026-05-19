@@ -27,7 +27,7 @@ static const int64 kMicrosToMillis = 1000;
 static std::atomic<int32_t> graph_run_num(1);
 Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options) {
   if (options.graph == nullptr || options.flib_def == nullptr || options.session_options == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
   int32_t graph_num = graph_run_num++;
 
@@ -36,7 +36,7 @@ Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options
   std::string job = pass_options["job"];
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : WeightUpdateShardingPass. ";
-    return Status::OK();
+    return OkStatus();
   }
 
   bool weight_update_sharding = false;
@@ -201,7 +201,7 @@ Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options
                   << ((endTime - startTime) / kMicrosToMillis) << " ms]";
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, 2, WeightUpdateShardingPass);

@@ -65,7 +65,7 @@ tensorflow::Status NodePlacer::Apply(size_t depth) {
   NPU_REQUIRES_OK(MergeCopiedSharedNodes());
   NPU_REQUIRES_OK(BuildNpuOp());
   NPU_REQUIRES_OK(PlaceCpuNodeSubgraphs(depth));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void NodePlacer::InitNodeTopo() {
@@ -120,7 +120,7 @@ tensorflow::Status NodePlacer::CopyShareableNode() const {
     }
     node->AddAttr(kSharedGroup, shared_id++);
     for (auto edge : edges) {
-      tensorflow::Status status = tensorflow::Status::OK();
+      tensorflow::Status status = tensorflow::OkStatus();
       DLOG() << "Copy node " << node->name() << " for colocate with " << edge->dst()->name();
       auto copy = graph_->AddNode(node->def(), &status);
       NPU_REQUIRES_OK(status);
@@ -131,7 +131,7 @@ tensorflow::Status NodePlacer::CopyShareableNode() const {
       }
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 std::set<std::shared_ptr<Cluster>> NodePlacer::GetNpuClusters() {
@@ -279,7 +279,7 @@ tensorflow::Status NodePlacer::BuildNpuOp() {
   }
 
   (void)tensorflow::FixupSourceAndSinkEdges(graph_);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NodePlacer::PlaceCpuNodeSubgraphs(size_t depth) const {
@@ -304,7 +304,7 @@ tensorflow::Status NodePlacer::PlaceCpuNodeSubgraphs(size_t depth) const {
       NPU_REQUIRES_OK(lib_def->AddLibrary(flib));
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 bool NodePlacer::IsClusterMustPlaceOnNpu(const Cluster &cluster) {
@@ -361,7 +361,7 @@ tensorflow::Status NodePlacer::MergeCopiedSharedNodes() {
       (void)cluster->nodes.erase(node);
     }
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NodePlacer::DeterminedSurelyNodes() {
@@ -391,7 +391,7 @@ tensorflow::Status NodePlacer::DeterminedSurelyNodes() {
   }
   DLOG() << "Determined " << node_placement_.size() << " nodes, " << GetNodesPlacedOn(Placement::NPU).size() << " npu, "
          << GetNodesPlacedOn(Placement::CPU).size() << " cpu";
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void NodePlacer::Concrete(tensorflow::Node *src, tensorflow::Node *dst) {
@@ -510,7 +510,7 @@ tensorflow::Status NodePlacer::BuildConcreteCluster() {
     }
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 std::vector<tensorflow::Node *> NodePlacer::GetNodesPlacedOn(Placement placement) {
@@ -544,7 +544,7 @@ tensorflow::Status NodePlacer::SpreadCpuNode() {
   std::vector<tensorflow::Node *> starts = GetNodesPlacedOn(Placement::CPU);
   if (starts.empty()) {
     DLOG() << "Skip spread cpu as no nodes placed on";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   std::stringstream ss;
   const auto enter = [this, &ss](tensorflow::Node *node) {
@@ -574,14 +574,14 @@ tensorflow::Status NodePlacer::SpreadCpuNode() {
   if (!ss.str().empty()) {
     return tensorflow::errors::Unimplemented(ss.str());
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NodePlacer::SpreadNpuNodeFromPlacement(Placement placement) {
   std::vector<tensorflow::Node *> starts = GetNodesPlacedOn(placement);
   if (starts.empty()) {
     DLOG() << "Skip spread npu from placement " << kPlacementString[placement] << " as no nodes placed on";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   for (auto &start : starts) {
     (void)GetOrCreateNpuCluster(start);  // For single node
@@ -596,7 +596,7 @@ tensorflow::Status NodePlacer::SpreadNpuNodeFromPlacement(Placement placement) {
                              [this](const tensorflow::Edge &edge) { return SpreadNpuEdge(edge, false); });
   DLOG() << "Successfully spread npu from placement " << kPlacementString[placement] << ", npu node size "
          << GetNodesPlacedOn(Placement::NPU).size();
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status NodePlacer::SpreadNpuNode() {
@@ -609,13 +609,13 @@ tensorflow::Status NodePlacer::SpreadNpuNode() {
         (void)GetOrCreateNpuCluster(node);
       }
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   // We spread twice as first iteration spread from determined npu node, and,
   // The second iteration spread from all unplaced node
   NPU_REQUIRES_OK(SpreadNpuNodeFromPlacement(Placement::NPU));
   NPU_REQUIRES_OK(SpreadNpuNodeFromPlacement(Placement::WHEREVER));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 const std::set<tensorflow::Node *> &NodePlacer::GetConcreteNodes(tensorflow::Node *node) {

@@ -63,7 +63,7 @@ Status InferShapeUtil::setArgShapeFromTensorShape(const std::vector<Tensor> vecT
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status InferShapeUtil::GetSubGraphFromFunctionDef(const FunctionLibraryDefinition &flib_def,
@@ -88,7 +88,7 @@ Status InferShapeUtil::GetSubGraphFromFunctionDef(const FunctionLibraryDefinitio
   opts.expect_device_spec = false;
   TF_RETURN_IF_ERROR(ConvertNodeDefsToGraph(opts, result.nodes, graph));
   ADP_LOG(INFO) << "ConvertNodeDefsToGraph " << func_def.signature().name() << " success.";
-  return Status::OK();
+  return OkStatus();
 }
 
 bool InferShapeUtil::IsInitializedGraph(const Node *node) {
@@ -153,7 +153,7 @@ Status InferShapeUtil::getInputShapesOfNode(const ShapeRefiner &shapeRef, const 
     inputShapeVec[iDstInputIndex] = pCxtIn->output(pEdge->src_output());
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 void InferShapeUtil::setShapeOfEnterOP(const ShapeRefiner &shapeRef, const Node *pNode) {
@@ -226,8 +226,8 @@ void InferShapeUtil::inferShapeOfGraph(const Graph *graph, ShapeRefiner &shapeRe
     Status addStatus = shapeRef.AddNode(pNode);
     if (!addStatus.ok()) {
       if (iTime != INFER_SHAPE_FIRST_TIME) {
-        ADP_LOG(WARNING) << "AddNode failed, errormsg is " << addStatus.error_message() << ".";
-        LOG(WARNING) << "AddNode failed, errormsg is " << addStatus.error_message() << ".";
+        ADP_LOG(WARNING) << "AddNode failed, errormsg is " << addStatus.message() << ".";
+        LOG(WARNING) << "AddNode failed, errormsg is " << addStatus.message() << ".";
       }
       continue;
     } else if (iTime == INFER_SHAPE_FIRST_TIME && pNode->type_string() == "Enter") {
@@ -244,18 +244,18 @@ Status InferShapeUtil::addShapeToAttr(ShapeRefiner &shapeRef, Node *pNode) {
   shape_inference::InferenceContext *pCxt = shapeRef.GetContext(pNode);
   if (pCxt == nullptr) {
     ADP_LOG(WARNING) << "The InferenceContext of node " << pNode->name() << " is null.";
-    return Status::OK();
+    return OkStatus();
   }
 
   int iOutNums = pCxt->num_outputs();
   if (iOutNums <= 0) {
-    return Status::OK();
+    return OkStatus();
   }
 
   AttrSlice attrList = pNode->attrs();
   if (attrList.Find(KEY_SHAPE) != nullptr) {
     ADP_LOG(INFO) << "Node " << pNode->name() << " already has omop_shape attribute.";
-    return Status::OK();
+    return OkStatus();
   }
 
   std::vector<TensorShapeProto> shapeVec;
@@ -280,7 +280,7 @@ Status InferShapeUtil::addShapeToAttr(ShapeRefiner &shapeRef, Node *pNode) {
   }
 
   pNode->AddAttr(KEY_SHAPE, gtl::ArraySlice<TensorShapeProto>(shapeVec));
-  return Status::OK();
+  return OkStatus();
 }
 
 Status InferShapeUtil::InferShape(const std::vector<Tensor> &vecTensor, const FunctionLibraryDefinition *flib_def,
@@ -346,6 +346,6 @@ Status InferShapeUtil::InferShape(const std::vector<Tensor> &vecTensor, const Fu
   }
 
   ADP_LOG(INFO) << "InferShapeUtil::InferShape success.";
-  return Status::OK();
+  return OkStatus();
 }
 }  // namespace tensorflow

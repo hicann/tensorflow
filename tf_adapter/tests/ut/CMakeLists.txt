@@ -10,7 +10,7 @@
 
 project(ut_optimizers)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE UT_SOURCES
     ${TFADAPTER_DIR}/tf_adapter/common/*.cc

@@ -25,14 +25,14 @@ class NpuMemory {
   static tensorflow::Status Malloc(size_t size, void **memory) {
     if (size == 0) {
       *memory = nullptr;
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     }
     NPU_REQUIRES_ACL_OK("Malloc npu memory failed for size " + std::to_string(size),
                         aclrtMalloc(memory, size, ACL_MEM_MALLOC_HUGE_FIRST));
     npu_memory_usage_ += static_cast<long>(size);
     DLOG() << "Malloced npu memory " << reinterpret_cast<uintptr_t>(*memory) << ", size " << size << ", usage "
            << npu_memory_usage_;
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   static void Free(void *memory, size_t size, const void *arg) {
     (void)arg;
@@ -82,14 +82,14 @@ tensorflow::Status CreateAclTensorDesc(ge::DataType dtype, ge::Format format, co
   aclTensorDesc *acl_desc = aclCreateTensorDesc(acl_dtype, static_cast<int>(shape.size()), shape.data(), acl_format);
   NPU_REQUIRES(acl_desc != nullptr, tensorflow::errors::Internal("Failed create acl tensor desc"));
   desc->reset(acl_desc, [](const aclTensorDesc *desc) { aclDestroyTensorDesc(desc); });
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status CreateAclDataBuffer(void *data, size_t size, std::shared_ptr<aclDataBuffer> *buf) {
   aclDataBuffer *acl_buf = aclCreateDataBuffer(data, size);
   NPU_REQUIRES(acl_buf != nullptr, tensorflow::errors::Internal("Failed create acl data buffer"));
   buf->reset(acl_buf, [](const aclDataBuffer *buf) { (void)aclDestroyDataBuffer(buf); });
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status CreateTransFormatAttr(ge::Format src, ge::Format dst, std::shared_ptr<aclopAttr> *attr) {
@@ -102,7 +102,7 @@ tensorflow::Status CreateTransFormatAttr(ge::Format src, ge::Format dst, std::sh
 
   NPU_REQUIRES_ACL_OK("Acl set op attr dst_format failed",
                       aclopSetAttrString(acl_attr, "dst_format", GetFormatName(dst)));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status CreateCastDtypeAttr(ge::DataType src, ge::DataType dst, std::shared_ptr<aclopAttr> *attr) {
@@ -113,7 +113,7 @@ tensorflow::Status CreateCastDtypeAttr(ge::DataType src, ge::DataType dst, std::
 
   NPU_REQUIRES_ACL_OK("Acl set op attr dst_type failed",
                       aclopSetAttrInt(acl_attr, "dst_type", static_cast<int32_t>(dst)));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status ScheduleCastDtypeTask(aclrtStream stream, ge::Format format, const std::vector<int64_t> &shape,
@@ -141,7 +141,7 @@ tensorflow::Status ScheduleCastDtypeTask(aclrtStream stream, ge::Format format, 
   NPU_REQUIRES_ACL_OK("Acl compile and execute \'Cast\' op failed",
                       aclopCompileAndExecute("Cast", 1, input_descs, input_dbs, 1, output_ds, output_dbs, attr.get(),
                                              ACL_ENGINE_AICORE, ACL_COMPILE_SYS, nullptr, stream));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status ScheduleTransFormatTask(aclrtStream stream, ge::DataType src_dt, ge::Format src_format,
@@ -169,7 +169,7 @@ tensorflow::Status ScheduleTransFormatTask(aclrtStream stream, ge::DataType src_
   NPU_REQUIRES_ACL_OK("Acl compile and execute \'TransData\' op failed",
                       aclopCompileAndExecute("TransData", 1, input_descs, input_dbs, 1, output_ds, output_dbs,
                                              attr.get(), ACL_ENGINE_AICORE, ACL_COMPILE_SYS, nullptr, stream));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 
@@ -282,7 +282,7 @@ tensorflow::Status NpuManagedBuffer::Create(ge::Format format, const std::vector
   (*buf)->deallocator_arg_ = arg;
   (*buf)->deallocator_ = deallocator;
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -311,7 +311,7 @@ tensorflow::Status NpuManagedBuffer::AssembleTo(tensorflow::Tensor *tensor) {
                                                    tensorflow::DataTypeString(dtype), " vs. cpu ",
                                                    tensorflow::DataTypeString(tensor->dtype())));
   if (size_ == 0) {
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   if (SameRepresentation()) {
     NPU_REQUIRES_OK(DToH(tensor->data(), tensor->TotalBytes()));
@@ -322,7 +322,7 @@ tensorflow::Status NpuManagedBuffer::AssembleTo(tensorflow::Tensor *tensor) {
     NPU_REQUIRES_OK(TransRepresentationOnNpu(buf));
     (void)buf->DToH(tensor->data(), tensor->TotalBytes());
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -342,7 +342,7 @@ tensorflow::Status NpuManagedBuffer::AssembleFrom(const tensorflow::Tensor *tens
                                                    tensorflow::DataTypeString(dtype), " vs. cpu ",
                                                    tensorflow::DataTypeString(tensor->dtype())));
   if (size_ == 0) {
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   if (SameRepresentation()) {
     NPU_REQUIRES_OK(HToD(tensor->data(), tensor->TotalBytes()));
@@ -353,7 +353,7 @@ tensorflow::Status NpuManagedBuffer::AssembleFrom(const tensorflow::Tensor *tens
     NPU_REQUIRES_OK(buf->HToD(tensor->data(), tensor->TotalBytes()));
     NPU_REQUIRES_OK(buf->TransRepresentationOnNpu(this));
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -387,7 +387,7 @@ tensorflow::Status NpuManagedBuffer::TransRepresentationOnNpu(NpuManagedBuffer *
                                             dst_buff->size_));
   }
   NPU_REQUIRES_ACL_OK("Acl synchronize stream failed", aclrtSynchronizeStream(rts));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -400,7 +400,7 @@ tensorflow::Status NpuManagedBuffer::HToD(const void *host_data, size_t size) {
                                                            size_, " vs. cpu ", size));
   NPU_REQUIRES_ACL_OK("Acl rt-memcpy host to device failed",
                       aclrtMemcpy(data_, size_, host_data, size, ACL_MEMCPY_HOST_TO_DEVICE));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**
@@ -413,7 +413,7 @@ tensorflow::Status NpuManagedBuffer::DToH(void *host_data, size_t size) const {
                                                            size_, " vs. cpu ", size));
   NPU_REQUIRES_ACL_OK("Acl rt-memcpy device to host failed",
                       aclrtMemcpy(host_data, size, data_, size_, ACL_MEMCPY_DEVICE_TO_HOST));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 /**

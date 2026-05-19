@@ -41,7 +41,7 @@ class NPUBulkSaverBuilder(BulkSaverBuilder):
         if not context.executing_eagerly() and (not build_save or not build_restore):
             raise ValueError("Save and restore operations must be built together "
                              "  when eager execution is disabled.")
-
+        names_to_saveables = saveable_object_util.op_list_to_dict(names_to_saveables)
         saveable_list = saveable_object_util.validate_and_slice_inputs(
             names_to_saveables)
         if max_to_keep is None:

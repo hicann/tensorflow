@@ -12,7 +12,7 @@
 
 """NPU estimator for keras model"""
 
-from tensorflow.python.keras.estimator import model_to_estimator
+from tensorflow.keras.estimator import model_to_estimator
 from tensorflow_estimator.python.estimator import run_config
 from npu_bridge.estimator.npu.npu_estimator import NPUEstimator
 

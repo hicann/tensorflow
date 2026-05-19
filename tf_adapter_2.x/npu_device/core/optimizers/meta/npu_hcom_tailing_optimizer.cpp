@@ -106,7 +106,7 @@ tensorflow::Status TailingOptimizeInner(tensorflow::FunctionLibraryDefinition *l
     }
   }
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 
@@ -114,7 +114,7 @@ namespace npu {
 tensorflow::Status HcomTailingOptimize(TFE_Context *context, tensorflow::Graph *graph,
                                        std::map<std::string, std::string> options) {
   if (options[ge::OPTION_EXEC_ENABLE_TAILING_OPTIMIZATION] != kEnable) {
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   tensorflow::FunctionLibraryDefinition *lib_def = npu::UnwrapCtx(context)->FuncLibDef();
   bool unused = false;

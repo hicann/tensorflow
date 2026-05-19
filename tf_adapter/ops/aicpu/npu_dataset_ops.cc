@@ -82,7 +82,7 @@ REGISTER_OP("GetNext")
         output_shapes[i], &output_shape_handle));
       c->set_output(static_cast<int>(i), output_shape_handle);
     }
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicGetNextV2")

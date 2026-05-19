@@ -12,8 +12,9 @@
 
 """utils for APIs used in Functional API construction"""
 
-from keras.layers import core
-from keras.utils import generic_utils
+from keras.src.layers import core
+from keras.src.utils import generic_utils
+from keras.saving import register_keras_serializable
 from keras import backend
 
 _API_NAME_ATTR = 'npu_api_names'
@@ -54,7 +55,7 @@ def get_one_name_for_npu_symbol(symbol):
     return api_names
 
 
-@generic_utils.register_keras_serializable(package='npu_device.utils.npu_wrapper')
+@register_keras_serializable(package='npu_device.utils.npu_wrapper')
 class NpuOpLambda(core.TFOpLambda):
     """
     Wraps NPU API symbols in a `TFOpLambda` object extends by `Layer`.

@@ -43,7 +43,7 @@ Status Profiler::GetLevel(const std::string &level) {
   if (level_iter != kProfilerLevelMap.cend()) {
     level_ = level_iter->second;
     ADP_LOG(INFO) << "Profiler level: " << level;
-    return Status::OK();
+    return OkStatus();
   }
   std::string error_msg = "Profiler options: level cannot set to: " + level + ", should set level to [";
   size_t i = 0UL;
@@ -63,7 +63,7 @@ Status Profiler::GetAicMetrics(const std::string &aic_metrics) {
   if ((level_ != Level0) && (aic_metrics.empty())) {
     ADP_LOG(INFO) << "Profiler aic_metrics is empty, set default: PipeUtilization";
     aic_metrics_ = ACL_AICORE_PIPE_UTILIZATION;
-    return Status::OK();
+    return OkStatus();
   }
 
   if (level_ == Level0) {
@@ -71,14 +71,14 @@ Status Profiler::GetAicMetrics(const std::string &aic_metrics) {
       return errors::InvalidArgument("Please use L1 or L2 if you want to collect aic metrics!");
     }
     aic_metrics_ = ACL_AICORE_NONE;
-    return Status::OK();
+    return OkStatus();
   }
 
   const auto metrics_iter = kNpuMetricsMap.find(aic_metrics);
   if (metrics_iter != kNpuMetricsMap.cend()) {
     ADP_LOG(INFO) << "Profiler aic_metrics: " << aic_metrics;
     aic_metrics_ = metrics_iter->second;
-    return Status::OK();
+    return OkStatus();
   }
   std::string error_msg = "Profiler options: aic_metrics cannot set to: " +
       aic_metrics + ", should set aic_metrics to [";
@@ -112,12 +112,12 @@ Status Profiler::Enable(const std::string &level,
   // 输出path不能为空，否则profiling报错，如果path为空，则落盘在当前目录下
   output_path_ = output_path.empty() ? "./" : output_path;
   enable_flag_ = true;
-  return Status::OK();
+  return OkStatus();
 }
 
 Status Profiler::Start() {
   if (has_start_) {
-    return Status::OK();
+    return OkStatus();
   }
   ADP_LOG(INFO) << "Profiler Start";
   has_start_ = true;
@@ -141,12 +141,12 @@ Status Profiler::Start() {
   if (aclprofStart(prof_config_) != ACL_ERROR_NONE) {
     return errors::Internal("Call aclprofStart failed");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status Profiler::Stop() {
   if (!has_start_) {
-    return Status::OK();
+    return OkStatus();
   }
   has_start_ = false;
   ADP_LOG(INFO) << "Profiler Stop";
@@ -163,7 +163,7 @@ Status Profiler::Stop() {
   if (ret_finalize != ACL_ERROR_NONE) {
     return errors::Internal("Call aclprofFinalize failed");
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 void Profiler::Disable() {

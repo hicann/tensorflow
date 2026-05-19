@@ -11,7 +11,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(AscendAdapter2Test)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -g --coverage -DNDEBUG -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -fno-common -pipe ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-D_FORTIFY_SOURCE=2 -O2 -g --coverage -DNDEBUG -Wno-deprecated-declarations -Wall -fPIC -fstack-protector-all -Wl,--no-as-needed -Wl,-z,relro,-z,now,-z,noexecstack -fno-common -pipe ${CMAKE_CXX_FLAGS}")
 set(CMAKE_SKIP_RPATH FALSE)

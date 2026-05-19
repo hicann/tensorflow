@@ -79,7 +79,7 @@ class OutfeedDequeueOp : public OpKernel {
       ADP_LOG(INFO) << "Start run cancellation callback of out-feed dequeue op " << channel_name_;
       Status ret = StopRecvTensorByAcl(&acl_handle_, channel_name_);
       if (!ret.ok()) {
-        ADP_LOG(ERROR) << ret.error_message();
+        ADP_LOG(ERROR) << ret.message();
       }
     });
     if (TF_PREDICT_FALSE(already_cancelled)) {

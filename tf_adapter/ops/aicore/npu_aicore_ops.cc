@@ -71,7 +71,7 @@ REGISTER_OP("EmbeddingHashTableExport")
       c->set_output(i + 2 * num, c->Vector(c->UnknownDim()));
       c->set_output(i + 3 * num, c->Vector(c->UnknownDim()));
     }
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("EmbeddingHashTableApplyAdamW")
@@ -106,7 +106,7 @@ REGISTER_OP("StatelessRandomChoiceWithMask")
     auto rank = InferenceContext::Rank(c->input(0));
     c->set_output(0, c->MakeShape({2, rank}));
     c->set_output(1, c->MakeShape({2}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicGruV2")
@@ -159,7 +159,7 @@ REGISTER_OP("DynamicGruV2")
     c->set_output(3, c->UnknownShape());
     c->set_output(4, c->UnknownShape());
     c->set_output(5, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("StatelessDropout")
@@ -173,7 +173,7 @@ REGISTER_OP("StatelessDropout")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicGruV2Grad")
@@ -226,7 +226,7 @@ REGISTER_OP("DynamicGruV2Grad")
     c->set_output(3, output_db_hidden_shape);
     c->set_output(4, output_dx_shape);
     c->set_output(5, output_dh_prev_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicAUGRU")
@@ -283,7 +283,7 @@ REGISTER_OP("DynamicAUGRU")
     c->set_output(4, c->UnknownShape());
     c->set_output(5, c->UnknownShape());
     c->set_output(6, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicAUGRUGrad")
@@ -341,7 +341,7 @@ REGISTER_OP("DynamicAUGRUGrad")
     c->set_output(4, output_dx_shape);
     c->set_output(5, output_dh_prev_shape);
     c->set_output(6, output_dw_att_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicRnn")
@@ -403,7 +403,7 @@ REGISTER_OP("DynamicRnn")
     c->set_output(5, c->UnknownShape());
     c->set_output(6, c->UnknownShape());
     c->set_output(7, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicRnnV2")
@@ -464,7 +464,7 @@ REGISTER_OP("DynamicRnnV2")
     c->set_output(5, c->UnknownShape());
     c->set_output(6, c->UnknownShape());
     c->set_output(7, c->UnknownShape());
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DynamicRnnGrad")
@@ -521,7 +521,7 @@ REGISTER_OP("DynamicRnnGrad")
     c->set_output(2, output_dx_shape);
     c->set_output(3, output_dh_prev_shape);
     c->set_output(4, output_dc_prev_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("EmbeddingHashTableLookupOrInsert")
@@ -544,7 +544,7 @@ REGISTER_OP("EmbeddingHashTableLookupOrInsert")
     auto key_num = c->input(1);
     int64_t nsample = InferenceContext::Value(c->Dim(key_num, 0));
     c->set_output(0, c->MakeShape({c->MakeDim(nsample), c->MakeDim(num)}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("LRUCacheV2")
@@ -570,7 +570,7 @@ REGISTER_OP("LRUCacheV2")
     c->set_output(3, c->input(0));
     c->set_output(4, c->input(0));
     c->set_output(5, c->MakeShape({1}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("Centralization")
@@ -581,7 +581,7 @@ REGISTER_OP("Centralization")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("PRelu")
@@ -592,7 +592,7 @@ REGISTER_OP("PRelu")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("DropOutDoMaskV3")
@@ -604,7 +604,7 @@ REGISTER_OP("DropOutDoMaskV3")
   .SetIsStateful()
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("PReluGrad")
@@ -618,7 +618,7 @@ REGISTER_OP("PReluGrad")
   .SetShapeFn([](shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
     c->set_output(1, c->input(2));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("NonZero")
@@ -631,7 +631,7 @@ REGISTER_OP("NonZero")
   .SetShapeFn([](InferenceContext *c) {
     auto rank = InferenceContext::Rank(c->input(0));
     c->set_output(0, c->MakeShape({rank, -1}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("NonZeroWithValue")
@@ -654,7 +654,7 @@ REGISTER_OP("NonZeroWithValue")
     c->set_output(0, c->MakeShape({c->MakeDim(value_num)}));
     c->set_output(1, c->MakeShape({c->MakeDim(index_dim)}));
     c->set_output(2, c->MakeShape({c->MakeDim(count_dim)}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("FusedLayerNorm")
@@ -692,7 +692,7 @@ REGISTER_OP("FusedLayerNorm")
     c->set_output(0, c->input(0));
     c->set_output(1, out_shape_handle);
     c->set_output(2, out_shape_handle);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("FusedLayerNormGrad")
@@ -710,7 +710,7 @@ REGISTER_OP("FusedLayerNormGrad")
     c->set_output(0, c->input(0));
     c->set_output(1, c->input(4));
     c->set_output(2, c->input(4));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("GetShape")
@@ -724,7 +724,7 @@ REGISTER_OP("GetShape")
       sumSize += InferenceContext::Rank(c->input(i));
     }
     c->set_output(0, c->MakeShape({c->MakeDim(sumSize)}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ProdEnvMatA")
@@ -764,7 +764,7 @@ REGISTER_OP("ProdEnvMatA")
     c->set_output(1, c->MakeShape({c->MakeDim(nsample), c->MakeDim(des_a)}));
     c->set_output(2, c->MakeShape({c->MakeDim(nsample), c->MakeDim(rij)}));
     c->set_output(3, c->MakeShape({c->MakeDim(nsample), c->MakeDim(nlist)}));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ProdVirialSeA")
@@ -786,7 +786,7 @@ REGISTER_OP("ProdVirialSeA")
     c->set_output(0, virial_shape);
     ShapeHandle atom_virial_shape = c->MakeShape({nframes, 254952});
     c->set_output(1, atom_virial_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("ProdForceSeA")
@@ -804,7 +804,7 @@ REGISTER_OP("ProdForceSeA")
     auto nframes = c->Dim(input_shape, 0);
     ShapeHandle force_shape = c->MakeShape({nframes, 84984});
     c->set_output(0, force_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("TabulateFusionSeA")
@@ -824,7 +824,7 @@ REGISTER_OP("TabulateFusionSeA")
     TF_RETURN_IF_ERROR(c->GetAttr("last_layer_size", &last_layer_size));
     ShapeHandle out_shape = c->MakeShape({nloc, 4, last_layer_size});
     c->set_output(0, out_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("TabulateFusionSeAGrad")
@@ -841,7 +841,7 @@ REGISTER_OP("TabulateFusionSeAGrad")
   .SetShapeFn([](InferenceContext* c) {
     c->set_output(0, c->input(2));
     c->set_output(1, c->input(3));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("TabulateFusion")
@@ -861,7 +861,7 @@ REGISTER_OP("TabulateFusion")
     TF_RETURN_IF_ERROR(c->GetAttr("last_layer_size", &last_layer_size));
     ShapeHandle out_shape = c->MakeShape({nloc, 4, last_layer_size});
     c->set_output(0, out_shape);
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("TabulateFusionGrad")
@@ -878,7 +878,7 @@ REGISTER_OP("TabulateFusionGrad")
   .SetShapeFn([](InferenceContext* c) {
     c->set_output(0, c->input(2));
     c->set_output(1, c->input(3));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("InitEmbeddingHashTable")

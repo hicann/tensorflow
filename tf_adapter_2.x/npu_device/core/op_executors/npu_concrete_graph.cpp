@@ -198,12 +198,12 @@ void NpuConcreteGraph::RunOneShot(TFE_Context *context, NpuDevice *device, int n
 tensorflow::Status NpuMutableConcreteGraph::TryTransToNpuLoopGraph(TFE_Context *context) {
   if (execution_type_ != ExecutionType::NPU) {
     DLOG() << "Skip trans " << Op() << " as npu loop graph as execution type not NPU";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   if (ConsumedIterators().empty()) {
     DLOG() << "Skip trans " << Op() << " as npu loop graph as not consumed iterator resources";
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   tensorflow::FunctionLibraryDefinition *lib_def = npu::UnwrapCtx(context)->FuncLibDef();
@@ -215,7 +215,7 @@ tensorflow::Status NpuMutableConcreteGraph::TryTransToNpuLoopGraph(TFE_Context *
     if (key != nullptr) {
       SetLoopType(LoopType::BUILTIN_LOOP);
     }
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   const auto fn_name = key->attrs().Find("body")->func().name();
@@ -266,6 +266,6 @@ tensorflow::Status NpuMutableConcreteGraph::TryTransToNpuLoopGraph(TFE_Context *
   }
   SetGraph(std::move(graph));
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace npu

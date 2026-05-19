@@ -34,7 +34,7 @@ class NpuThreadPool {
       requests_.emplace(closure);
     }
     cv_.notify_one();
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
 
   void Init(size_t thread_num) {

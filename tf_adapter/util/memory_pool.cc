@@ -52,7 +52,7 @@ namespace tensorflow {
     buffer = temp_block.ptr;
     std::lock_guard<std::mutex> lck(memory_pool_lock_);
     used_memory_list_.push_back(temp_block);
-    return Status::OK();
+    return OkStatus();
   }
 
   void MemoryPool::ReleaseMemory() {
@@ -71,7 +71,7 @@ namespace tensorflow {
       ADP_LOG(ERROR) << "Release host memory pool failed";
       return errors::InvalidArgument("Release host memory pool failed");
     }
-    return Status::OK();
+    return OkStatus();
   }
 
   bool MemoryPool::FreeMemoryList(std::list<MemoryBlock> &memory_list) const {

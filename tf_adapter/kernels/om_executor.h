@@ -119,12 +119,12 @@ class OmExecutor {
 public:
   /// \param model_data file of the om file
   /// \param executor Created om executor
-  /// \return Status::OK() or error status if any error occurs
+  /// \return OkStatus() or error status if any error occurs
   static Status Create(const std::string &model_data, std::unique_ptr<OmExecutor> &executor);
 
   /// \param inputs Tensorflow host input tensors
   /// \param outputs Empty output tensors to be filling
-  /// \return Status::OK() or error status if any error occurs
+  /// \return OkStatus() or error status if any error occurs
   Status Execute(const std::vector<Tensor> &inputs, std::vector<Tensor> &outputs);
 
 private:

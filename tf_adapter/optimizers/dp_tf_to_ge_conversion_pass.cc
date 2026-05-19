@@ -366,7 +366,7 @@ inline Status DpTfToGEConversionPassImpl::GetSplitEdges(const Node &n, std::vect
       }
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 inline bool DpTfToGEConversionPassImpl::NeedDeviceDataset(const Node &n,
@@ -434,7 +434,7 @@ Status DpTfToGEConversionPassImpl::InsertChannelQueue(Node *topo_end, std::strin
     REQUIRES_NOT_NULL(queue_node_host);
 
     if (!need_add_device_dataset) {
-      return Status::OK();
+      return OkStatus();
     }
 
     device_queue_name = "DeviceQueue_" + channel_name;
@@ -451,7 +451,7 @@ Status DpTfToGEConversionPassImpl::InsertChannelQueue(Node *topo_end, std::strin
     // 0 means the the 0th output of queue_node_device
     REQUIRES_NOT_NULL(graph_->AddEdge(queue_node_device, 0, e->dst(), e->dst_input()));
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DpTfToGEConversionPassImpl::RemoveNotSupportDataset(Graph &g, const std::string &device_queue_dataset,
@@ -495,7 +495,7 @@ Status DpTfToGEConversionPassImpl::RemoveNotSupportDataset(Graph &g, const std::
   }
   if (delete_nodes.empty()) {
     ADP_LOG(INFO) << "all sink datasets are supported.";
-    return Status::OK();
+    return OkStatus();
   }
   for (Node *n : delete_nodes) {
     ADP_LOG(INFO) << "ready to remove node " << n->name();
@@ -503,7 +503,7 @@ Status DpTfToGEConversionPassImpl::RemoveNotSupportDataset(Graph &g, const std::
   }
   ADP_LOG(INFO) << "end dataset node is " << end_dataset->name();
   REQUIRES_NOT_NULL(g.AddEdge(end_dataset, 0, topo_end, 0));
-  return Status::OK();
+  return OkStatus();
 }
 
 inline void DpTfToGEConversionPassImpl::RemoveSplitEdges(Node *topo_end) {
@@ -642,7 +642,7 @@ Status DpTfToGEConversionPassImpl::AddAttr2DeviceNodes(const Node &topo_end, con
       node->AddAttr(DP_ITERATOR_MARK, mark_name);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fdeflib, const std::string &fn_geop,
@@ -672,7 +672,7 @@ Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fd
                   .Attr("Tout", EMPTY_TYPE)
                   .Attr("Tout", EMPTY_TYPE)
                   .Finalize(n));  // n is created by function of geop function
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(FunctionDefLibrary &fdeflib,
@@ -707,7 +707,7 @@ Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(FunctionDefLibrary 
     AddNodeAttr(attr_name, option.second, n);
   }
   AddNodeAttr("_NpuOptimizer", "NpuOptimizer", n);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DpTfToGEConversionPassImpl::BuildGeOpDatasetFunction(FunctionDefLibrary &fdeflib,
@@ -723,7 +723,7 @@ Status DpTfToGEConversionPassImpl::BuildGeOpDatasetFunction(FunctionDefLibrary &
     FunctionDef *fd = fdeflib.add_function();
     ret = GraphToFunctionDef(device_graph, fn_dpop, fd);
     if (!ret.ok()) {
-      ADP_LOG(ERROR) << "GraphToFunctionDef failed:" << ret.error_message();
+      ADP_LOG(ERROR) << "GraphToFunctionDef failed:" << ret.message();
       return ret;
     }
   }
@@ -792,7 +792,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetFunctionLibrary(
   (void) graph_->AddFunctionLibrary(fdeflib);
   (void) flib->AddLibrary(fdeflib);
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &topo_end,
@@ -884,7 +884,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
       ADP_LOG(INFO) << "Assigned node [" << n->name() << "] on device [" << n->assigned_device_name() << "]";
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 void DpTfToGEConversionPassImpl::AddOptionAttr(std::vector<Node *> nodes,
@@ -992,15 +992,15 @@ bool DpTfToGEConversionPassImpl::RemoveIsolatedNode(Graph &g, std::unordered_set
 
 Status DpTfToGEConversionPassImpl::Run(const GraphOptimizationPassOptions &options) {
   if ((options.graph == nullptr && options.partition_graphs == nullptr) || options.flib_def == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
-  Status s = Status::OK();
+  Status s = OkStatus();
   if (options.graph != nullptr) {
     std::unique_ptr<Graph> *graph = options.graph;
     FunctionLibraryDefinition *func_lib = options.flib_def;
     s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_REWRITE_FOR_EXEC);
-    if (s != Status::OK()) {
+    if (s != OkStatus()) {
       return s;
     }
   } else if (options.partition_graphs != nullptr) {
@@ -1008,13 +1008,13 @@ Status DpTfToGEConversionPassImpl::Run(const GraphOptimizationPassOptions &optio
       std::unique_ptr<Graph> *graph = &pg.second;
       FunctionLibraryDefinition *func_lib = options.flib_def;
       s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_PARTITIONING);
-      if (s != Status::OK()) {
+      if (s != OkStatus()) {
         return s;
       }
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 static std::atomic<int> graph_run_num(1);
@@ -1083,7 +1083,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
   graph_run_num_ = graph_run_num++;
 
   if (graph == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   std::string channel_name;
@@ -1094,7 +1094,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
     }
     if (n->attrs().Find("_NoNeedOptimize")) {
       ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip DpTfToGEConversionPass.";
-      return Status::OK();
+      return OkStatus();
     }
   }
   NpuAttrs::SetUseAdpStatus(channel_name, false);
@@ -1113,7 +1113,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
       NpuAttrs::SetUseAdpStatus(channel_name, true);
       ADP_LOG(INFO) << "The graph include DvppDataset, set channel_name:" << channel_name
                     << ", skip DpTfToGEConversionPass.";
-      return Status::OK();
+      return OkStatus();
     }
     if (n->attrs().Find("_NpuOptimizer")) {
       pass_options = NpuAttrs::GetPassOptions(n->attrs());
@@ -1127,7 +1127,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
 
   AddOptionAttr(add_options_nodes, all_options);
   if (GetSkipOptimizeFlag(pass_options, pass_group_value)) {
-    return Status::OK();
+    return OkStatus();
   }
   auto process_graph = [this](const std::unique_ptr<Graph> *g, FunctionLibraryDefinition *flib,
                               const std::map<std::string, std::string> &all_options) {
@@ -1139,7 +1139,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
   ADP_LOG(INFO) << "DpTfToGEConversionPassImpl Run success. [" << ((endTime - startTime) / kMicrosToMillis) << " ms].";
 
-  return Status::OK();
+  return OkStatus();
 }
 
 // We register DpTfToGE insertion for phase 102 in POST_PARTITIONING grouping

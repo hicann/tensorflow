@@ -24,7 +24,7 @@ REGISTER_OP("AscendQuant")
   .SetIsStateful()
   .SetShapeFn([](::tensorflow::shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("AscendWeightQuant")
@@ -36,7 +36,7 @@ REGISTER_OP("AscendWeightQuant")
   .SetIsStateful()
   .SetShapeFn([](::tensorflow::shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("AscendDequant")
@@ -49,7 +49,7 @@ REGISTER_OP("AscendDequant")
   .SetIsStateful()
   .SetShapeFn([](::tensorflow::shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 
 REGISTER_OP("AscendAntiQuant")
@@ -61,6 +61,6 @@ REGISTER_OP("AscendAntiQuant")
   .SetIsStateful()
   .SetShapeFn([](::tensorflow::shape_inference::InferenceContext *c) {
     c->set_output(0, c->input(0));
-    return Status::OK();
+    return OkStatus();
   });
 }  // namespace tensorflow

@@ -164,7 +164,7 @@ tensorflow::Status ControlEdgeOptimizeInner(TFE_Context *context, tensorflow::Gr
     graph->RemoveEdge(edge);
   }
   optimized = (any_subgraph_optimized || (!edges_to_remove.empty()));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 }  // namespace
 

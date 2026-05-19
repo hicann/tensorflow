@@ -59,7 +59,7 @@ tensorflow::Status TransFunctionDef(TFE_Context *context, const std::string &fun
   NPU_REQUIRES_OK(tensorflow::GraphToFunctionDef(*fbody->graph, new_func_name, lookup, &optimized_fdef));
   NPU_REQUIRES_OK(lib_def->AddFunctionDef(optimized_fdef));
   DLOG() << "Finish trans function " << func_name << " to " << new_func_name;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status TransWhileNode(TFE_Context *context, tensorflow::Graph *graph, tensorflow::Node *node) {
@@ -151,7 +151,7 @@ tensorflow::Status TransWhileNode(TFE_Context *context, tensorflow::Graph *graph
 
   DLOG() << "Remove node " << node->name();
   graph->RemoveNode(node);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status TransHasSubgraphNode(TFE_Context *context, tensorflow::Graph *graph, tensorflow::Node *node) {
@@ -225,7 +225,7 @@ tensorflow::Status TransHasSubgraphNode(TFE_Context *context, tensorflow::Graph 
 
   DLOG() << "Remove node " << node->name();
   graph->RemoveNode(node);
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status TransResourceInput2Node(TFE_Context *context, tensorflow::Graph *graph,
@@ -281,7 +281,7 @@ tensorflow::Status TransResourceInput2Node(TFE_Context *context, tensorflow::Gra
 
   (void)tensorflow::FixupSourceAndSinkEdges(graph);
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 void GetRetvalNodes(tensorflow::Graph *mutable_graph, std::map<int32_t, tensorflow::Node *> &indexed_retvals) {
@@ -413,7 +413,7 @@ tensorflow::Status TransResourceInput2NodeOptimize(TFE_Context *context, NpuMuta
   graph->SetProducedOutputs(produced_outputs);
   graph->SetBypassOutputs(bypass_outputs);
 
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 NPU_REGISTER_RT_OPTIMIZER(1, "TransResourceInput2GraphNodeOptimizer", TransResourceInput2NodeOptimize);

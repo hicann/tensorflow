@@ -22,8 +22,7 @@
 #include <iostream>
 #include <fcntl.h>
 #include <stdio.h>
-
-#include "tensorflow/core/platform/default/integral_types.h"
+#include <cstdint>
 
 // Define common constants in quantization
 const int BASE = 2;
@@ -38,6 +37,7 @@ const int NCHW_H_DIM = 2;
 const int NCHW_W_DIM = 3;
 const int NHWC_H_DIM = 1;
 const int NHWC_W_DIM = 2;
+
 
 
 // Define the structure of data quantification
@@ -81,7 +81,7 @@ struct DequantInputParam {
   int size;
   const T* input;
   T* out;
-  const tensorflow::uint64 *deqscale;
+  const std::uint64_t *deqscale;
   int channel_num;
   int hw_size;
   bool channel_wise;

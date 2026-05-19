@@ -26,7 +26,7 @@ using string = tensorflow::string;
 #if defined(TF_VERSION_TF2)
 #define STATUS_FUNCTION_ONLY_TF2(F)                                                                                    \
   tensorflow::Status F {                                                                                               \
-    return tensorflow::Status::OK();                                                                                   \
+    return tensorflow::OkStatus();                                                                                   \
   }
 #else
 #define STATUS_FUNCTION_ONLY_TF2(F)
@@ -35,7 +35,7 @@ using string = tensorflow::string;
 #if !defined(TF_VERSION_TF2)
 #define STATUS_FUNCTION_ONLY_TF1(F)                                                                                    \
   tensorflow::Status F {                                                                                               \
-    return tensorflow::Status::OK();                                                                                   \
+    return tensorflow::OkStatus();                                                                                   \
   }
 #else
 #define STATUS_FUNCTION_ONLY_TF1(F)

@@ -28,7 +28,7 @@ eg1: '2.6.2', Support Scope: version = 2.6.2
 eg2: '2.6.*', Support Scope: 2.6.0 <= version <= 2.6.999, the max sub-version is:999
 eg3: '2.*', Support Scope: 2.0.0 <= version <= 2.999.999
 eg4: '*', Support Scope: 0.0.0 <= version <= 999.999.999
-eg5: '2.6.1~2.6.5', Support Scope: 2.6.1 <= version <= 2.6.5
+eg5: '2.13.0', Support Scope: 2.13.0 <= version <= 2.13.5
 The version information defined in others is illegal
 """
 _version_range = []

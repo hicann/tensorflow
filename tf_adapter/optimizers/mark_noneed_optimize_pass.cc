@@ -27,15 +27,15 @@ class MarkNoNeedOptimizePass : public GraphOptimizationPass {
 
 Status MarkNoNeedOptimizePass::Run(const GraphOptimizationPassOptions &options) {
   if ((options.graph == nullptr && options.partition_graphs == nullptr) || options.flib_def == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
-  Status s = Status::OK();
+  Status s = OkStatus();
   if (options.graph != nullptr) {
     std::unique_ptr<Graph> *graph = options.graph;
     FunctionLibraryDefinition *func_lib = options.flib_def;
     s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_REWRITE_FOR_EXEC);
-    if (s != Status::OK()) {
+    if (s != OkStatus()) {
       return s;
     }
   } else if (options.partition_graphs != nullptr) {
@@ -43,26 +43,26 @@ Status MarkNoNeedOptimizePass::Run(const GraphOptimizationPassOptions &options) 
       std::unique_ptr<Graph> *graph = &pg.second;
       FunctionLibraryDefinition *func_lib = options.flib_def;
       s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_PARTITIONING);
-      if (s != Status::OK()) {
+      if (s != OkStatus()) {
         return s;
       }
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MarkNoNeedOptimizePass::ProcessGraph(const std::unique_ptr<Graph> *graph,
                                             const FunctionLibraryDefinition *func_lib,
                                             const OptimizationPassRegistry::Grouping pass_group_value) const {
   if (graph == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   for (Node *n : graph->get()->nodes()) {
     if (n != nullptr && n->attrs().Find("_NoNeedOptimize")) {
       ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip MarkNoNeedOptimizePass.";
-      return Status::OK();
+      return OkStatus();
     }
   }
 
@@ -80,13 +80,13 @@ Status MarkNoNeedOptimizePass::ProcessGraph(const std::unique_ptr<Graph> *graph,
   job = pass_options["job"];
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : MarkNoNeedOptimizePass.";
-    return Status::OK();
+    return OkStatus();
   }
   if (job == "localhost" && pass_group_value != OptimizationPassRegistry::POST_REWRITE_FOR_EXEC) {
-    return Status::OK();
+    return OkStatus();
   }
   if (job != "localhost" && pass_group_value != OptimizationPassRegistry::POST_PARTITIONING) {
-    return Status::OK();
+    return OkStatus();
   }
 
   bool mix_compile_mode = pass_options["mix_compile_mode"] == "1";
@@ -105,7 +105,7 @@ Status MarkNoNeedOptimizePass::ProcessGraph(const std::unique_ptr<Graph> *graph,
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, 1, MarkNoNeedOptimizePass);
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_PARTITIONING, 100, MarkNoNeedOptimizePass);

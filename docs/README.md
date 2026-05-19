@@ -3,6 +3,7 @@
 ## 文档
 
 - [TensorFlow 1.15模型迁移指南](https://hiascend.com/document/redirect/canncommercial-tfmigr115)
+  此指南依然适用于tf2.13版本的模型迁移
 - [TensorFlow 2.6.5模型迁移指南](https://hiascend.com/document/redirect/canncommercial-tfmigr26)
 - [TF Adapter接口（1.x）](https://hiascend.com/document/redirect/canncommercial-tfadapter1.x)
 - [TF Adapter接口（2.x）](https://hiascend.com/document/redirect/canncommercial-tfadapter2.x)

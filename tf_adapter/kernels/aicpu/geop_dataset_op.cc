@@ -30,9 +30,9 @@ public:
     if (f_handle_ != kInvalidHandle && lib_ != nullptr) {
       ADP_LOG(INFO) << "Release function handle:" << f_handle_ << " owned by node instance:" << name();
       Status s = lib_->ReleaseHandle(f_handle_);
-      if (s != Status::OK()) {
+      if (s != OkStatus()) {
         ADP_LOG(INFO) << "Release function handle:" << f_handle_ << " owned by node instance:" << name()
-                      << " failed. original err msg: " << s.error_message();
+                      << " failed. original err msg: " << s.message();
         return;
       }
     }
@@ -74,7 +74,7 @@ private:
 
 #ifdef TF_VERSION_TF2
     Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
-      return Status::OK();
+      return OkStatus();
     }
 #endif
 
@@ -85,7 +85,7 @@ private:
 
   protected:
     Status AsGraphDefInternal(SerializationContext *ctx, DatasetGraphDefBuilder *b, Node **output) const override {
-      return Status::OK();
+      return OkStatus();
     }
 
   private:
@@ -160,14 +160,14 @@ private:
 
       Status GetNextInternal(IteratorContext *ctx, std::vector<Tensor> *out_tensors, bool *end_of_sequence) override {
         *end_of_sequence = true;
-        return Status::OK();
+        return OkStatus();
       }
 
     protected:
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return OkStatus(); }
 
     private:
       mutex mu_;

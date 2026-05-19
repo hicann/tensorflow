@@ -35,7 +35,7 @@ class GetAttrOptimizePass : public GraphOptimizationPass {
 
 Status GetAttrOptimizePass::Run(const GraphOptimizationPassOptions &options) {
   if (options.graph == nullptr || options.flib_def == nullptr || options.session_options == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
   int graph_num = graph_run_num++;
 
@@ -44,19 +44,19 @@ Status GetAttrOptimizePass::Run(const GraphOptimizationPassOptions &options) {
   ADP_LOG(INFO) << "NpuAttrs job is " << job;
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : GetAttrOptimizePass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   for (Node *n : options.graph->get()->nodes()) {
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
       ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip AddSrcOpAttrPass.";
-      return Status::OK();
+      return OkStatus();
     }
 
     if (n->attrs().Find("_NpuOptimizer")) {
       ADP_LOG(INFO) << "Found mark of get attr optimize on node [" << n->name() << "], skip AddSrcOpAttrPass.";
-      return Status::OK();
+      return OkStatus();
     }
   }
 
@@ -75,7 +75,7 @@ Status GetAttrOptimizePass::Run(const GraphOptimizationPassOptions &options) {
     std::string device_name = n->assigned_device_name();
     if (!device_name.empty() && device_name.find("/job:ps") == std::string::npos) {
       Status s = NpuAttrs::SetNpuOptimizerAttr(options, n);
-      if (s != Status::OK()) {
+      if (s != OkStatus()) {
         ADP_LOG(INFO) << "set npu optimizer ret != 0.";
         return s;
       }
@@ -106,7 +106,7 @@ Status GetAttrOptimizePass::Run(const GraphOptimizationPassOptions &options) {
   ADP_LOG(INFO) << "GetAttrOptimizePass_" << std::to_string(graph_num) << " success. ["
                 << ((endTime - startTime) / kMicrosToMillis) << " ms]";
 
-  return Status::OK();
+  return OkStatus();
 }
 
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, -1, GetAttrOptimizePass);

@@ -21,7 +21,7 @@ tensorflow::Status GetTensorHandleShape(TFE_TensorHandle *handle, tensorflow::Te
   TF_RETURN_IF_ERROR(tensorflow::unwrap(handle)->Shape(&partial_shape));
   NPU_REQUIRES(partial_shape.AsTensorShape(&shape),
                tensorflow::errors::InvalidArgument("Shape ", partial_shape.DebugString(), " not fully defined"));
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 tensorflow::Status GetTensorHandleTensor(TFE_TensorHandle *handle, const tensorflow::Tensor **tensor) {

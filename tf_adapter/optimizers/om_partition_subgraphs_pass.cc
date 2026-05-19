@@ -234,7 +234,7 @@ Status OMSubGraphToFunctionDef(const Graph &graph, const string &name, FunctionD
     (*fdef->mutable_ret())[retName] = iter->second;
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 struct NodeCompare {
@@ -275,14 +275,14 @@ Status SetIteratorShardName(Node *node) {
   Status s = GetNodeAttr(node->attrs(), ATTR_NAME_SHARED_NAME, &shardName);
   if (s.code() == error::Code::NOT_FOUND) {
     node->AddAttr(ATTR_NAME_SHARED_NAME, node->name());
-    return Status::OK();
+    return OkStatus();
   } else if (!s.ok()) {
     return s;
   }
   node->ClearAttr(ATTR_NAME_SHARED_NAME);
   node->AddAttr(ATTR_NAME_SHARED_NAME, node->name());
   ADP_LOG(INFO) << node->name() << " shared name is " << shardName;
-  return Status::OK();
+  return OkStatus();
 }
 
 // Make sure we don't recurse infinitely on recursive functions.
@@ -551,7 +551,7 @@ Status FindCandidatesByInOutPair(const Graph &graph, OrderedNodeSet &candidates,
       }
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
@@ -581,7 +581,7 @@ Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
   if (hasOutfeedDequeueOp) {
     candidates->clear();
     ADP_LOG(INFO) << "hostcall subgraph will run on host.";
-    return Status::OK();
+    return OkStatus();
   }
 
   std::sort(sortedNodes.begin(), sortedNodes.end(), NodeCompare());
@@ -591,7 +591,7 @@ Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
   if (hasMakeIteratorOp && hasIteratorOp) {
     candidates->clear();
     ADP_LOG(INFO) << "Preprocessing subgraph will at dp_tf_to_ge_conversion_pass.";
-    return Status::OK();
+    return OkStatus();
   }
 
   OrderedNodeSet outSet;
@@ -739,7 +739,7 @@ Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
   ADP_LOG(INFO) << "TFadapter find Npu support candidates cost: [" << ((endTime - startTime) / kMicrosToMillis)
                 << " ms]";
-  return Status::OK();
+  return OkStatus();
 }
 
 bool NodeIsCandidateForClustering(Node *node, const OrderedNodeSet &candidates) {
@@ -759,7 +759,7 @@ Status AddRelationalConst(const Graph &graph, OrderedNodeSet *candidates) {
       }
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 bool GetNodeFuncs(const FunctionLibraryDefinition *flib_def, const Node *node, std::vector<string> &nodeFuncs) {
@@ -822,7 +822,7 @@ void MergeClusters(const Edge *edge, std::map<Node *, std::shared_ptr<Cluster>> 
 Status MergeSubgraphsInNewWay(std::vector<std::pair<string, int>> &sortedCluster, OrderedNodeSet &npuSupportCandidates,
                               std::map<string, std::set<string>> &clusterToMerge) {
   int64 startTime = InferShapeUtil::GetCurrentTimestap();
-  if (sortedCluster.size() < MIN_CLUSTER_SIZE) { return Status::OK(); }
+  if (sortedCluster.size() < MIN_CLUSTER_SIZE) { return OkStatus(); }
   // record already merged cluster
   std::set<string> mergedClusters;
   // record every cluster merge to which cluster : first now, second dst
@@ -858,14 +858,14 @@ Status MergeSubgraphsInNewWay(std::vector<std::pair<string, int>> &sortedCluster
   }
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
   ADP_LOG(INFO) << "TFadapter merge clusters cost: [" << ((endTime - startTime) / kMicrosToMillis) << " ms]";
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MergeSubgraphs(std::vector<std::pair<string, int>> &sortedCluster, OrderedNodeSet &npuSupportCandidates,
                       std::map<string, std::set<string>> &clusterToMerge) {
   int64 startTime = InferShapeUtil::GetCurrentTimestap();
   std::set<string> mergedClusters;
-  if (sortedCluster.size() <= 1) { return Status::OK(); }
+  if (sortedCluster.size() <= 1) { return OkStatus(); }
   string dstSubgraph = sortedCluster[0].first;
   (void) mergedClusters.insert(dstSubgraph);
   for (uint32_t i = 1; i < sortedCluster.size(); i++) {
@@ -902,7 +902,7 @@ Status MergeSubgraphs(std::vector<std::pair<string, int>> &sortedCluster, Ordere
   }
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
   ADP_LOG(INFO) << "TFadapter merge clusters cost: [" << ((endTime - startTime) / kMicrosToMillis) << " ms]";
-  return Status::OK();
+  return OkStatus();
 }
 
 std::vector<string> string_split(const string &str, const string &pattern) {
@@ -926,7 +926,7 @@ Status OptimizeSaveV2InMixeMode(Graph &graph) {
     }
   }
   if (save_v2_nodes.empty()) {
-    return Status::OK();
+    return OkStatus();
   }
   ADP_LOG(INFO) << "The size of SaveV2 is " << save_v2_nodes.size();
 
@@ -969,7 +969,7 @@ Status OptimizeSaveV2InMixeMode(Graph &graph) {
       graph.RemoveEdge(ctrl_edge);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status MarkForPartition(const std::unique_ptr<Graph> *graph_in, int &clusterNum, int graph_num,
@@ -1207,7 +1207,7 @@ Status MarkForPartition(const std::unique_ptr<Graph> *graph_in, int &clusterNum,
                             sortedCluster.size(), ", origin subgraph num is ", clusterNum);
   }
   ADP_LOG(INFO) << "Cluster num is " << clusterNum;
-  if (clusterNum == 0) { return Status::OK(); }
+  if (clusterNum == 0) { return OkStatus(); }
 
   int minGroupSize = 1;  // default threshold is 10.
   ADP_LOG(INFO) << "All nodes in graph: " << graph->num_nodes() << ", max nodes count: " << sortedCluster[0].second
@@ -1256,7 +1256,7 @@ Status MarkForPartition(const std::unique_ptr<Graph> *graph_in, int &clusterNum,
     clusterNum = 0;
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 // A node/slot pair.
@@ -1600,7 +1600,7 @@ Status OMSplitter::Subgraph::RecordArg(const Edge *edge, const std::unordered_ma
   int dstSlot = edge->dst_input();
   argsByDst_[NodeSlot(dstNode, dstSlot)] = argIndex;
   (void)graph_->AddEdge(args_[argIndex], 0, dstImage, dstSlot);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::Subgraph::RecordResult(const Edge *edge,
@@ -1638,7 +1638,7 @@ Status OMSplitter::Subgraph::RecordResult(const Edge *edge,
       (void) graph_->AddEdge(srcImage, srcSlot, ret, 0);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::Subgraph::BuildFunctionDef(const std::string &name, FunctionLibraryDefinition &library,
@@ -1691,7 +1691,7 @@ Status OMSplitter::Subgraph::BuildFunctionDef(const std::string &name, FunctionL
   AddNodeAttr("_NpuOptimizer", "NpuOptimizer", &GEOpNodeDef_);
 
   if (library.Find(name) == nullptr) { TF_RETURN_IF_ERROR(library.AddFunctionDef(fdef)); }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::Subgraph::AddGEOpNode(const std::unordered_map<const Node *, Node *> &nodeImages, Graph *graphOut) {
@@ -1705,7 +1705,7 @@ Status OMSplitter::Subgraph::AddGEOpNode(const std::unordered_map<const Node *, 
   GEOpNodeInputs_->set_assigned_device_name(device_);
   GEOpNodeOutputs_ = GEOpNodeInputs_;
 
-  return Status::OK();
+  return OkStatus();
 }
 
 bool OMSplitter::Subgraph::isIsolatedSubgraph() const { return false; }
@@ -1716,7 +1716,7 @@ Status OMSplitter::Subgraph::SetOptions(std::map<std::string, std::string> npu_o
   npu_optimizer_options_ = std::move(npu_optimizer_options);
   pass_options_ = std::move(pass_options);
   graph_options_ = std::move(graph_options);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::GetSubgraphIdAttr(const Node &node, std::string &attr) const {
@@ -1727,7 +1727,7 @@ Status OMSplitter::GetSubgraphIdAttr(const Node &node, std::string &attr) const 
   } else if (!s.ok()) {
     return s;
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 bool IsInSubgraph(const std::string &subgraphId) { return !subgraphId.empty(); }
@@ -1739,7 +1739,7 @@ Status OMSplitter::CopySubgraphNodes(std::unordered_map<const Node *, Node *> *n
     if (!IsInSubgraph(subgraphId)) { continue; }
 
     Status s = subgraphs_[subgraphId].SetOptions(npu_optimizer_options_, pass_options_, graph_options_);
-    if (s != Status::OK()) {
+    if (s != OkStatus()) {
       ADP_LOG(INFO) << "Subgraph Id: " << subgraphId << "set npu optimizer ret != 0.";
       return s;
     }
@@ -1748,7 +1748,7 @@ Status OMSplitter::CopySubgraphNodes(std::unordered_map<const Node *, Node *> *n
     image->ClearAttr(groupAttribute_);
     (*nodeImages)[node] = image;
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::CopySubgraphEdges(const std::unordered_map<const Node *, Node *> &nodeImages,
@@ -1809,7 +1809,7 @@ Status OMSplitter::CopySubgraphEdges(const std::unordered_map<const Node *, Node
       }
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::SplitIntoSubgraphs(uint32_t &subgraphNum) {
@@ -1844,7 +1844,7 @@ Status OMSplitter::SplitIntoSubgraphs(uint32_t &subgraphNum) {
   subgraphNum = static_cast<uint32_t>(subgraphs_.size());
   ADP_LOG(INFO) << "subgraphNum: " << subgraphNum;
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::BuildFunctionDefs(FunctionLibraryDefinition &library, const std::string &graph_format) {
@@ -1853,7 +1853,7 @@ Status OMSplitter::BuildFunctionDefs(FunctionLibraryDefinition &library, const s
     Subgraph &subgraph = subgraphEntry.second;
     TF_RETURN_IF_ERROR(subgraph.BuildFunctionDef(name, library, graph_format));
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::CopyNodesToOutputGraph(Graph *graphOut, std::unordered_map<const Node *, Node *> *nodeImages) const {
@@ -1868,12 +1868,12 @@ Status OMSplitter::CopyNodesToOutputGraph(Graph *graphOut, std::unordered_map<co
   }
   (*nodeImages)[graph_in_->source_node()] = graphOut->source_node();
   (*nodeImages)[graph_in_->sink_node()] = graphOut->sink_node();
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::AddGEOpNodes(const std::unordered_map<const Node *, Node *> &nodeImages, Graph *graphOut) {
   for (auto &subgraphEntry : subgraphs_) { TF_RETURN_IF_ERROR(subgraphEntry.second.AddGEOpNode(nodeImages, graphOut)); }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::FindOutputImageOfEdgeSrc(const std::string &srcSubgraphId, const std::string &dstSubgraphId,
@@ -1889,7 +1889,7 @@ Status OMSplitter::FindOutputImageOfEdgeSrc(const std::string &srcSubgraphId, co
     // the output graph.
     *srcImage = nodeImages.at(originalSrcNode);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 int OMSplitter::FindOutputSlotOfEdgeSrc(const std::string &srcSubgraphId, const Edge &edge) const {
@@ -1917,7 +1917,7 @@ Status OMSplitter::FindOutputImageOfEdgeDst(const std::string &dstSubgraphId,
     // in the output graph.
     *dstImage = nodeImages.at(originalDstNode);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 int OMSplitter::FindOutputSlotOfEdgeDst(const std::string &dstSubgraphId, const Edge &edge) const {
@@ -1943,7 +1943,7 @@ Status OMSplitter::CopyEdgeToOutputGraph(
 
     // Ignore edges that are strictly contained within one subgraph.
   if (IsInSubgraph(srcSubgraphId) && IsInSubgraph(dstSubgraphId) && srcSubgraphId == dstSubgraphId) {
-    return Status::OK();
+    return OkStatus();
   }
 
   Node *srcImage = nullptr;
@@ -1959,7 +1959,7 @@ Status OMSplitter::CopyEdgeToOutputGraph(
     if (edges_added->emplace(NodeSlot(srcImage, -1), NodeSlot(dstImage, -1)).second) {
       (void) graphOut.AddControlEdge(srcImage, dstImage);
     }
-    return Status::OK();
+    return OkStatus();
   }
 
   int srcOutput = FindOutputSlotOfEdgeSrc(srcSubgraphId, edge);
@@ -1977,7 +1977,7 @@ Status OMSplitter::CopyEdgeToOutputGraph(
       (void) graphOut.AddEdge(srcImage, srcOutput, dstImage, dstInput);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::AddEdgesToOutputGraph(const std::unordered_map<const Node *, Node *> &nodeImages, Graph *graphOut) {
@@ -1991,7 +1991,7 @@ Status OMSplitter::AddEdgesToOutputGraph(const std::unordered_map<const Node *, 
     TF_RETURN_IF_ERROR(CopyEdgeToOutputGraph(*edge, nodeImages, *graphOut, &edges_added));
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMSplitter::BuildOutputGraph(Graph *graphOut) {
@@ -2002,7 +2002,7 @@ Status OMSplitter::BuildOutputGraph(Graph *graphOut) {
   TF_RETURN_IF_ERROR(AddGEOpNodes(nodeImages, graphOut));
   TF_RETURN_IF_ERROR(AddEdgesToOutputGraph(nodeImages, graphOut));
 
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsInFunctions(std::unique_ptr<Graph> *graph,
@@ -2017,7 +2017,7 @@ Status OMPartitionSubgraphsInFunctions(std::unique_ptr<Graph> *graph,
 
   if (subgraphNum == 0) {
     ADP_LOG(INFO) << "No Subgraph has been built.";
-    return Status::OK();
+    return OkStatus();
   }
   REQUIRES_NOT_NULL(library);
   TF_RETURN_IF_ERROR(omsplitter.BuildFunctionDefs(*library, graph_format));
@@ -2029,31 +2029,31 @@ Status OMPartitionSubgraphsInFunctions(std::unique_ptr<Graph> *graph,
   TF_RETURN_IF_ERROR(omsplitter.BuildOutputGraph(out.get()));
   *graph = std::move(out);
 
-  return Status::OK();
+  return OkStatus();
 }
 }  // namespace OMSplitter
 static std::atomic<int> graph_run_num(1);
 Status OMPartitionSubgraphsPass::Run(const GraphOptimizationPassOptions &options) {
   if ((options.graph == nullptr && options.partition_graphs == nullptr) || options.flib_def == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
-  Status s = Status::OK();
+  Status s = OkStatus();
   if (options.graph != nullptr) {
     std::unique_ptr<Graph> *graph = options.graph;
     FunctionLibraryDefinition *func_lib = options.flib_def;
     s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_REWRITE_FOR_EXEC);
-    if (s != Status::OK()) { return s; }
+    if (s != OkStatus()) { return s; }
   } else if (options.partition_graphs != nullptr) {
     for (auto &pg : *options.partition_graphs) {
       std::unique_ptr<Graph> *graph = &pg.second;
       FunctionLibraryDefinition *func_lib = options.flib_def;
       s = ProcessGraph(graph, func_lib, OptimizationPassRegistry::POST_PARTITIONING);
-      if (s != Status::OK()) { return s; }
+      if (s != OkStatus()) { return s; }
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 void OMPartitionSubgraphsPass::ParseInputShapeRange(const std::string dynamic_inputs_shape_range, bool enable_dp,
@@ -2164,12 +2164,12 @@ Status OMPartitionSubgraphsPass::ProcessGetNext(Node &node, const std::string en
       ADP_LOG(INFO) << "Build AdpGetNext success.";
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, FunctionLibraryDefinition *func_lib,
                                               const OptimizationPassRegistry::Grouping pass_group_value) const {
-  if (graph == nullptr) { return Status::OK(); }
+  if (graph == nullptr) { return OkStatus(); }
 
   int64 startTime = InferShapeUtil::GetCurrentTimestap();
 
@@ -2177,7 +2177,7 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
       ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip OMPartitionSubgraphsPass.";
-      return Status::OK();
+      return OkStatus();
     }
   }
 
@@ -2196,13 +2196,13 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
   std::string job = pass_options["job"];
   if (job == "ps" || job == "default") {
     ADP_LOG(INFO) << "job is " << job << " Skip the optimizer : OMPartitionSubgraphsPass.";
-    return Status::OK();
+    return OkStatus();
   }
   if (job == "localhost" && pass_group_value != OptimizationPassRegistry::POST_REWRITE_FOR_EXEC) {
-    return Status::OK();
+    return OkStatus();
   }
   if (job != "localhost" && pass_group_value != OptimizationPassRegistry::POST_PARTITIONING) {
-    return Status::OK();
+    return OkStatus();
   }
 
   int graph_num = graph_run_num++;
@@ -2223,10 +2223,10 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
   if (do_npu_optimizer) {
     if (!use_off_line) {
       ADP_LOG(INFO) << "Run online process and skip the optimizer";
-      return Status::OK();
+      return OkStatus();
     }
   } else {
-    return Status::OK();
+    return OkStatus();
   }
 
   ADP_LOG(EVENT) << "OMPartition subgraph_" << std::to_string(graph_num) << " begin. "
@@ -2343,7 +2343,7 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
   ADP_LOG(EVENT) << "OMPartition subgraph_" << std::to_string(graph_num) << " markForPartition success.";
   if (subgraphNum < 1) {
     ADP_LOG(INFO) << "Subgraph num is " << subgraphNum;
-    return Status::OK();
+    return OkStatus();
   }
   if (mix_compile_mode) {
     if (pass_options["variable_location"] != "Host") {
@@ -2368,7 +2368,7 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
   ADP_LOG(EVENT) << "OMPartition subgraph_" << std::to_string(graph_num) << " succeed. ["
                  << ((endTime - startTime) / kMicrosToMillis) << " ms]";
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsPass::CopyVarsBetweenGeOp(Graph *graph) const {
@@ -2422,7 +2422,7 @@ Status OMPartitionSubgraphsPass::CopyVarsBetweenGeOp(Graph *graph) const {
       graph->RemoveEdge(varEdge);
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsPass::CopyConstBetweenGeOp(Graph *graph) const {
@@ -2471,7 +2471,7 @@ Status OMPartitionSubgraphsPass::CopyConstBetweenGeOp(Graph *graph) const {
       }
     }
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsPass::SplitUnaryOpsComposition(Graph *graph, Node *node) const {
@@ -2503,7 +2503,7 @@ Status OMPartitionSubgraphsPass::SplitUnaryOpsComposition(Graph *graph, Node *no
     }
   }
   graph->RemoveNode(node);
-  return Status::OK();
+  return OkStatus();
 }
 
 Status OMPartitionSubgraphsPass::AccumulateNFusion(Graph *graph_in, Node *node) const {
@@ -2536,7 +2536,7 @@ Status OMPartitionSubgraphsPass::AccumulateNFusion(Graph *graph_in, Node *node) 
   for (auto delete_node : delete_nodes) {
     graph_in->RemoveNode(delete_node);
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 void OMPartitionSubgraphsPass::InheritAttributes(Node &node) const {

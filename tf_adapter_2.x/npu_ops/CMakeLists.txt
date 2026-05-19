@@ -22,6 +22,6 @@ endforeach (CPP_SOURCE)
 
 add_library(_npu_ops SHARED ${SOURCES})
 set_target_properties(_npu_ops PROPERTIES PREFIX "")
-
+target_compile_definitions(_npu_ops PRIVATE TF_VERSION_TF2)
 target_link_libraries(_npu_ops PRIVATE
     tensorflow_libs)

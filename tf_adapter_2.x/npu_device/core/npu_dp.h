@@ -58,13 +58,13 @@ class IteratorResourceProvider {
       requests_.emplace(Request(std::move(resource), nums, done));
     }
     cv_.notify_one();
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   }
   tensorflow::Status Destroy() {
     {
       std::unique_lock<std::mutex> lk(mu_);
       if (stopped_ || request_stop_) {
-        return tensorflow::Status::OK();
+        return tensorflow::OkStatus();
       }
       request_stop_ = true;
     }
@@ -96,7 +96,7 @@ class IteratorResourceProvider {
           lk.unlock();
           tensorflow::Status status = consume_func_(task.resource, task.nums);
           if (request_stop_) {
-            task.done(tensorflow::Status::OK());
+            task.done(tensorflow::OkStatus());
           } else {
             task.done(status);
           }

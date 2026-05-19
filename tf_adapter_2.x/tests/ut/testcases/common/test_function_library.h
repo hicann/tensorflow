@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "tensorflow/core/framework/function.pb.h"
-#include "tensorflow/core/platform/default/logging.h"
+#include "tensorflow/core/platform/logging.h"
 #include "tensorflow/core/platform/protobuf.h"
 
 class FunctionStrLibrary {

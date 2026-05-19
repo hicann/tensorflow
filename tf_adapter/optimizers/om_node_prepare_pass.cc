@@ -30,7 +30,7 @@ class OmNodePreparePass : public GraphOptimizationPass {
 
 Status OmNodePreparePass::Run(const GraphOptimizationPassOptions &options) {
   if ((options.graph == nullptr && options.partition_graphs == nullptr) || options.flib_def == nullptr) {
-    return Status::OK();
+    return OkStatus();
   }
 
   if (options.graph != nullptr) {
@@ -41,7 +41,7 @@ Status OmNodePreparePass::Run(const GraphOptimizationPassOptions &options) {
     }
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 
 constexpr const char *kOmNodeType = "LoadAndExecuteOm";
@@ -70,7 +70,7 @@ Status OmNodePreparePass::ProcessGraph(std::unique_ptr<Graph> &graph, FunctionLi
   auto om_nodes = GetGraphOmNodes(*graph);
   if (om_nodes.empty()) {
     ADP_LOG(INFO) << "Skip process graph as no om nodes found";
-    return Status::OK();
+    return OkStatus();
   }
 
   static std::atomic_uint64_t graph_index{0U};
@@ -119,7 +119,7 @@ Status OmNodePreparePass::ProcessGraph(std::unique_ptr<Graph> &graph, FunctionLi
     (void) WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
-  return Status::OK();
+  return OkStatus();
 }
 REGISTER_OPTIMIZATION(OptimizationPassRegistry::POST_REWRITE_FOR_EXEC, 0, OmNodePreparePass);
 }  // namespace tensorflow
