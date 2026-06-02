@@ -552,15 +552,17 @@ TEST_F(NpuAttrTest, SetNpuOptimizerAttr_auto_multistream_parallel_mode) {
   custom_config->set_name("NpuOptimizer");
   options.session_options = &session_options;
 
-  AttrValue auto_multistream_parallel_mode = AttrValue();
-  auto_multistream_parallel_mode.set_s("cv");
-  (*custom_config->mutable_parameter_map())["auto_multistream_parallel_mode"] = auto_multistream_parallel_mode;
+  for (const auto &mode : {"cv", "LoadBalance", "LoadBalance:8", "MainStream:4"}) {
+    AttrValue auto_multistream_parallel_mode = AttrValue();
+    auto_multistream_parallel_mode.set_s(mode);
+    (*custom_config->mutable_parameter_map())["auto_multistream_parallel_mode"] = auto_multistream_parallel_mode;
 
-  AttrValue jit_compile = AttrValue();
-  jit_compile.set_s("2");
-  (*custom_config->mutable_parameter_map())["jit_compile"] = jit_compile;
-  Status s = NpuAttrs::SetNpuOptimizerAttr(options, reinterpret_cast<Node *>(1));
-  EXPECT_EQ(s.ok(), false);
+    AttrValue jit_compile = AttrValue();
+    jit_compile.set_s("2");
+    (*custom_config->mutable_parameter_map())["jit_compile"] = jit_compile;
+    Status s = NpuAttrs::SetNpuOptimizerAttr(options, reinterpret_cast<Node *>(1));
+    EXPECT_EQ(s.ok(), false);
+  }
 }
 
 TEST_F(NpuAttrTest, GetAllAttrOptions_auto_multistream_parallel_mode) {

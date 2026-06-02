@@ -196,7 +196,13 @@ class NPURunConfig(run_config_lib.RunConfig):
                                    FULL: full generalization;
                                    ADAPTIVE: generalizes the varying axes.
         all_tensor_not_empty: default is: False.
-        auto_multistream_parallel_mode: default is None; cv: cube vector parallel.
+        auto_multistream_parallel_mode: default is None.
+            Valid values:
+            - cv: cube vector parallel.
+            - LoadBalance: load balance algorithm, distribute all ops evenly on 8 streams.
+            - LoadBalance:n: load balance with n streams (1 <= n <= 64).
+            - MainStream:n: main stream mode, serial ops on main stream, parallel ops
+              on other streams (1 <= n <= 64).
         oo_level: The switch of optimization level.
         optimization_switch: The switch of optimization switch.
         """

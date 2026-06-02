@@ -81,7 +81,7 @@ class NpuConfig(NpuBaseConfig):
         self.input_batch_cpy = OptionValue(False, [True, False])
         self.shape_generalization_mode = OptionValue("STRICT", ["STRICT", "FULL", "ADAPTIVE"])
         self.all_tensor_not_empty = OptionValue(False, [True, False])
-        self.auto_multistream_parallel_mode = OptionValue(None, ['cv'])
+        self.auto_multistream_parallel_mode = OptionValue(None, None)
         self.oo_level = OptionValue("O3", ["O0", "O1", "O2", "O3"])
         self.optimization_switch = OptionValue(None, None)
 
