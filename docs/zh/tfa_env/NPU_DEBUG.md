@@ -1,0 +1,31 @@
+# NPU_DEBUG
+
+## 功能描述
+
+TensorFlow  2.6.5训练与在线推理场景下，用于开启TF Adapter的Debug级别执行日志。
+
+- "1"或"true"：开启Debug级别执行日志
+- "0"或"false"：关闭Debug级别执行日志
+
+## 配置示例
+
+```bash
+export NPU_DEBUG=1
+```
+
+## 使用约束
+
+- 该变量需要在import npu_device前设置。
+- 该环境变量仅适用于TensorFlow  2.6.5网络在昇腾平台执行训练或在线推理的场景。
+
+## 支持的型号
+
+Ascend 950PR/Ascend 950DT
+
+Atlas A3 训练系列产品/Atlas A3 推理系列产品
+
+Atlas A2 训练系列产品/Atlas A2 推理系列产品
+
+Atlas 推理系列产品
+
+Atlas 训练系列产品

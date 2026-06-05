@@ -6,6 +6,7 @@
 - [TensorFlow 2.6.5模型迁移指南](./zh/tfadapter_2/migration/README.md)
 - [TF Adapter接口（1.x）](./zh/tfadapter_1/apiref/README.md)
 - [TF Adapter接口（2.x）](./zh/tfadapter_2/apiref/README.md)
+- [TF Adapter环境变量参考](./zh/tfa_env/README.md)
 
 ## 在线课程
 
