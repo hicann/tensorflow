@@ -43,7 +43,7 @@ class Profiler(object):
         sess.run(add)
     ```
 
-- Profiler类不能与[session配置](../session配置.md#profiling)中的参数“profiling_mode”、“profiling_options”，[NPURunConfig配置](../npu_config/profilingconfig_constructor.md)中的参数“enable_profiling”、“profiling_options”，以及环境变量“PROFILING_MODE”、“PROFILING_OPTIONS”同时使用，关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
+- Profiler类不能与[session配置](../session_config/Profiling.md)中的参数“profiling_mode”、“profiling_options”，[NPURunConfig配置](../npu_config/profilingconfig_constructor.md)中的参数“enable_profiling”、“profiling_options”，以及环境变量“PROFILING_MODE”、“PROFILING_OPTIONS”同时使用，关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
 - Profiler类不支持多线程调用。
 
 ## 调用示例

@@ -15,7 +15,7 @@ npu.train.optimizer.NpuLossScaleOptimizer(inner_optimizer, dynamic=True, initial
 
 ## 参数说明
 
-该优化器继承自tf.keras.mixed_precision.LossScaleOptimizer，使用方式完全相同，可以参考[LINK](https://tensorflow.google.cn/versions/r2.6/api_docs/python/tf/keras/mixed_precision/LossScaleOptimizer)。
+该优化器继承自tf.keras.mixed_precision.LossScaleOptimizer，使用方式完全相同，可以参考[LossScaleOptimizer](https://tensorflow.google.cn/versions/r2.6/api_docs/python/tf/keras/mixed_precision/LossScaleOptimizer)。
 
 ## 返回值
 

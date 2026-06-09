@@ -2066,7 +2066,6 @@
 
 以下列表是不支持的TensorFlow Python API集合列表，但此列表并不详尽。
 
-
 | 模块 | 不支持的Python API |
 | --- | --- |
 | tf | tf.CriticalSection |
@@ -2121,4 +2120,3 @@
 | tf.train | tf.train.replica_device_setter |
 | tf.xla | tf.xla.experimental.compile |
 | tf.xla | tf.xla.experimental.jit_scope |
-

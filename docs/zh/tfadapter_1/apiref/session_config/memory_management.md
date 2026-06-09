@@ -29,6 +29,7 @@ custom_op.parameter_map["static_memory_policy"].i = 0
 ```
 
 > [!NOTE]说明
+>
 > - 多张图并发执行时，不支持配置为“2”和“4”。
 > - 为兼容历史版本配置，配置为“1”的场景下，系统会按照“2”的方式进行处理。
 > - 配置为“3”和“4”的场景下，将带来内存收益，但可能导致性能损失。
@@ -51,6 +52,7 @@ custom_op.parameter_map["variable_use_1g_huge_page"].i = 2
 
 > [!NOTE]说明
 > 该参数仅支持以下产品：
+>
 > - Ascend 950PR/Ascend 950DT
 > - Atlas A3 训练系列产品/Atlas A3 推理系列产品
 > - Atlas A2 训练系列产品/Atlas A2 推理系列产品

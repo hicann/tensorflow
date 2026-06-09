@@ -162,7 +162,7 @@
 
     **PrecisionTool \>**
 
-5. 执行**[ac -l \[limit_num\] \(-c\)](precision_tool_ommand_ref.md#ac--l-limit_num--c)**命令进行整网精度比对。
+5. 执行[ac -l \[limit_num\] \(-c\)](precision_tool_ommand_ref.md#ac--l-limit_num--c)命令进行整网精度比对。
 
     **PrecisionTool \> ac -c**
 
@@ -220,4 +220,4 @@
             v = tf.add(1, 1)
         ```
 
-2. 如果依旧无法解决，单击[Link](https://www.hiascend.com/support)联系技术支持。
+2. 如果依旧无法解决，请在本源码仓提issue。

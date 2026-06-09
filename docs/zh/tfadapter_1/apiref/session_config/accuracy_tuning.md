@@ -40,7 +40,7 @@
 
 - mixed_hif8：
 
-  开启自动混合精度功能，表示混合使用hifloat8（此数据类型介绍可参见[Link](https://arxiv.org/abs/2409.16626?context=cs.AR)）、float16、bfloat16和float32数据类型来处理神经网络。针对原图中float16、bfloat16和float32数据类型的算子，按照内置的优化策略，自动将部分float16、bfloat16和float32的算子降低精度到hifloat8，从而在精度损失很小的情况下提升系统性能并减少内存使用。**当前版本不支持该选项。**
+  开启自动混合精度功能，表示混合使用hifloat8（此数据类型介绍可参见[HiFloat8](https://arxiv.org/abs/2409.16626?context=cs.AR)）、float16、bfloat16和float32数据类型来处理神经网络。针对原图中float16、bfloat16和float32数据类型的算子，按照内置的优化策略，自动将部分float16、bfloat16和float32的算子降低精度到hifloat8，从而在精度损失很小的情况下提升系统性能并减少内存使用。**当前版本不支持该选项。**
 
   说明：仅Ascend 950PR/Ascend 950DT支持此配置。
 
@@ -68,7 +68,7 @@ custom_op.parameter_map["precision_mode_v2"].s = tf.compat.as_bytes("origin")
 说明：
 
 - 该参数不能与“precision_mode”参数同时使用，建议使用“precision_mode_v2”参数。
-- 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](keep_dtype_scope.md)接口设置某些算子保持原图精度。
+- 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
 - 混合精度场景下算子的内置优化策略可参见“modify_mixlist”参数的详细说明。
 - bfloat16数据类型不支持以下产品：
   - Atlas 训练系列产品
@@ -152,9 +152,9 @@ custom_op.parameter_map["precision_mode"].s = tf.compat.as_bytes("allow_mix_prec
 - 该参数不能与“precision_mode_v2”参数同时使用，建议使用“precision_mode_v2”参数。
 - 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题。
   
-  训练场景下，建议通过[keep_dtype_scope](keep_dtype_scope.md)接口设置某些算子保持原图精度。
+  训练场景下，建议通过[keep_dtype_scope](../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
   
-  推理场景下，建议通过[keep_tensors_dtypes](keep_tensors_dtypes.md)接口设置某些算子保持原图精度。
+  推理场景下，建议通过[keep_tensors_dtypes](../npu_util/keep_tensors_dtypes.md)接口设置某些算子保持原图精度。
 - 混合精度场景下算子的内置优化策略可参见“modify_mixlist”参数的详细说明。
 - bfloat16数据类型不支持以下产品：
   - Atlas 训练系列产品

@@ -23,7 +23,7 @@
 - mixed_bfloat16：
     表示使用混合精度bfloat16和float32数据类型来处理神经网络。针对原图中float32数据类型的算子，按照内置的优化策略，自动将部分float32的算子降低精度到bfloat16，从而在精度损失很小的情况下提升系统性能并减少内存使用；如果算子不支持bfloat16和float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
     说明：仅Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置。
-- mixed_hif8：开启自动混合精度功能，表示混合使用hifloat8（此数据类型介绍可参见[Link](https://arxiv.org/abs/2409.16626?context=cs.AR)）、float16、bfloat16和float32数据类型来处理神经网络。针对原图中float16、bfloat16和float32数据类型的算子，按照内置的优化策略，自动将部分float16、bfloat16和float32的算子降低精度到hifloat8，从而在精度损失很小的情况下提升系统性能并减少内存使用。
+- mixed_hif8：开启自动混合精度功能，表示混合使用hifloat8（此数据类型介绍可参见[HiFloat8](https://arxiv.org/abs/2409.16626?context=cs.AR)）、float16、bfloat16和float32数据类型来处理神经网络。针对原图中float16、bfloat16和float32数据类型的算子，按照内置的优化策略，自动将部分float16、bfloat16和float32的算子降低精度到hifloat8，从而在精度损失很小的情况下提升系统性能并减少内存使用。
   
   说明：仅Ascend 950PR/Ascend 950DT支持此配置。
 
@@ -209,4 +209,4 @@ OpType::Relu:InputDtype:float16,int8,OutputDtype:float16,int8
 >
 > - 算子具体支持的计算精度可以从算子信息库中查看，默认存储路径为CANN软件装后文件存储路径的：opp/built-in/op_impl/ai_core/tbe/config_<soc_version\>_/aic-_<soc_version\>_-ops-info-<opType\>.json。
 > - 通过该参数指定的优先级高，因此可能会导致精度/性能的下降；如果指定dtype不支持，会导致编译失败。
-> - 若通过算子名称进行配置，由于模型编译过程中会进行融合、拆分等优化操作可能会导致算子名称发生变化，进而导致配置不生效，未达到精度提升的目的。此种景下，可进一步通过获取日志进行问题定位，关于日志的详细说明请参见《[日志考](https://hiascend.com/document/redirect/CannCommunitylogref)》。
+> - 若通过算子名称进行配置，由于模型编译过程中会进行融合、拆分等优化操作可能会导致算子名称发生变化，进而导致配置不生效，未达到精度提升的目的。此种景下，可进一步通过获取日志进行问题定位，关于日志的详细说明请参见《[日志参考](https://hiascend.com/document/redirect/CannCommunitylogref)》。

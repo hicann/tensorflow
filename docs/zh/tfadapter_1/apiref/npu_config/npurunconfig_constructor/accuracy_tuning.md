@@ -15,10 +15,10 @@
 - cube_fp16in_fp32out：AI Core中该算子既支持float32又支持float16数据类型时，系统内部根据算子类型不同，选择不同的处理方式。
 
   - 对于矩阵计算类算子，系统内部会按算子实现的支持情况处理：
-  1. 优先选择输入数据类型为float16且输出数据类型为float32；
-  2. 如果1中的场景不支持，则选择输入数据类型为float32且输出数据类型为float32；
-  3. 如果2中的场景不支持，则选择输入数据类型为float16且输出数据类型为float16；
-  4. 如果3中的场景不支持，则报错。
+    1. 优先选择输入数据类型为float16且输出数据类型为float32；
+    2. 如果1中的场景不支持，则选择输入数据类型为float32且输出数据类型为float32；
+    3. 如果2中的场景不支持，则选择输入数据类型为float16且输出数据类型为float16；
+    4. 如果3中的场景不支持，则报错。
 
   - 对于矢量计算类算子，表示原图中算子精度为float16或bfloat16，强制选择float32。
 
@@ -66,7 +66,7 @@ config = NPURunConfig(precision_mode_v2="origin")
 说明：
 
 - 该参数不能与“precision_mode”参数同时使用，建议使用“precision_mode_v2”参数。
-- 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
+- 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](../../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
 - 混合精度场景下算子的内置优化策略可参见“modify_mixlist”参数的详细说明。
 - bfloat16数据类型不支持以下产品：
   - Atlas 训练系列产品
@@ -146,8 +146,8 @@ config = NPURunConfig(precision_mode="allow_mix_precision")
 
 > [!NOTE]说明
 >
->- 该参数不能与“precision_mode_v2”参数同时使用，建议使用“precision_mode_v2”参数。
->- 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
+> - 该参数不能与“precision_mode_v2”参数同时使用，建议使用“precision_mode_v2”参数。
+> - 在使用此参数设置整个网络的精度模式时，可能会存在个别算子存在精度问题，此种场景下，建议通过[keep_dtype_scope](../../npu_scope/keep_dtype_scope.md)接口设置某些算子保持原图精度。
 
 ## modify_mixlist
 

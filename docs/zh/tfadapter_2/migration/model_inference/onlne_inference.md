@@ -79,7 +79,7 @@ def NetworkRun(modelPath,inputPath,outputPath):
 
 1. 出现tf_adapter和The model has been compiled on the Ascend AI processor的关键字打印。
 
-    ![](../figures/inference_result.jpg)
+    ![](../figures/inference_result.png)
 
 2. 或者打开Dump计算图开关DUMP_GE_GRAPH，看能否产生Dump计算图。
 

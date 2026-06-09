@@ -19,7 +19,7 @@ class NPULossScaleOptimizer(lso.LossScaleOptimizer):
 | 参数名 | 输入/输出 | 描述 |
 | --- | --- | --- |
 | opt | 输入 | 用于梯度计算和更新权重的单机版训练优化器。 |
-| loss_scale_manager | 输入 | 用于决定LossScale的更新方式，包括静态更新和动态更新。<br>  - 用户在创建NPULossScaleOptimizer之前，可以实例化一个FixedLossScaleManager类进行静态LossScale的配置（LossScale值固定，用户需指定LossScale值）。FixedLossScaleManager类的构造函数，请参见[FixedLossScaleManager构造函数](FixedLossScaleManager_constructor.md)。<br>  - 用户在创建NPULossScaleOptimizer之前，可以实例化一个ExponentialUpdateLossScaleManager类进行动态LossScale的配置。ExponentialUpdateLossScaleManager类的构造函数，请参见[ExponentialUpdateLossScaleManager构造函数](ExponentialUpdateLossScaleManager_constructor.md)。 |
+| loss_scale_manager | 输入 | 用于决定LossScale的更新方式，包括静态更新和动态更新。<br>  - 用户在创建NPULossScaleOptimizer之前，可以实例化一个FixedLossScaleManager类进行静态LossScale的配置（LossScale值固定，用户需指定LossScale值）。FixedLossScaleManager类的构造函数，请参见[FixedLossScaleManager构造函数](../npu_loss_scale_manager/FixedLossScaleManager_constructor.md)。<br>  - 用户在创建NPULossScaleOptimizer之前，可以实例化一个ExponentialUpdateLossScaleManager类进行动态LossScale的配置。ExponentialUpdateLossScaleManager类的构造函数，请参见[ExponentialUpdateLossScaleManager构造函数](../npu_loss_scale_manager/ExponentialUpdateLossScaleManager_constructor.md)。 |
 | is_distributed | 输入 | 用于支持分布式训练场景的Loss Scaling功能。取值：<br> - True：分布式训练时需要配置为True。<br>  - False。 |
 
 ## 返回值

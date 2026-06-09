@@ -61,7 +61,7 @@ config = NPURunConfig(op_compiler_cache_mode="enable")
 
 算子编译缓存文件存储优先级为：
 
-配置参数“op_compiler_cache_dir” \> $\{ASCEND_CACHE_PATH\}/kernel_cache \> 默认路径（$HOME/atc_data）。
+配置参数“op_compiler_cache_dir” \> \$\{ASCEND_CACHE_PATH\}/kernel_cache \> 默认路径（\$HOME/atc_data）。
 
 关于环境变量ASCEND_CACHE_PATH的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
 

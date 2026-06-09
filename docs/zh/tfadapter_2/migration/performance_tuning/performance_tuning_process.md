@@ -21,7 +21,7 @@
 
 3. 使用Profiling工具采集性能数据并分析。
 
-    参考[Profiling数据采集与分析](Profile_data_collection_and_analysis.md)进行性能数据的采集、解析导出与分析。
+    参考[Profiling数据采集与分析](profile_data_collection_and_analysis.md)进行性能数据的采集、解析导出与分析。
 
 4. 根据识别的性能瓶颈参见[进阶调优](advanced_tuning.md)进行进一步的性能提升。
 5. 再次执行模型训练，进行回归测试，评估训练性能是否达标。
@@ -34,4 +34,4 @@
 
         Atlas 训练系列产品
 
-    - 针对Ascend 950PR/Ascend 950DT，若性能不达标，请再次执行[Profiling数据采集与分析](Profile_data_collection_and_analysis.md)。
+    - 针对Ascend 950PR/Ascend 950DT，若性能不达标，请再次执行[Profiling数据采集与分析](profile_data_collection_and_analysis.md)。

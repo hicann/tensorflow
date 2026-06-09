@@ -2,7 +2,7 @@
 
 ## dump_config
 
-dump开关，用户在创建NPURunConfig之前，可以实例化一个DumpConfig类进行dump的配置。DumpConfig类的构造函数，请参见[DumpConfig构造函数](dumpconfig_constructor.md)。
+dump开关，用户在创建NPURunConfig之前，可以实例化一个DumpConfig类进行dump的配置。DumpConfig类的构造函数，请参见[DumpConfig构造函数](../dumpconfig_constructor.md)。
 
 配置示例：
 

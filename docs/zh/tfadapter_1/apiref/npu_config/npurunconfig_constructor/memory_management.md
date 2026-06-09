@@ -13,7 +13,7 @@
 
 若环境中未配置环境变量ASCEND_WORK_PATH，则权重文件落盘至当前执行目录“tmp_weight_<pid\>_<sessionid\>”下。
 
-若环境中配置了环境变量ASCEND_WORK_PATH，则权重文件会落盘至\$\{ASCEND_WORK_PATH\}/tmp_weight_<pid\>_<sessionid\>目录下，关于ASCEND_WORK_PATH的详细说明，可参见[《]环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》中的“安装配置相关”章节。
+若环境中配置了环境变量ASCEND_WORK_PATH，则权重文件会落盘至\$\{ASCEND_WORK_PATH\}/tmp_weight_<pid\>_<sessionid\>目录下，关于ASCEND_WORK_PATH的详细说明，可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》中的“安装配置相关”章节。
 
 模型卸载时，会自动删除“tmp_weight_<pid\>_<sessionid\>”目录。
 
@@ -29,8 +29,8 @@ config = NPURunConfig(external_weight=True)
 
 Host侧输入数据搬运到Device侧时，将用户离散多个输入数据合并拷贝的阈值。单位为Byte，最小值为0 Byte，最大值为33554432 Byte（32MB），默认值为131072 Byte（128KB）。
 
-- 若输入数据大小**<=**阈值，则合并输入，然后从Host搬运到Device。
-- 若输入数据大小**\>**阈值，或者阈值=0（功能关闭），则不合并，直接从Host搬运到Device。
+- 若输入数据大小`<=`阈值，则合并输入，然后从Host搬运到Device。
+- 若输入数据大小`>`阈值，或者阈值=0（功能关闭），则不合并，直接从Host搬运到Device。
 
 例如用户有10个输入，有2个输入数据大小为100KB，2个输入数据大小为50KB，其余输入大于100KB，若设置：
 

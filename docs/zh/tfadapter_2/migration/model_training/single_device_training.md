@@ -2,8 +2,6 @@
 
 本节介绍如何基于迁移好的TensorFlow训练脚本，在单Device上执行训练。
 
-如果没有进行模型迁移，您也可以从[https://gitee.com/ascend/modelzoo](https://gitee.com/ascend/modelzoo)获取已经迁移适配好的训练脚本，直接体验训练过程。
-
 > [!CAUTION]注意
 > 一个Device对应执行一个训练进程，当前不支持多进程在同一个Device上进行训练。
 
