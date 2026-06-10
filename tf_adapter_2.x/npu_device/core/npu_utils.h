@@ -43,8 +43,7 @@ class ScopeTensorHandleDeleter {
  */
 tensorflow::Status MapGeType2Tf(ge::DataType ge_type, tensorflow::DataType &tf_type);
 
-tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
-                                    std::vector<ge::AscendString> &partition_graph,
+tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def, std::vector<ge::AscendString> &partition_graph,
                                     std::map<ge::AscendString, ge::AscendString> &const_value_map);
 
 /**
@@ -91,8 +90,7 @@ std::string VecToString(std::vector<T> vec) {
   return s + "]";
 }
 
-std::map<ge::AscendString, ge::AscendString> StringToAscendString(
-    const std::map<std::string, std::string> &string_map);
+std::map<ge::AscendString, ge::AscendString> StringToAscendString(const std::map<std::string, std::string> &string_map);
 
 std::string SetToString(const std::set<std::string> &vec);
 
@@ -160,15 +158,14 @@ tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_
 int64_t CreateChannelCapacity(const npu::TensorPartialShapes &shapes, const npu::TensorDataTypes &types);
 
 class NpuAllocatorUtils {
-public:
+ public:
   NpuAllocatorUtils() = default;
   ~NpuAllocatorUtils();
 
   static bool IsNpuAllocator(const std::string name) {
     // 这里判断Npu Cpu内存的原因和作用是:
     // map和mapandbatch算子内部组织的输出数据是连续的, 不需要外部再对输出数据做连续内存的重新组织
-    return (name.compare(kNpuAllocatorName) == 0) ||
-        (name.compare(kCpuAllocatorName) == 0);
+    return (name.compare(kNpuAllocatorName) == 0) || (name.compare(kCpuAllocatorName) == 0);
   }
 
   static bool IsNpuAllocator(const tensorflow::Tensor &tensor) {
@@ -180,9 +177,9 @@ public:
     return false;
   }
 
-private:
-  static constexpr const char* const kNpuAllocatorName = "NpuAllocator";
-  static constexpr const char* const kCpuAllocatorName = "CpuAllocator";
+ private:
+  static constexpr const char *const kNpuAllocatorName = "NpuAllocator";
+  static constexpr const char *const kCpuAllocatorName = "CpuAllocator";
 };
 
 class StringUtils {

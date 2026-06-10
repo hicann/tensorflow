@@ -26,16 +26,16 @@
   do {                        \
     __lsan_disable();         \
   } while (0)
-#define DT_DETECT_LEAKS_ON()  \
-  do {                        \
-    __lsan_enable();          \
+#define DT_DETECT_LEAKS_ON() \
+  do {                       \
+    __lsan_enable();         \
   } while (0)
 #else
 #define DT_DETECT_LEAKS_OFF() \
   do {                        \
   } while (0)
-#define DT_DETECT_LEAKS_ON()  \
-  do {                        \
+#define DT_DETECT_LEAKS_ON() \
+  do {                       \
   } while (0)
 #endif
 

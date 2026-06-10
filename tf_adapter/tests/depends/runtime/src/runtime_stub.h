@@ -13,4 +13,4 @@
 
 void setMockStub(bool g_stub);
 
-#endif //DEPENDS_ASCENDCL_STUB_H
+#endif  // DEPENDS_ASCENDCL_STUB_H

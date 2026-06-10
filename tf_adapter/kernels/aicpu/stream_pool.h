@@ -23,16 +23,13 @@
 #define TENSORFLOW_CORE_KERNELS_NPU_STREAM_H_
 namespace tensorflow {
 namespace data {
-enum class StreamNum {
-  DEFAULT_STREAM_NUM = 28,
-  MAX_STREAM_NUM = 1024
-};
+enum class StreamNum { DEFAULT_STREAM_NUM = 28, MAX_STREAM_NUM = 1024 };
 
 class Stream;
 class StreamPool;
 
 class StreamEvent {
-public:
+ public:
   ~StreamEvent() {
     ADP_LOG(EVENT) << "~StreamEvent";
     if (event_ != nullptr) {
@@ -45,7 +42,7 @@ public:
     stream_ = nullptr;
   }
 
-private:
+ private:
   static std::shared_ptr<StreamEvent> CreateEvent(Stream *stream, const std::function<void(StreamEvent *)> del) {
     aclrtEvent event;
     aclError rt = aclrtCreateEvent(&event);
@@ -78,9 +75,7 @@ private:
     return Status::OK();
   }
 
-  StreamEvent(Stream *stream, aclrtEvent event)
-    : stream_(stream),
-      event_(event) {};
+  StreamEvent(Stream *stream, aclrtEvent event) : stream_(stream), event_(event){};
 
   Stream *stream_ = nullptr;
   aclrtEvent event_ = nullptr;
@@ -91,7 +86,7 @@ private:
 };
 
 class Stream {
-public:
+ public:
   ~Stream() {
     ADP_LOG(EVENT) << "~Stream: stream_id = " << stream_id_;
     waiting_event_queue_.clear();
@@ -109,8 +104,10 @@ public:
     return stream_;
   }
 
-private:
-  inline uint64_t GetStreamId() const { return stream_id_; }
+ private:
+  inline uint64_t GetStreamId() const {
+    return stream_id_;
+  }
 
   static std::shared_ptr<Stream> CreateStream(StreamPool *owner, uint64_t stream_id) {
     aclrtStream stream;
@@ -120,11 +117,9 @@ private:
       return nullptr;
     }
 
-    std::function<void(Stream *)> del =  [](Stream *stream) {
-      delete stream;
-    };
+    std::function<void(Stream *)> del = [](Stream *stream) { delete stream; };
 
-    return std::shared_ptr<Stream>(new (std::nothrow)Stream(owner, stream_id, stream), del);
+    return std::shared_ptr<Stream>(new (std::nothrow) Stream(owner, stream_id, stream), del);
   }
 
   Status RecordEvent(const std::function<void(Status status)> func_, const std::function<void(StreamEvent *)> del) {
@@ -188,16 +183,14 @@ private:
   }
 
   explicit Stream(StreamPool *owner, uint64_t stream_id, aclrtStream stream)
-    : stream_(stream),
-      stream_id_(stream_id),
-      owner_(owner) {
+      : stream_(stream), stream_id_(stream_id), owner_(owner) {
     ADP_LOG(EVENT) << "[StreamPool] Create stream, id = " << stream_id;
   };
 
   std::mutex mtx_;
   aclrtStream stream_;
   uint64_t stream_id_ = UINT64_MAX;
-  std::deque<StreamEvent*> event_queue_;
+  std::deque<StreamEvent *> event_queue_;
   std::deque<std::shared_ptr<StreamEvent>> waiting_event_queue_;
   StreamPool *owner_;
   friend class StreamPool;
@@ -239,10 +232,8 @@ Status StreamEvent::Wait() {
 }
 
 class StreamPool {
-public:
-  explicit StreamPool(uint64_t stream_num, uint64_t max_task)
-    : max_stream_num_(stream_num),
-      max_task_num_(max_task) {
+ public:
+  explicit StreamPool(uint64_t stream_num, uint64_t max_task) : max_stream_num_(stream_num), max_task_num_(max_task) {
     uint64_t pos_stream_num = StreamPool::CheckStreamNum(stream_num);
     cur_event_num_ = new uint64_t[pos_stream_num];
     uint64_t size_count = sizeof(uint64_t) * pos_stream_num;
@@ -281,7 +272,7 @@ public:
       cur_event_num_[stream_id]++;
     }
 
-    return stream->RecordEvent(func, [this, stream_id](StreamEvent*) {
+    return stream->RecordEvent(func, [this, stream_id](StreamEvent *) {
       std::unique_lock<std::mutex> lck(mtx_);
       this->cur_event_num_[stream_id]--;
     });
@@ -317,7 +308,7 @@ public:
     return stream_num;
   }
 
-private:
+ private:
   std::mutex mtx_;
   uint64_t max_stream_num_;
   const uint64_t max_task_num_;
@@ -329,4 +320,4 @@ private:
 };
 }  // namespace data
 }  // namespace tensorflow
-#endif // TENSORFLOW_CORE_KERNELS_NPU_STREAM_H_
+#endif  // TENSORFLOW_CORE_KERNELS_NPU_STREAM_H_

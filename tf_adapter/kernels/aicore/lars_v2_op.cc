@@ -12,11 +12,15 @@
 #include "tf_adapter/common/adapter_logger.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class LarsV2OP : public OpKernel {
  public:
-  explicit LarsV2OP(OpKernelConstruction *context) : OpKernel(context) { ADP_LOG(INFO) << "new LarsV2OP"; }
-  ~LarsV2OP() override { ADP_LOG(INFO) << "del LarsV2OP"; }
+  explicit LarsV2OP(OpKernelConstruction *context) : OpKernel(context) {
+    ADP_LOG(INFO) << "new LarsV2OP";
+  }
+  ~LarsV2OP() override {
+    ADP_LOG(INFO) << "del LarsV2OP";
+  }
 
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "LarsV2OP Compute, num_inputs: " << context->num_inputs();
@@ -59,7 +63,9 @@ class LarsV2OP : public OpKernel {
       output_flat(i) = b * (g + w);
     }
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LarsV2").Device(DEVICE_CPU).TypeConstraint<float>("T"), LarsV2OP<float>);

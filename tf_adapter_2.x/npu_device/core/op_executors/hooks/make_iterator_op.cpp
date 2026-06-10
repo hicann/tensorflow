@@ -118,7 +118,8 @@ static const auto kernel = [](TFE_Context *context, NpuDevice *dev, const tensor
       dev->CreateIteratorProvider(context, tensor, {dev->device_id}, status);
       NPU_REQUIRES_TFE_OK(status);
 
-      dev->RunGeGraphPin2CpuAnonymous(context, "dp_init_" + handle.name(), dp_init_graph, 0, nullptr, 0, nullptr, status);
+      dev->RunGeGraphPin2CpuAnonymous(context, "dp_init_" + handle.name(), dp_init_graph, 0, nullptr, 0, nullptr,
+                                      status);
       NPU_REQUIRES_TFE_OK(status);
     }
   }

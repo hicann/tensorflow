@@ -24,14 +24,9 @@ std::map<std::string, aclprofAicoreMetrics> kNpuMetricsMap = {
     {"MemoryL0", ACL_AICORE_L0B_AND_WIDTH},
     {"ResourceConflictRatio", ACL_AICORE_RESOURCE_CONFLICT_RATIO},
     {"MemoryUB", ACL_AICORE_MEMORY_UB},
-    {"L2Cache", ACL_AICORE_L2_CACHE}
-};
-std::map<std::string, uint64_t> kProfilerLevelMap = {
-    {"L0", Level0},
-    {"L1", Level1},
-    {"L2", Level2}
-};
-}
+    {"L2Cache", ACL_AICORE_L2_CACHE}};
+std::map<std::string, uint64_t> kProfilerLevelMap = {{"L0", Level0}, {"L1", Level1}, {"L2", Level2}};
+}  // namespace
 namespace tensorflow {
 Profiler &Profiler::GetInstance() {
   static Profiler instance;
@@ -80,8 +75,8 @@ Status Profiler::GetAicMetrics(const std::string &aic_metrics) {
     aic_metrics_ = metrics_iter->second;
     return Status::OK();
   }
-  std::string error_msg = "Profiler options: aic_metrics cannot set to: " +
-      aic_metrics + ", should set aic_metrics to [";
+  std::string error_msg =
+      "Profiler options: aic_metrics cannot set to: " + aic_metrics + ", should set aic_metrics to [";
   size_t i = 0UL;
   for (const auto &iter : kNpuMetricsMap) {
     error_msg += iter.first;
@@ -95,8 +90,7 @@ Status Profiler::GetAicMetrics(const std::string &aic_metrics) {
   return errors::InvalidArgument(error_msg);
 }
 
-Status Profiler::Enable(const std::string &level,
-    const std::string &aic_metrics, const std::string &output_path) {
+Status Profiler::Enable(const std::string &level, const std::string &aic_metrics, const std::string &output_path) {
   if (enable_flag_) {
     return errors::Internal("Not support nested call 'profiler.Profiler'.");
   }
@@ -170,4 +164,4 @@ void Profiler::Disable() {
   ADP_LOG(INFO) << "Disable Profiler";
   enable_flag_ = false;
 }
-}
+}  // namespace tensorflow

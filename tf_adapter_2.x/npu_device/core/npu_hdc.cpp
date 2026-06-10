@@ -139,9 +139,11 @@ tensorflow::Status HdcChannel::AssembleAclTensor2Tensor(const acltdtDataItem *it
     }
     // Skip data copy for empty tensor
     if (tensor_size > 0UL) {
-      auto status = LoopCopy(static_cast<char *>(tensor.data()), tensor_size,
-                             const_cast<char *>(acl_data), tensor_size);
-      if (!status.ok()) { return status; }
+      auto status =
+        LoopCopy(static_cast<char *>(tensor.data()), tensor_size, const_cast<char *>(acl_data), tensor_size);
+      if (!status.ok()) {
+        return status;
+      }
     }
     tensors.emplace_back(std::move(tensor));
   } else {
@@ -281,9 +283,8 @@ tensorflow::Status HdcChannel::AssembleTensors2AclDataset(acltdtTensorType acl_t
         NPU_REQUIRES_OK(Copy2ContinuousMem(tensor_data, (dst_size - offset), tensor.data(), src_size));
         offset += src_size;
       }
-      acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR,
-                                      (dims.empty() ? nullptr : dims.data()),
-                                      dims.size(), acl_data_type, tensor_data, tensor.tensor_data().size());
+      acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, (dims.empty() ? nullptr : dims.data()), dims.size(),
+                                      acl_data_type, tensor_data, tensor.tensor_data().size());
     } else if (tensor.dtype() == tensorflow::DT_STRING) {
       if (tensor.dims() != 0) {
         return tensorflow::errors::Internal("Acl send got unexpected non-scalar string tensor with dim ",

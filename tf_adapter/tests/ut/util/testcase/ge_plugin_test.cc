@@ -249,5 +249,5 @@ TEST_F(GePluginTest, PluginInitTest_oo_level2) {
   NpuClose();
 }
 
-}
-} // end tensorflow
+}  // namespace
+}  // namespace tensorflow

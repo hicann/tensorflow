@@ -25,16 +25,17 @@ extern bool g_parse_root_graph;
 extern bool g_geinit_fore_return_fail;
 void SetParseRootGraph(bool is_root);
 
-using RunGraphWithStreamAsyncStub = std::function<Status(uint32_t, void *, const std::vector<Tensor>&, std::vector<Tensor>&)>;
+using RunGraphWithStreamAsyncStub =
+    std::function<Status(uint32_t, void *, const std::vector<Tensor> &, std::vector<Tensor> &)>;
 void RegRunGraphWithStreamAsyncStub(RunGraphWithStreamAsyncStub stub);
 
-using RunGraphStub = std::function<Status(uint32_t, const std::vector<Tensor>&, std::vector<Tensor>&)>;
+using RunGraphStub = std::function<Status(uint32_t, const std::vector<Tensor> &, std::vector<Tensor> &)>;
 void RegRunGraphStub(RunGraphStub stub);
 
-using RunGraphAsyncStub = std::function<Status(uint32_t, const std::vector<Tensor>&, RunAsyncCallback)>;
+using RunGraphAsyncStub = std::function<Status(uint32_t, const std::vector<Tensor> &, RunAsyncCallback)>;
 void RegRunGraphAsyncStub(RunGraphAsyncStub stub);
 void ClearRegRunGraphAsyncStub();
 void SetCustomPathStub(std::string path);
-const char* GetCustomPathStub();
+const char *GetCustomPathStub();
 }  // namespace ge
 #endif  // COMMON_GRAPH_DEBUG_GE_UTIL_H_

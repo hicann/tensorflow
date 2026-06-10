@@ -18,11 +18,11 @@ class HostAllocatorTest : public testing::Test {
   virtual void TearDown() {}
 };
 
-TEST_F(HostAllocatorTest, allocate_test)  {
+TEST_F(HostAllocatorTest, allocate_test) {
   int64_t a = 10;
   HostAllocator host_allocat(static_cast<void *>(&a));
   std::string name = host_allocat.Name();
   EXPECT_EQ(name, "host_allocator");
   void *ptr = host_allocat.AllocateRaw(0, 0);
 }
-} //end tensorflow
+}  // namespace tensorflow

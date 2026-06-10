@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class ProdEnvMatAOP : public OpKernel {
  public:
   explicit ProdEnvMatAOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class ProdEnvMatAOP : public OpKernel {
   }
   ~ProdEnvMatAOP() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "compute in ProdEnvMatAOP";
   }
   bool IsExpensive() override {

@@ -51,12 +51,11 @@ extern "C" AoeStatus AoeTuningGraph(uint64_t sessionId,
   return Aoe::AOE_SUCCESS;
 }
 
-extern "C" AoeStatus AoeSetDependGraphsInputs(uint64_t sessionId,
-                                              const std::vector<std::vector<ge::Tensor>> &inputs) {
+extern "C" AoeStatus AoeSetDependGraphsInputs(uint64_t sessionId, const std::vector<std::vector<ge::Tensor>> &inputs) {
   return Aoe::AOE_SUCCESS;
 }
 
 extern "C" AoeStatus AoeSetTuningGraphInput(uint64_t sessionId, const std::vector<ge::Tensor> &input) {
   return Aoe::AOE_SUCCESS;
 }
-} // namespace Aoe
+}  // namespace Aoe

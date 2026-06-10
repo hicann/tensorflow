@@ -20,25 +20,25 @@ class NpuOnnxGraphOpTest : public testing::Test {
 };
 
 TEST_F(NpuOnnxGraphOpTest, TestNpuOnnxGraphOp) {
-    std::vector<DataType> in_types_vec = {DT_FLOAT};
-    DataTypeSlice input_types(in_types_vec);
-    MemoryTypeSlice input_memory_types;
-    std::vector<DataType> out_types_vec = {DT_FLOAT};
-    DataTypeSlice output_types(out_types_vec);
-    MemoryTypeSlice output_memory_types;
-    DeviceBase *device = new DeviceBase(Env::Default());
-    NodeDef *node_def = new NodeDef();
-    OpDef *op_def = new OpDef();
-    OpKernelConstruction *context = new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr,
-                                                             input_types, input_memory_types, output_types, output_memory_types,
-                                                             1, nullptr);
-    NpuOnnxGraphOp npu_onnx_graph_conv(context);
-    OpKernelContext *ctx = nullptr;
-    npu_onnx_graph_conv.Compute(ctx);
-    ASSERT_FALSE(npu_onnx_graph_conv.IsExpensive());
-    delete device;
-    delete node_def;
-    delete op_def;
-    delete context;
+  std::vector<DataType> in_types_vec = {DT_FLOAT};
+  DataTypeSlice input_types(in_types_vec);
+  MemoryTypeSlice input_memory_types;
+  std::vector<DataType> out_types_vec = {DT_FLOAT};
+  DataTypeSlice output_types(out_types_vec);
+  MemoryTypeSlice output_memory_types;
+  DeviceBase *device = new DeviceBase(Env::Default());
+  NodeDef *node_def = new NodeDef();
+  OpDef *op_def = new OpDef();
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
+  NpuOnnxGraphOp npu_onnx_graph_conv(context);
+  OpKernelContext *ctx = nullptr;
+  npu_onnx_graph_conv.Compute(ctx);
+  ASSERT_FALSE(npu_onnx_graph_conv.IsExpensive());
+  delete device;
+  delete node_def;
+  delete op_def;
+  delete context;
 }
-}
+}  // namespace tensorflow

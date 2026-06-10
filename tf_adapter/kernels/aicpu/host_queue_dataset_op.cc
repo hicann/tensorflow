@@ -72,7 +72,7 @@ using TimePoint = std::chrono::system_clock::time_point;
 class HostQueueDatasetOp : public DatasetOpKernel {
  public:
   explicit HostQueueDatasetOp(OpKernelConstruction *ctx)
-    : DatasetOpKernel(ctx), local_rank_id_(0U), device_id_(0U), queue_id_(0U) {
+      : DatasetOpKernel(ctx), local_rank_id_(0U), device_id_(0U), queue_id_(0U) {
     // ctx is not nullptr
     std::string local_rank_id;
     std::string local_device_list;
@@ -133,8 +133,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     } else {
       channel_type_ = ChannelType::TDT;
     }
-    ADP_LOG(INFO) << "Host queue channel type [0:TDT 1:MBuf 2:HostQueue] is: "
-                  << static_cast<int>(channel_type_);
+    ADP_LOG(INFO) << "Host queue channel type [0:TDT 1:MBuf 2:HostQueue] is: " << static_cast<int>(channel_type_);
   }
 
   void MakeDataset(OpKernelContext *ctx, DatasetBase **output) override {
@@ -156,10 +155,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         CreateHostQueue(ctx, channel_depth);
       }
     }
-    *output = new (nothrow) Dataset(ctx, inputs, channel_name_,
-                                    output_types_, output_shapes_, local_rank_id_,
-                                    local_device_list_, device_id_, tf_session_,
-                                    channel_type_, channel_depth, queue_id_);
+    *output =
+        new (nothrow) Dataset(ctx, inputs, channel_name_, output_types_, output_shapes_, local_rank_id_,
+                              local_device_list_, device_id_, tf_session_, channel_type_, channel_depth, queue_id_);
     OP_REQUIRES(ctx, *output != nullptr,
                 errors::InvalidArgument("Data process host queue dataset op: new dataset failed."));
   }
@@ -189,8 +187,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     size_t output_shape_size = output_shapes_.size();
     size_t output_type_size = output_types_.size();
     if (output_shape_size != output_type_size) {
-      ADP_LOG(ERROR) << "Output_shape_size : " << output_shape_size << "is not equal to output_type_size : "
-                     << output_type_size;
+      ADP_LOG(ERROR) << "Output_shape_size : " << output_shape_size
+                     << "is not equal to output_type_size : " << output_type_size;
       return -1LL;
     }
     int64_t total_sizes = 0LL;
@@ -217,8 +215,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
   void CreateHostQueue(OpKernelContext *ctx, size_t channel_depth) {
     std::hash<std::string> channel_name_dict;
-    std::string queue_name = std::to_string(
-      channel_name_dict(tf_session_ + channel_name_ + "_device_" + std::to_string(device_id_)));
+    std::string queue_name =
+        std::to_string(channel_name_dict(tf_session_ + channel_name_ + "_device_" + std::to_string(device_id_)));
     if (queue_name_ == queue_name) {
       ADP_LOG(INFO) << "The channel is already create.";
       return;
@@ -233,14 +231,24 @@ class HostQueueDatasetOp : public DatasetOpKernel {
   class Dataset : public DatasetBase {
    public:
     Dataset(OpKernelContext *ctx, const std::vector<DatasetBase *> &inputs, const string &channelName,
-            const DataTypeVector &outputTypes, const vector<PartialTensorShape> &outputShapes,
-            const int &local_rank_id, const std::vector<uint32_t> &local_device_list, const uint32_t &device_id,
-            const string &tf_session, const ChannelType &channel_type, size_t channel_depth, uint32_t queue_id)
-      : DatasetBase(DatasetContext(ctx)), inputs_(inputs), channel_name_(channelName),
-        output_types_(outputTypes), output_shapes_(outputShapes), tf_session_(tf_session),
-        local_rank_id_(local_rank_id), local_device_list_(local_device_list), device_id_(device_id),
-        channel_type_(channel_type), channel_depth_(channel_depth), queue_id_(queue_id) {
-      for (const auto &input : inputs_) { input->Ref(); }
+            const DataTypeVector &outputTypes, const vector<PartialTensorShape> &outputShapes, const int &local_rank_id,
+            const std::vector<uint32_t> &local_device_list, const uint32_t &device_id, const string &tf_session,
+            const ChannelType &channel_type, size_t channel_depth, uint32_t queue_id)
+        : DatasetBase(DatasetContext(ctx)),
+          inputs_(inputs),
+          channel_name_(channelName),
+          output_types_(outputTypes),
+          output_shapes_(outputShapes),
+          tf_session_(tf_session),
+          local_rank_id_(local_rank_id),
+          local_device_list_(local_device_list),
+          device_id_(device_id),
+          channel_type_(channel_type),
+          channel_depth_(channel_depth),
+          queue_id_(queue_id) {
+      for (const auto &input : inputs_) {
+        input->Ref();
+      }
     }
 
     ~Dataset() override {
@@ -253,14 +261,22 @@ class HostQueueDatasetOp : public DatasetOpKernel {
       return absl::make_unique<Iterator>(Iterator::Params({this, prefix + "::HostQueue"}));
     }
 
-    const DataTypeVector &output_dtypes() const override { return output_types_; }
-    const vector<PartialTensorShape> &output_shapes() const override { return output_shapes_; }
+    const DataTypeVector &output_dtypes() const override {
+      return output_types_;
+    }
+    const vector<PartialTensorShape> &output_shapes() const override {
+      return output_shapes_;
+    }
 
-    string DebugString() const override { return "HostQueueDatasetOp::Dataset"; }
+    string DebugString() const override {
+      return "HostQueueDatasetOp::Dataset";
+    }
 
 #ifdef TF_VERSION_TF2
-    Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
-      for (const auto &input : inputs_) { inputs->push_back(input); }
+    Status InputDatasets(std::vector<const DatasetBase *> *inputs) const override {
+      for (const auto &input : inputs_) {
+        inputs->push_back(input);
+      }
       return Status::OK();
     }
 #endif
@@ -277,11 +293,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
      public:
       explicit Iterator(const Params &para)
           : DatasetIterator<Dataset>(para),
-            data_deliver_(new (nothrow) DataItemDeliver(dataset()->local_rank_id_,
-                                                        dataset()->device_id_,
-                                                        dataset()->local_device_list_,
-                                                        dataset()->channel_name_)) {
-      }
+            data_deliver_(new (nothrow) DataItemDeliver(dataset()->local_rank_id_, dataset()->device_id_,
+                                                        dataset()->local_device_list_, dataset()->channel_name_)) {}
 
       ~Iterator() override {
         std::vector<DataItem> stop_message;
@@ -310,7 +323,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         }
 
         delete data_deliver_;
-        if (deregister_fn_) { deregister_fn_(); }
+        if (deregister_fn_) {
+          deregister_fn_();
+        }
         FinishMemory();
         DestroyQueue();
         ShowDataThreadPerfRecord();
@@ -327,11 +342,10 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
         time_t time = time_second;
         std::tm *localtime = std::localtime(&time);
-        char time_str[kFormatTimeLen] = { 0 };
+        char time_str[kFormatTimeLen] = {0};
         std::strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime);
         std::string format_time(time_str);
-        int ret = sprintf_s(time_str, sizeof(time_str), ".%03llu.%03llu",
-                            time_millisecond, time_microsecond);
+        int ret = sprintf_s(time_str, sizeof(time_str), ".%03llu.%03llu", time_millisecond, time_microsecond);
         if (ret < 0) {
           ADP_LOG(WARNING) << "sprintf_s failed.";
           return format_time;
@@ -346,22 +360,20 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           for (uint32_t j = 0; j < kDataPerRecord; j++) {
             uint32_t index = (start_index + j + 1) % kDataPerRecord;
             auto record = &data_thread_perf_stat_[i].data_record[index];
-            if (record->start_time == 0) { continue; }
-            ADP_LOG(EVENT) << "DataThreadPerf: " << thread_type
-                           << ", idx: " << record->data_index
+            if (record->start_time == 0) {
+              continue;
+            }
+            ADP_LOG(EVENT) << "DataThreadPerf: " << thread_type << ", idx: " << record->data_index
                            << ", start: " << FormatTimestampToDate(record->start_time)
-                           << ", elapsed: " << record->elapsed_time
-                           << " us, buffer_size: " << record->buffer_size
+                           << ", elapsed: " << record->elapsed_time << " us, buffer_size: " << record->buffer_size
                            << ", total_bytes: " << record->total_bytes << ".";
           }
-          auto record_max =  &data_thread_perf_stat_[i].data_record_max;
-          ADP_LOG(EVENT) << "DataThreadPerf: " << thread_type
-                         << ", device_id: " << dataset()->device_id_
+          auto record_max = &data_thread_perf_stat_[i].data_record_max;
+          ADP_LOG(EVENT) << "DataThreadPerf: " << thread_type << ", device_id: " << dataset()->device_id_
                          << ", channel_name: " << dataset()->channel_name_
                          << ", longest time idx: " << record_max->data_index
                          << ", start: " << FormatTimestampToDate(record_max->start_time)
-                         << ", elapsed: " << record_max->elapsed_time
-                         << " us, buffer_size: " << record_max->buffer_size
+                         << ", elapsed: " << record_max->elapsed_time << " us, buffer_size: " << record_max->buffer_size
                          << ", total_bytes: " << record_max->total_bytes << ".";
         }
       }
@@ -390,11 +402,10 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         }
       }
 
-      bool ParallelCopy(void* const dst_ptr, uint64_t dst_size,
-                        const char *src_ptr, uint64_t src_size) {
+      bool ParallelCopy(void *const dst_ptr, uint64_t dst_size, const char *src_ptr, uint64_t src_size) {
         if (dst_size < src_size) {
-          ADP_LOG(ERROR) << "Parameters is invalid. "<< "[dst_size:" << dst_size
-                         << ", src_size:" << src_size <<"].";
+          ADP_LOG(ERROR) << "Parameters is invalid. "
+                         << "[dst_size:" << dst_size << ", src_size:" << src_size << "].";
           return false;
         }
         event_num_.store(0U);
@@ -414,7 +425,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           if (i == MAX_THREAD_NUM - 1) {
             end_pos += remain_size;
           }
-          closure = [start_pos, end_pos, &dst_ptr, &dst_size, &src_ptr, &src_size, &closure_ret, this] () {
+          closure = [start_pos, end_pos, &dst_ptr, &dst_size, &src_ptr, &src_size, &closure_ret, this]() {
             char *dst = reinterpret_cast<char *>(reinterpret_cast<uintptr_t>(dst_ptr) + start_pos);
             const char *src = src_ptr + start_pos;
             uint64_t dst_len = dst_size - start_pos;
@@ -423,14 +434,14 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             if (len > src_size || dst_len < len) {
               closure_ret = false;
               NotifyEventFinish();
-              ADP_LOG(ERROR) << "Parameters is invalid. "<< "[len:" << len << ", buffer_size:" << dst_len <<"].";
+              ADP_LOG(ERROR) << "Parameters is invalid. "
+                             << "[len:" << len << ", buffer_size:" << dst_len << "].";
               return;
             }
-            auto status = LoopCopy(dst, static_cast<size_t>(len),
-                                   const_cast<char *>(src), static_cast<size_t>(len));
+            auto status = LoopCopy(dst, static_cast<size_t>(len), const_cast<char *>(src), static_cast<size_t>(len));
             if (!status.ok()) {
-              ADP_LOG(ERROR) << "Failed to execute data copy task. start_pos:" << start_pos
-                             << ", copy len:" << len << ", status:" << status.ToString().c_str();
+              ADP_LOG(ERROR) << "Failed to execute data copy task. start_pos:" << start_pos << ", copy len:" << len
+                             << ", status:" << status.ToString().c_str();
               closure_ret = false;
               NotifyEventFinish();
               return;
@@ -444,13 +455,13 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         while (!event_finish_flag_) {
           event_finish_var_.wait(lck);
         }
-        ADP_LOG(INFO) << "All threads has finished to copy " <<
-          (closure_ret ? "successfully" : "unsuccessfully") << ".";
+        ADP_LOG(INFO) << "All threads has finished to copy " << (closure_ret ? "successfully" : "unsuccessfully")
+                      << ".";
         return closure_ret;
       }
 
-      bool CopyTensor(void* const memory_ptr, uint64_t memory_size,
-                      std::vector<Tensor> &args, std::vector<Tensor> &result_args) {
+      bool CopyTensor(void *const memory_ptr, uint64_t memory_size, std::vector<Tensor> &args,
+                      std::vector<Tensor> &result_args) {
         uint64_t offset = 0ULL;
         for (size_t i = 0UL; i < args.size(); i++) {
           const char *src_ptr = args[i].tensor_data().data();
@@ -475,7 +486,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           } else {
             uint64_t copy_dst_size = (dst_size >= SECUREC_MEM_MAX_LEN) ? src_size : dst_size;
             if (memcpy_s(dst_ptr, copy_dst_size, src_ptr, src_size) != EOK) {
-              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size << ", copy_dst_size: " << copy_dst_size;
+              ADP_LOG(ERROR) << "Memcpy failed, dst_size:" << dst_size << ", src_size: " << src_size
+                             << ", copy_dst_size: " << copy_dst_size;
               return false;
             }
           }
@@ -517,13 +529,16 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         mutex_lock lck(mu_);
         // cond_error_.wait_for is to wait forthe iterator destructed, kDelayTime is an estimate value.
         cond_error_.wait_for(lck, std::chrono::seconds(kDelayTime));
-        if (!finish_send_) { showLog(); }
+        if (!finish_send_) {
+          showLog();
+        }
       }
 
-      void RefreshDataThreadPerf(const ThreadType type, const TimePoint &start,
-                                 const TimePoint &end, const uint64_t args_total_bytes,
-                                 const uint32_t buff_size) {
-        if (finish_send_) { return; }
+      void RefreshDataThreadPerf(const ThreadType type, const TimePoint &start, const TimePoint &end,
+                                 const uint64_t args_total_bytes, const uint32_t buff_size) {
+        if (finish_send_) {
+          return;
+        }
         auto *perf_stat = &data_thread_perf_stat_[static_cast<size_t>(type)];
         perf_stat->data_record_num++;
         uint32_t index = perf_stat->data_record_num % kDataPerRecord;
@@ -531,9 +546,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         auto elapsed_time = std::chrono::duration<double, std::micro>(end - start).count();
         perf_stat->data_record[index].elapsed_time = elapsed_time;
         perf_stat->data_record[index].start_time =
-          std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
+            std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
         perf_stat->data_record[index].end_time =
-          std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
+            std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count();
         perf_stat->data_record[index].total_bytes = args_total_bytes;
         perf_stat->data_record[index].buffer_size = buff_size;
         if (elapsed_time >= perf_stat->data_record_max.elapsed_time) {
@@ -541,10 +556,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         }
 
         std::string thread_type = (type == ThreadType::RECV) ? "RECV" : "SEND";
-        ADP_LOG(INFO) << "DataThreadPerf: " << thread_type
-                      << ", idx: " << perf_stat->data_record_num
-                      << ", elapsed: " << elapsed_time
-                      << " us, buffer_size: " << buff_size
+        ADP_LOG(INFO) << "DataThreadPerf: " << thread_type << ", idx: " << perf_stat->data_record_num
+                      << ", elapsed: " << elapsed_time << " us, buffer_size: " << buff_size
                       << ", total_bytes: " << args_total_bytes << ".";
       }
 
@@ -596,8 +609,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           auto start = std::chrono::system_clock::now();
           buffer_element.status = input_impls_[1]->GetNext(ctx.get(), &args, &end_of_sequence);
           auto end = std::chrono::system_clock::now();
-          bool is_finished =
-            ((!buffer_element.status.ok()) || (buffer_element.status.ok() && end_of_sequence));
+          bool is_finished = ((!buffer_element.status.ok()) || (buffer_element.status.ok() && end_of_sequence));
           if (is_finished) {
             HandleGetNextStatus(buffer_element.status, end_of_sequence);
             mutex_lock lck(mu_);
@@ -620,7 +632,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             mutex_lock lck(mu_);
             for (auto &tensor : args) {
               bool not_use_mem_pool =
-                ((!is_string) && (from_npu_dataset != NPU_ALLOCATOR_NPU) && (tensor.dtype() == DT_STRING));
+                  ((!is_string) && (from_npu_dataset != NPU_ALLOCATOR_NPU) && (tensor.dtype() == DT_STRING));
               if (not_use_mem_pool) {
                 ADP_LOG(INFO) << "Data type is string, do not use memory pool";
                 is_string = true;
@@ -640,7 +652,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
                 LOG(ERROR) << "The size of tensor is too big";
                 buffer_element.host_thread_finished = true;
                 buffer_element.status = errors::Internal("[GetThread] The size of tensor is too big.",
-                  " tensor.TotalBytes() is ", tensor.TotalBytes());
+                                                         " tensor.TotalBytes() is ", tensor.TotalBytes());
                 buffer_.push_back(std::move(buffer_element));
                 cond_var_.notify_all();
                 return;
@@ -686,11 +698,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         });
         std::vector<DataItem> items;
         while (data_deliver_->RecvDataVec(items).ok()) {
-          int32_t tdt_status = TdtHostPushData(dataset()->channel_name_, items,
-                                               dataset()->device_id_);
+          int32_t tdt_status = TdtHostPushData(dataset()->channel_name_, items, dataset()->device_id_);
           if (tdt_status != 0) {
-            ADP_LOG(ERROR) << "End training as tdt host push data finished:"
-                           << tdt_status;
+            ADP_LOG(ERROR) << "End training as tdt host push data finished:" << tdt_status;
             break;
           }
           items.clear();
@@ -703,14 +713,18 @@ class HostQueueDatasetOp : public DatasetOpKernel {
       }
 
       void RecordMbufQueueBytes(const bool is_hold, const uint64_t args_total_bytes) {
-        if (!is_hold) { return; }
+        if (!is_hold) {
+          return;
+        }
         mbuf_queue_rear_ = (mbuf_queue_rear_ + 1) % kStringTypeDepth;
         mbuf_queue_total_bytes_ = mbuf_queue_total_bytes_ - mbuf_queue_bytes_[mbuf_queue_rear_] + args_total_bytes;
         mbuf_queue_bytes_[mbuf_queue_rear_] = args_total_bytes;
       }
 
       bool IsHoldDataTrans() {
-        if (mbuf_queue_total_bytes_ < static_cast<uint64_t>(kMaxBytes)) { return false; }
+        if (mbuf_queue_total_bytes_ < static_cast<uint64_t>(kMaxBytes)) {
+          return false;
+        }
         size_t mbuf_size;
         aclError status = acltdtQueryChannelSize(acl_handle_, &mbuf_size);
         if (status != ACL_SUCCESS) {
@@ -718,10 +732,12 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           return false;
         }
         if (mbuf_size > kStringTypeDepth) {
-          ADP_LOG(ERROR) << "An exception occurs::size[" << mbuf_size << "vs" << kStringTypeDepth <<"].";
+          ADP_LOG(ERROR) << "An exception occurs::size[" << mbuf_size << "vs" << kStringTypeDepth << "].";
           return true;
         }
-        if (mbuf_size <= 1) { return false; }
+        if (mbuf_size <= 1) {
+          return false;
+        }
         uint64_t mbuf_total_bytes = 0;
         for (size_t i = 0; i < mbuf_size; i++) {
           size_t index = (mbuf_queue_rear_ + kStringTypeDepth - i) % kStringTypeDepth;
@@ -746,7 +762,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           }
           auto start = std::chrono::system_clock::now();
           status = SendTensorsByAcl(acl_handle_, data_type, args, need_resend);
-          if (!status.ok()) { break; }
+          if (!status.ok()) {
+            break;
+          }
           if (!need_resend) {
             auto end = std::chrono::system_clock::now();
             RefreshDataThreadPerf(ThreadType::SEND, start, end, args_total_bytes, buff_size);
@@ -861,8 +879,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
               RecordStart(ctx.get());
             }
             if (finish_send_) {
-              ADP_LOG(INFO) << "Host queue " << dataset()->channel_name_ << " send data thread exit with cancelled: "
-                            << cancelled_ << ", finished:" << finish_send_ << " when wait data.";
+              ADP_LOG(INFO) << "Host queue " << dataset()->channel_name_
+                            << " send data thread exit with cancelled: " << cancelled_ << ", finished:" << finish_send_
+                            << " when wait data.";
               cancelled_ = true;
               destory_var_.notify_all();
               return;
@@ -879,8 +898,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
               total_bytes_ -= args_total_bytes;
             }
             buff_size = static_cast<uint32_t>(buffer_.size());
-            ADP_LOG(INFO) << "Host queue " << dataset()->channel_name_
-                          << ", buffer_size: " << buff_size << ", data_type: " << data_type;
+            ADP_LOG(INFO) << "Host queue " << dataset()->channel_name_ << ", buffer_size: " << buff_size
+                          << ", data_type: " << data_type;
           }
           Status status;
           if (dataset()->channel_type_ == ChannelType::ACL_QUEUE) {
@@ -896,8 +915,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             return;
           }
           if ((data_type == ACL_TENSOR_DATA_END_OF_SEQUENCE) || (data_type == ACL_TENSOR_DATA_ABNORMAL)) {
-            std::string data_type_str =
-              (data_type == ACL_TENSOR_DATA_END_OF_SEQUENCE) ? "end of sequence" : "abnormal";
+            std::string data_type_str = (data_type == ACL_TENSOR_DATA_END_OF_SEQUENCE) ? "end of sequence" : "abnormal";
             StopNotify();
             ADP_LOG(INFO) << "Host queue send " << data_type_str << " data success.";
             if (data_type == ACL_TENSOR_DATA_ABNORMAL) {
@@ -983,7 +1001,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             if (DataTypeCanUseMemcpy(tensor.dtype())) {
               data_item.dataLen_ = tensor.tensor_data().size();
               data_item.dataPtr_ =
-                std::shared_ptr<void>(const_cast<char *>(tensor.tensor_data().data()), [](void *elem) {});
+                  std::shared_ptr<void>(const_cast<char *>(tensor.tensor_data().data()), [](void *elem) {});
             } else if (tensor.dtype() == DT_STRING) {
               Status s = MappingDTStringTensor2DataItem(tensor, data_item, buff_list);
               if (!s.ok()) {
@@ -1030,7 +1048,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           REQUIRES_NOT_NULL(new_ctx);
           REQUIRES_NOT_NULL(ctx->env());
           receive_thread_.reset(
-            ctx->env()->StartThread({}, "receive_thread", [this, new_ctx]() { GetDataThread(new_ctx); }));
+              ctx->env()->StartThread({}, "receive_thread", [this, new_ctx]() { GetDataThread(new_ctx); }));
         }
         return Status::OK();
       }
@@ -1043,14 +1061,14 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           if (dataset()->channel_type_ == ChannelType::TDT) {
             if (dataset()->local_rank_id_ <= 0) {
               send_thread_.reset(
-                ctx->env()->StartThread({}, "send_thread", [this, new_ctx]() { SendDataThread(new_ctx); }));
+                  ctx->env()->StartThread({}, "send_thread", [this, new_ctx]() { SendDataThread(new_ctx); }));
             } else {
               send_thread_.reset(ctx->env()->StartThread({}, "send_thread", [this]() { SendDataThread(); }));
             }
           } else {
             if (dataset()->local_rank_id_ <= 0) {
               send_thread_.reset(
-                ctx->env()->StartThread({}, "send_thread", [this, new_ctx]() { SendDataByQueueThread(new_ctx); }));
+                  ctx->env()->StartThread({}, "send_thread", [this, new_ctx]() { SendDataByQueueThread(new_ctx); }));
             }
           }
         }
@@ -1059,12 +1077,10 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
       Status CreateChannel() {
         std::hash<std::string> channel_name_dict;
-        std::string channel_name = std::to_string(channel_name_dict(dataset()->tf_session_ +
-                                                  dataset()->channel_name_ +
-                                                  "_device_" +
-                                                  std::to_string(dataset()->device_id_)));
-        acl_handle_ = acltdtCreateChannelWithCapacity(
-          dataset()->device_id_, channel_name.c_str(), static_cast<size_t>(dataset()->channel_depth_));
+        std::string channel_name = std::to_string(channel_name_dict(
+            dataset()->tf_session_ + dataset()->channel_name_ + "_device_" + std::to_string(dataset()->device_id_)));
+        acl_handle_ = acltdtCreateChannelWithCapacity(dataset()->device_id_, channel_name.c_str(),
+                                                      static_cast<size_t>(dataset()->channel_depth_));
         if (acl_handle_ == nullptr) {
           ADP_LOG(ERROR) << "Call acltdtCreateChannelWithCapacity failed.";
           return errors::InvalidArgument("Call acltdtCreateChannelWithCapacity failed.");
@@ -1085,16 +1101,18 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         ADP_LOG(INFO) << "Start to enable receive and send threads.";
         try {
           input_impls_.resize(dataset()->inputs_.size());
-        } catch (...) { return errors::InvalidArgument("HostQueueDataset resize failed."); }
+        } catch (...) {
+          return errors::InvalidArgument("HostQueueDataset resize failed.");
+        }
         if ((dataset()->channel_type_ == ChannelType::ACL_QUEUE) && (!CreateChannel().ok())) {
           return errors::InvalidArgument("Call CreatChannel queue failed");
         }
         for (size_t i = 0; i < input_impls_.size(); ++i) {
           TF_RETURN_IF_ERROR(
 #ifdef TF_VERSION_TF2
-            dataset()->inputs_[i]->MakeIterator(ctx, this, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
+              dataset()->inputs_[i]->MakeIterator(ctx, this, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
 #else
-            dataset()->inputs_[i]->MakeIterator(ctx, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
+              dataset()->inputs_[i]->MakeIterator(ctx, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
 #endif
           );
         }
@@ -1110,7 +1128,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
               mutex_lock lck(mu_);
               finish_send_ = true;
               ADP_LOG(EVENT) << "Host queue[" << dataset()->channel_name_ << "]'s token is executed.";
-            }, &deregister_fn_));
+            },
+            &deregister_fn_));
         if (dataset()->channel_type_ == ChannelType::ACL_QUEUE) {
           TF_RETURN_IF_ERROR(thread_pool_.Init(dataset()->device_id_));
         }
@@ -1134,7 +1153,9 @@ class HostQueueDatasetOp : public DatasetOpKernel {
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override {
+        return Status::OK();
+      }
 
      private:
       struct BufferElement {
@@ -1188,7 +1209,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         DataPerfRecord data_record[kDataPerRecord];
         uint64_t data_record_num;
       } data_thread_perf_stat_[static_cast<size_t>(ThreadType::BUTT)] = {};
-      uint64_t mbuf_queue_bytes_[kStringTypeDepth] = { 0 };
+      uint64_t mbuf_queue_bytes_[kStringTypeDepth] = {0};
       uint64_t mbuf_queue_total_bytes_ = 0;
       size_t mbuf_queue_rear_ = 0;
     };

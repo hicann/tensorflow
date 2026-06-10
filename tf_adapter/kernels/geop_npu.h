@@ -32,18 +32,14 @@ using AoeInitializeFunc = AoeStatus (*)(const std::map<ge::AscendString, ge::Asc
 using AoeFinalizeFunc = AoeStatus (*)();
 using AoeCreateSessionFunc = AoeStatus (*)(SessionId &);
 using AoeDestroySessionFunc = AoeStatus (*)(SessionId);
-using AoeSetGeSessionFunc = AoeStatus (*)(SessionId, ge::Session*);
-using AoeSetDependGraphFunc = AoeStatus (*)(SessionId, const std::vector<ge::Graph>&);
+using AoeSetGeSessionFunc = AoeStatus (*)(SessionId, ge::Session *);
+using AoeSetDependGraphFunc = AoeStatus (*)(SessionId, const std::vector<ge::Graph> &);
 using AoeSetDependGraphsInputsFunc = AoeStatus (*)(SessionId, const std::vector<std::vector<ge::Tensor>> &);
 using AoeSetTuningGraphInputFunc = AoeStatus (*)(SessionId, const std::vector<ge::Tensor> &);
 using AoeSetTuningGraphFunc = AoeStatus (*)(SessionId, const ge::Graph &);
 using AoeTuningGraphFunc = AoeStatus (*)(SessionId, const std::map<ge::AscendString, ge::AscendString> &);
 
-enum GraphStatus {
-  Init,
-  CompileDone,
-  Compiling
-};
+enum GraphStatus { Init, CompileDone, Compiling };
 
 struct GraphHandler {
   GraphStatus status = Init;
@@ -54,7 +50,7 @@ struct GraphHandler {
 };
 
 class GeOp : public AsyncOpKernel {
-public:
+ public:
   explicit GeOp(OpKernelConstruction *ctx);
   ~GeOp() override;
   void ComputeAsync(OpKernelContext *ctx, DoneCallback done) override;
@@ -85,36 +81,29 @@ public:
   void GlobalFinalize();
 
   // Build GraphDef from FunctionDef.
-  Status BuildGraphDef(FunctionLibraryDefinition &flib_def, const std::vector<Tensor> &input_vec,
-                       GraphDef &graph_def, bool &is_initialize, bool &is_allreduce);
-  Status SeparateGraphDef(GraphDef &ori_graph_def,
-                          std::vector<ge::AscendString> &partition_graph,
+  Status BuildGraphDef(FunctionLibraryDefinition &flib_def, const std::vector<Tensor> &input_vec, GraphDef &graph_def,
+                       bool &is_initialize, bool &is_allreduce);
+  Status SeparateGraphDef(GraphDef &ori_graph_def, std::vector<ge::AscendString> &partition_graph,
                           std::map<ge::AscendString, ge::AscendString> &const_value_map);
   // Analyze sting input data
   Status AnalyzeStringInput(ge::Tensor &input, const std::vector<std::string> &string_vector) const;
 
   // prepare input tensor
-  Status BuildInputTensorInfo(OpKernelContext *const ctx,
-                              std::vector<Tensor> &input_vec,
-                              std::vector<std::string> &input_shapes,
-                              std::vector<ge::Tensor> &inputs);
+  Status BuildInputTensorInfo(OpKernelContext *const ctx, std::vector<Tensor> &input_vec,
+                              std::vector<std::string> &input_shapes, std::vector<ge::Tensor> &inputs);
   // prepare output tensor
   Status BuildOutTensorInfo(OpKernelContext *ctx);
 
   Status ParserGraph(OpKernelContext *ctx, const std::vector<Tensor> &input_vec);
   Status AddGraph(OpKernelContext *ctx, const uint32_t &graph_id);
-  Status CompileGraph(OpKernelContext *ctx, const std::vector<Tensor> &input_vec,
-                      const std::vector<ge::Tensor> &inputs,
+  Status CompileGraph(OpKernelContext *ctx, const std::vector<Tensor> &input_vec, const std::vector<ge::Tensor> &inputs,
                       const uint32_t &graph_id);
   Status BuildGraph(const uint32_t &graph_id, const std::vector<ge::Tensor> &inputs);
   Status RunGraph(OpKernelContext *ctx, const uint32_t &graph_id,
-                  const std::shared_ptr<std::vector<ge::Tensor>> &inputs,
-                  DoneCallback done);
-  Status CompileAndRunGraph(OpKernelContext *ctx,
-                            const std::vector<Tensor> &input_vec,
+                  const std::shared_ptr<std::vector<ge::Tensor>> &inputs, DoneCallback done);
+  Status CompileAndRunGraph(OpKernelContext *ctx, const std::vector<Tensor> &input_vec,
                             const std::shared_ptr<std::vector<ge::Tensor>> &inputs,
-                            const std::vector<std::string> &input_shapes,
-                            DoneCallback done);
+                            const std::vector<std::string> &input_shapes, DoneCallback done);
   bool IsLazyCompile();
   // create input and output desc for NodeDef
   Status GenerateDesc(Node *&node);
@@ -145,13 +134,12 @@ public:
 
   void ClearGraphIdCount();
 
-  void GetExecGraphId(uint32_t &cache_graph_id,
-                      const std::vector<std::string> &input_shapes);
+  void GetExecGraphId(uint32_t &cache_graph_id, const std::vector<std::string> &input_shapes);
 
   void GetMsTuneConfig(std::map<std::string, std::string> init_options);
 
-  void SetShapesToOutputDesc(const std::vector<std::string> &input_shapes,
-                             const int &index, AttrValue &attr_shape_value) const;
+  void SetShapesToOutputDesc(const std::vector<std::string> &input_shapes, const int &index,
+                             AttrValue &attr_shape_value) const;
 
   void BuildShapeNodeAndCacheArgNodes(Graph &graph);
 
@@ -170,8 +158,7 @@ public:
   Status SetGraphOptions(OpKernelContext *ctx);
   void ProcessDpOpFuncDef(const Node &node) const;
 
-  void BuildQueueDataAndGetNextFromQueue(Graph &graph, const Node &getnext_node,
-                                         const std::string &channel_name) const;
+  void BuildQueueDataAndGetNextFromQueue(Graph &graph, const Node &getnext_node, const std::string &channel_name) const;
 
   void HandleDpOpAndGetNextNodes(Graph &graph);
 
@@ -234,7 +221,7 @@ public:
   std::map<int, TensorShape> outputs_shape_;
   std::string is_train_graph_;
   void *handle_;
-  std::vector<Node*> dynamic_shape_nodes_;
+  std::vector<Node *> dynamic_shape_nodes_;
   std::string dynamic_input_;
   std::string compile_dynamic_mode_;
   std::string shape_generalization_mode_{"STRICT"};

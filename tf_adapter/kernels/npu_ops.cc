@@ -17,10 +17,12 @@ class NpuOnnxGraphOp : public OpKernel {
   explicit NpuOnnxGraphOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~NpuOnnxGraphOp() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) context;
+    (void)context;
     return;
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 class FileConstant : public OpKernel {
@@ -28,7 +30,7 @@ class FileConstant : public OpKernel {
   explicit FileConstant(OpKernelConstruction *context) : OpKernel(context) {}
   ~FileConstant() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) context;
+    (void)context;
     return;
   }
   bool IsExpensive() override {

@@ -24,12 +24,16 @@ namespace {
 const std::string ATTR_VALUE_SCOPE_NAME = "_without_npu_compile";
 }
 
-Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t &data_size,
-                             std::vector<int64_t> &dims, std::vector<std::unique_ptr<uint8_t[]>> &buff_list) {
-  for (int i = 0; i < tensor.dims(); ++i) { dims.emplace_back(tensor.dim_size(i)); }
+Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t &data_size, std::vector<int64_t> &dims,
+                             std::vector<std::unique_ptr<uint8_t[]>> &buff_list) {
+  for (int i = 0; i < tensor.dims(); ++i) {
+    dims.emplace_back(tensor.dim_size(i));
+  }
   int64_t total_nums = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int64_t>());
   uint64_t total_size = 0UL;
-  for (int64_t i = 0; i < total_nums; ++i) { total_size += tensor.flat<tstring>()(i).size(); }
+  for (int64_t i = 0; i < total_nums; ++i) {
+    total_size += tensor.flat<tstring>()(i).size();
+  }
   uint64_t buff_size = sizeof(ge::StringHead) * static_cast<uint64_t>(total_nums) + total_size;
   std::unique_ptr<uint8_t[]> buffer(new (std::nothrow) uint8_t[buff_size]);
   REQUIRES_NOT_NULL(buffer);
@@ -42,10 +46,14 @@ Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t 
     head->addr = offset;
     head->len = tensor.flat<tstring>()(i).size();
     // Skip data copy for empty tensor
-    if (head->len == 0ULL) { continue; }
+    if (head->len == 0ULL) {
+      continue;
+    }
     auto status = LoopCopy(ge::PtrToPtr<uint8_t, char>(base_ptr + offset), (buff_size - offset),
                            const_cast<char *>(tensor.flat<tstring>()(i).data()), head->len);
-    if (!status.ok()) { return status; }
+    if (!status.ok()) {
+      return status;
+    }
     offset += head->len;
   }
   data_ptr = buff_list.back().get();
@@ -58,9 +66,7 @@ Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
   if (tensor.dims() == 0) {
     std::string value = tensor.scalar<npu::compat_tf1_tf2::string>()();
     item.dataLen_ = tensor.scalar<npu::compat_tf1_tf2::string>()().size();
-    item.dataPtr_ = std::shared_ptr<void>(const_cast<char *>(value.data()), [](const void *elem) {
-      (void)elem;
-    });
+    item.dataPtr_ = std::shared_ptr<void>(const_cast<char *>(value.data()), [](const void *elem) { (void)elem; });
     return Status::OK();
   }
 
@@ -68,9 +74,7 @@ Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
   uint64_t data_size = 0UL;
   std::vector<int64_t> dims;
   TF_RETURN_IF_ERROR(GetDtStringTensorData(tensor, data_ptr, data_size, dims, buff_list));
-  item.dataPtr_ = std::shared_ptr<void>(data_ptr, [](const void *ptr) {
-    (void)ptr;
-  });
+  item.dataPtr_ = std::shared_ptr<void>(data_ptr, [](const void *ptr) { (void)ptr; });
   item.dataLen_ = data_size;
   return Status::OK();
 }
@@ -80,8 +84,8 @@ Status MappingDtStringTensor2AclDataItem(const Tensor &tensor, acltdtDataItem *&
   if (tensor.dims() == 0) {
     auto value = ge::PtrToPtr<char, tensorflow::tstring>(const_cast<char *>(tensor.tensor_data().data()));
     // for scalar type, *dims is nullptr and dim_num is 0
-    acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING,
-                                    const_cast<char *>(value->c_str()), value->size());
+    acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING, const_cast<char *>(value->c_str()),
+                                    value->size());
     return Status::OK();
   }
 
@@ -89,8 +93,7 @@ Status MappingDtStringTensor2AclDataItem(const Tensor &tensor, acltdtDataItem *&
   uint64_t data_size = 0UL;
   std::vector<int64_t> dims;
   TF_RETURN_IF_ERROR(GetDtStringTensorData(tensor, data_ptr, data_size, dims, buff_list));
-  acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, dims.data(), dims.size(),
-                                  ACL_STRING, data_ptr, data_size);
+  acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, dims.data(), dims.size(), ACL_STRING, data_ptr, data_size);
   return Status::OK();
 }
 
@@ -116,7 +119,9 @@ Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size) 
 }
 
 bool IsWithoutNpuScope(const NodeDef &node_def) {
-  if (node_def.attr().count(ATTR_VALUE_SCOPE_NAME) > 0) { return node_def.attr().at(ATTR_VALUE_SCOPE_NAME).b(); }
+  if (node_def.attr().count(ATTR_VALUE_SCOPE_NAME) > 0) {
+    return node_def.attr().at(ATTR_VALUE_SCOPE_NAME).b();
+  }
   return false;
 }
 
@@ -124,17 +129,17 @@ bool IsWithoutNpuScope(const Node *node) {
   return IsWithoutNpuScope(node->def());
 }
 
-bool IsVariableOrResourceVariable(const Node * const node) {
+bool IsVariableOrResourceVariable(const Node *const node) {
   if (node->IsVariable() || node->type_string() == "VarHandleOp") {
     return true;
   }
   return false;
 }
 
-bool IsVariableExecuteOnHost(const Node * const node, const std::string &variable_location) {
+bool IsVariableExecuteOnHost(const Node *const node, const std::string &variable_location) {
   if (variable_location == "Host" && IsVariableOrResourceVariable(node)) {
     return true;
   }
   return false;
 }
-} // namespace tensorflow
+}  // namespace tensorflow

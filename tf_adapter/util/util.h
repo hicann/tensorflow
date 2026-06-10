@@ -18,8 +18,8 @@
 #include "tf_adapter/util/host_queue.h"
 
 namespace tensorflow {
-Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t &data_size,
-                             std::vector<int64_t> &dims, std::vector<std::unique_ptr<uint8_t[]>> &buff_list);
+Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t &data_size, std::vector<int64_t> &dims,
+                             std::vector<std::unique_ptr<uint8_t[]>> &buff_list);
 
 Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
                                       std::vector<std::unique_ptr<uint8_t[]>> &buff_list);
@@ -31,7 +31,7 @@ Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size);
 
 bool IsWithoutNpuScope(const NodeDef &node_def);
 bool IsWithoutNpuScope(const Node *node);
-bool IsVariableOrResourceVariable(const Node * const node);
-bool IsVariableExecuteOnHost(const Node * const node, const std::string &variable_location);
-} // namespace tensorflow
-#endif // TENSORFLOW_UTILS_H_
+bool IsVariableOrResourceVariable(const Node *const node);
+bool IsVariableExecuteOnHost(const Node *const node, const std::string &variable_location);
+}  // namespace tensorflow
+#endif  // TENSORFLOW_UTILS_H_

@@ -499,7 +499,6 @@ REGISTER_OP("KMeansCentroidsV2")
       return Status::OK();
     });
 
-
 REGISTER_OP("FileConstant")
     .Output("y: dtype")
     .Attr("file_path: string = ''")

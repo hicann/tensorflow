@@ -17,39 +17,28 @@
 #include "tf_adapter/common/adapter_logger.h"
 
 namespace {
-  constexpr uint32_t kDeviceSatModeLimit = 2U;
-  std::uint32_t deviceSatMode = 2U;
-  std::mutex aclChannleMutex;
-  std::map<std::string, acltdtChannelHandle *> aclChannleMap;
-  std::map<std::string, aclDataType> aclDataTypeStrMap = {
-    {"bool",     ACL_BOOL},
-    {"int8",     ACL_INT8},
-    {"uint8",    ACL_UINT8},
-    {"half",     ACL_FLOAT16},
-    {"int16",    ACL_INT16},
-    {"uint16",   ACL_UINT16},
-    {"float",    ACL_FLOAT},
-    {"int32",    ACL_INT32},
-    {"uint32",   ACL_UINT32},
-    {"int64",    ACL_INT64},
-    {"uint64",   ACL_UINT64},
-    {"double",   ACL_DOUBLE},
-    {"string",   ACL_STRING}
-  };
-}
+constexpr uint32_t kDeviceSatModeLimit = 2U;
+std::uint32_t deviceSatMode = 2U;
+std::mutex aclChannleMutex;
+std::map<std::string, acltdtChannelHandle *> aclChannleMap;
+std::map<std::string, aclDataType> aclDataTypeStrMap = {
+    {"bool", ACL_BOOL},     {"int8", ACL_INT8},     {"uint8", ACL_UINT8},  {"half", ACL_FLOAT16},  {"int16", ACL_INT16},
+    {"uint16", ACL_UINT16}, {"float", ACL_FLOAT},   {"int32", ACL_INT32},  {"uint32", ACL_UINT32}, {"int64", ACL_INT64},
+    {"uint64", ACL_UINT64}, {"double", ACL_DOUBLE}, {"string", ACL_STRING}};
+}  // namespace
 
 namespace acl {
-  void GetTensorDimsString(const int64_t *dims, size_t dimNum, std::string &dimsStr) {
-    for (size_t i = 0; i < dimNum; ++i) {
-      dimsStr += std::to_string(dims[i]);
-      if (i + 1 == dimNum) {
-        break;
-      }
-      dimsStr.push_back(',');
+void GetTensorDimsString(const int64_t *dims, size_t dimNum, std::string &dimsStr) {
+  for (size_t i = 0; i < dimNum; ++i) {
+    dimsStr += std::to_string(dims[i]);
+    if (i + 1 == dimNum) {
+      break;
     }
-    dimsStr += "]";
+    dimsStr.push_back(',');
   }
+  dimsStr += "]";
 }
+}  // namespace acl
 
 aclError aclprofInit(const char *profilerResultPath, size_t length) {
   return ACL_SUCCESS;
@@ -71,8 +60,8 @@ aclError aclprofStop(const aclprofConfig *profilerConfig) {
   return ACL_SUCCESS;
 }
 aclprofConfig stub_config;
-aclprofConfig *aclprofCreateConfig(uint32_t *deviceIdList, uint32_t deviceNums,
-  aclprofAicoreMetrics aicoreMetrics, const aclprofAicoreEvents *aicoreEvents, uint64_t dataTypeConfig) {
+aclprofConfig *aclprofCreateConfig(uint32_t *deviceIdList, uint32_t deviceNums, aclprofAicoreMetrics aicoreMetrics,
+                                   const aclprofAicoreEvents *aicoreEvents, uint64_t dataTypeConfig) {
   return &stub_config;
 }
 
@@ -85,7 +74,7 @@ aclError acltdtDestroyChannel(acltdtChannelHandle *handle) {
 }
 
 acltdtChannelHandle *acltdtCreateChannel(uint32_t deviceId, const char *name) {
-  acltdtChannelHandle *handle = new(std::nothrow) acltdtChannelHandle(deviceId, name);
+  acltdtChannelHandle *handle = new (std::nothrow) acltdtChannelHandle(deviceId, name);
   {
     std::unique_lock<std::mutex> lk(aclChannleMutex);
     aclChannleMap[name] = handle;
@@ -93,7 +82,7 @@ acltdtChannelHandle *acltdtCreateChannel(uint32_t deviceId, const char *name) {
   return handle;
 }
 
-aclError aclrtSetDevice(int32_t deviceId){
+aclError aclrtSetDevice(int32_t deviceId) {
   int32_t deviceMaxNum = 7;
   if (deviceId > deviceMaxNum) {
     return ACL_ERROR_INVALID_PARAM;
@@ -106,9 +95,7 @@ aclError aclrtMallocHost(void **hostPtr, size_t size) {
   return ACL_SUCCESS;
 }
 
-aclError aclrtMemcpy(void *dst, size_t destMax,
-                     const void *src, size_t count,
-                     aclrtMemcpyKind kind) {
+aclError aclrtMemcpy(void *dst, size_t destMax, const void *src, size_t count, aclrtMemcpyKind kind) {
   auto ret = memcpy_s(dst, destMax, src, count);
   if (ret != EOK) {
     return ACL_ERROR_BAD_ALLOC;
@@ -129,10 +116,8 @@ aclError aclrtResetDevice(int32_t deviceId) {
   return ACL_SUCCESS;
 }
 
-acltdtChannelHandle *acltdtCreateChannelWithCapacity(uint32_t deviceId,
-                                                     const char *name,
-                                                     size_t capacity) {
-  acltdtChannelHandle *handle = new(std::nothrow) acltdtChannelHandle(deviceId, name);
+acltdtChannelHandle *acltdtCreateChannelWithCapacity(uint32_t deviceId, const char *name, size_t capacity) {
+  acltdtChannelHandle *handle = new (std::nothrow) acltdtChannelHandle(deviceId, name);
   {
     std::unique_lock<std::mutex> lk(aclChannleMutex);
     aclChannleMap[name] = handle;
@@ -171,17 +156,16 @@ aclError acltdtDestroyDataset(acltdtDataset *dataset) {
 }
 
 acltdtDataset *acltdtCreateDataset() {
-  return new(std::nothrow) acltdtDataset();
+  return new (std::nothrow) acltdtDataset();
 }
 
-aclError acltdtReceiveTensor(const acltdtChannelHandle *handle,
-                             acltdtDataset *dataset,
-                             int32_t timeout) {
+aclError acltdtReceiveTensor(const acltdtChannelHandle *handle, acltdtDataset *dataset, int32_t timeout) {
   if (handle->recvName.empty() && handle->name.empty()) {
     return ACL_ERROR_INVALID_PARAM;
   }
   if (handle->recvName == "train" || handle->name == "train") {
-    acltdtDataItem *acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_END_OF_SEQUENCE, nullptr, 0, ACL_BOOL /* whatever */, nullptr, 0);
+    acltdtDataItem *acl_data =
+        acltdtCreateDataItem(ACL_TENSOR_DATA_END_OF_SEQUENCE, nullptr, 0, ACL_BOOL /* whatever */, nullptr, 0);
     if (acltdtAddDataItem(dataset, acl_data) != ACL_ERROR_NONE) {
       if (acltdtDestroyDataItem(acl_data) != ACL_ERROR_NONE) {
         return ACL_ERROR_FAILURE;
@@ -191,27 +175,23 @@ aclError acltdtReceiveTensor(const acltdtChannelHandle *handle,
     static std::string vaue_str = "print message!!";
     std::string *value = &vaue_str;
     // for scalar type, *dims is nullptr and dim_num is 0
-    acltdtDataItem *acl_data = acltdtCreateDataItem(
-      ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING,
-      const_cast<char *>(value->c_str()), value->size());
+    acltdtDataItem *acl_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING,
+                                                    const_cast<char *>(value->c_str()), value->size());
     if (acltdtAddDataItem(dataset, acl_data) != ACL_ERROR_NONE) {
       if (acltdtDestroyDataItem(acl_data) != ACL_ERROR_NONE) {
         return ACL_ERROR_FAILURE;
       }
     }
     static int32_t value_int = 1;
-    acltdtDataItem *acl_int_data = acltdtCreateDataItem(
-      ACL_TENSOR_DATA_TENSOR, nullptr,
-      0, ACL_INT32, &value_int, 4);
+    acltdtDataItem *acl_int_data = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_INT32, &value_int, 4);
     if (acltdtAddDataItem(dataset, acl_int_data) != ACL_ERROR_NONE) {
       if (acltdtDestroyDataItem(acl_int_data) != ACL_ERROR_NONE) {
         return ACL_ERROR_FAILURE;
       }
     }
-    static const std::vector<int64_t> dims {1, 0, 3};
-    acltdtDataItem *acl_empty_tensor = acltdtCreateDataItem(
-      ACL_TENSOR_DATA_TENSOR, dims.data(),
-      dims.size(), ACL_INT32, nullptr, 0);
+    static const std::vector<int64_t> dims{1, 0, 3};
+    acltdtDataItem *acl_empty_tensor =
+        acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, dims.data(), dims.size(), ACL_INT32, nullptr, 0);
     if (acltdtAddDataItem(dataset, acl_empty_tensor) != ACL_ERROR_NONE) {
       if (acltdtDestroyDataItem(acl_empty_tensor) != ACL_ERROR_NONE) {
         return ACL_ERROR_FAILURE;
@@ -222,32 +202,30 @@ aclError acltdtReceiveTensor(const acltdtChannelHandle *handle,
   return ACL_SUCCESS;
 }
 
-acltdtDataItem *acltdtCreateDataItem(acltdtTensorType tdtType,
-                                     const int64_t *dims,
-                                     size_t dimNum,
-                                     aclDataType dataType,
-                                     void *data,
-                                     size_t size) {
+acltdtDataItem *acltdtCreateDataItem(acltdtTensorType tdtType, const int64_t *dims, size_t dimNum, aclDataType dataType,
+                                     void *data, size_t size) {
   if ((dims == nullptr && dimNum != 0) || (dims != nullptr && dimNum == 0)) {
     return nullptr;
   }
   std::string dimsStr = "[";
   acl::GetTensorDimsString(dims, dimNum, dimsStr);
   std::string typeStr;
-  for (const auto &item: aclDataTypeStrMap) {
+  for (const auto &item : aclDataTypeStrMap) {
     if (item.second == dataType) {
       typeStr = item.first;
       break;
     }
   }
-  if (typeStr.empty()) { return nullptr; }
+  if (typeStr.empty()) {
+    return nullptr;
+  }
   std::shared_ptr<void> dataPtr;
   if (data == nullptr) {
     dataPtr.reset();
   } else {
     dataPtr.reset(data, [](const void *p) {});
   }
-  return new(std::nothrow) acltdtDataItem(tdtType, dims, dimNum, dimsStr, dataType, typeStr, dataPtr, size);
+  return new (std::nothrow) acltdtDataItem(tdtType, dims, dimNum, dimsStr, dataType, typeStr, dataPtr, size);
 }
 
 aclError acltdtAddDataItem(acltdtDataset *dataset, acltdtDataItem *dataItem) {
@@ -266,9 +244,7 @@ void setAclTdtSendTensorMockStub(const bool isDriverSuccess) {
   g_AclTdtSendTensorMock = isDriverSuccess;
 }
 
-aclError acltdtSendTensor(const acltdtChannelHandle *handle,
-                          const acltdtDataset *dataset,
-                          int32_t timeout) {
+aclError acltdtSendTensor(const acltdtChannelHandle *handle, const acltdtDataset *dataset, int32_t timeout) {
   if (g_AclTdtSendTensorMock) {
     // 这里保证ACL_ERROR_RT_QUEUE_FULL只返回一次，否则会导致日志持续刷屏
     g_AclTdtSendTensorMock = false;
@@ -344,7 +320,7 @@ aclError acltdtStopChannel(acltdtChannelHandle *handle) {
 
 aclError aclrtCreateStream(aclrtStream *stream) {
   ADP_LOG(INFO) << "aclrtCreateStream stub enter";
-  AclStreamStub *stream_ = new (std::nothrow)AclStreamStub();
+  AclStreamStub *stream_ = new (std::nothrow) AclStreamStub();
   if (stream_ == nullptr) {
     ADP_LOG(ERROR) << "new AclStreamStub failed";
     *stream = nullptr;
@@ -358,21 +334,21 @@ aclError aclrtCreateStream(aclrtStream *stream) {
 
 aclError aclrtDestroyStream(aclrtStream stream) {
   ADP_LOG(INFO) << "aclrtDestroyStream stub enter";
-  delete (AclStreamStub*)stream;
+  delete (AclStreamStub *)stream;
   ADP_LOG(INFO) << "aclrtDestroyStream stub out";
   return ACL_ERROR_NONE;
 }
 
 aclError aclrtCreateEvent(aclrtEvent *event) {
   ADP_LOG(INFO) << "aclrtCreateEvent stub enter";
-  *event = new (std::nothrow)AclEventStub();
+  *event = new (std::nothrow) AclEventStub();
   ADP_LOG(INFO) << "aclrtCreateEvent stub out";
   return ACL_ERROR_NONE;
 }
 
 aclError aclrtDestroyEvent(aclrtEvent event) {
   ADP_LOG(INFO) << "aclrtDestroyEvent stub enter";
-  delete (AclEventStub*)(event);
+  delete (AclEventStub *)(event);
   ADP_LOG(INFO) << "aclrtDestroyEvent stub out";
   return ACL_ERROR_NONE;
 }
@@ -424,10 +400,10 @@ size_t aclDataTypeSize(aclDataType dataType) {
 
 aclError aclrtSynchronizeStream(aclrtStream stream) {
   ADP_LOG(INFO) << "aclrtSynchronizeStream stub enter, stream = " << stream;
-  AclStreamStub *stub = static_cast<AclStreamStub*>(stream);
+  AclStreamStub *stub = static_cast<AclStreamStub *>(stream);
   if (stub->hook != nullptr) {
     ADP_LOG(INFO) << "aclrtSynchronizeStream:: stream = " << stream << ", process hook = "
-      << stub->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+                  << stub->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
     return stub->hook(stub->input_data, stub->output_data);
   }
   ADP_LOG(INFO) << "aclrtSynchronizeStream stub out, stream = " << stream;
@@ -436,10 +412,10 @@ aclError aclrtSynchronizeStream(aclrtStream stream) {
 
 aclError aclrtSynchronizeEvent(aclrtEvent event) {
   ADP_LOG(INFO) << "aclrtSynchronizeEvent stub enter, event = " << event;
-  AclEventStub *stub = static_cast<AclEventStub*>(event);
+  AclEventStub *stub = static_cast<AclEventStub *>(event);
   if (stub->hook != nullptr) {
     ADP_LOG(INFO) << "aclrtSynchronizeEvent:: event = " << event << ", process hook = "
-      << stub->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+                  << stub->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
     (void)stub->hook(stub->input_data, stub->output_data);
   }
   ADP_LOG(INFO) << "aclrtSynchronizeEvent stub out, event = " << event;
@@ -448,11 +424,11 @@ aclError aclrtSynchronizeEvent(aclrtEvent event) {
 
 aclError aclrtQueryEvent(aclrtEvent event, aclrtEventStatus *status) {
   ADP_LOG(INFO) << "aclrtQueryEvent stub enter, event = " << event;
-  AclEventStub *stub = static_cast<AclEventStub*>(event);
+  AclEventStub *stub = static_cast<AclEventStub *>(event);
   *status = stub->status;
   if (stub->status == ACL_EVENT_STATUS_COMPLETE) {
     ADP_LOG(INFO) << "aclrtQueryEvent:: event = " << event << ", process hook = "
-      << stub->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+                  << stub->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
     (void)stub->hook(stub->input_data, stub->output_data);
   }
   ADP_LOG(INFO) << "aclrtQueryEvent stub out, event = " << event;
@@ -460,17 +436,16 @@ aclError aclrtQueryEvent(aclrtEvent event, aclrtEventStatus *status) {
 }
 
 aclError aclrtRecordEvent(aclrtEvent event, aclrtStream stream) {
-  AclStreamStub *stubStream = static_cast<AclStreamStub*>(stream);
-  AclEventStub *stubEvent = static_cast<AclEventStub*>(event);
-  ADP_LOG(INFO) << "aclrtRecordEvent stub enter, stream = " << stream
-    << ", event = " << event << ", process hook = "
-    << stubStream->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+  AclStreamStub *stubStream = static_cast<AclStreamStub *>(stream);
+  AclEventStub *stubEvent = static_cast<AclEventStub *>(event);
+  ADP_LOG(INFO) << "aclrtRecordEvent stub enter, stream = " << stream << ", event = " << event << ", process hook = "
+                << stubStream->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
   stubEvent->input_data = stubStream->input_data;
   stubEvent->output_data = stubStream->output_data;
   stubEvent->hook = stubStream->hook;
   stubEvent->status = stubStream->status;
   ADP_LOG(INFO) << "aclrtRecordEvent stub out, event = " << event << ", process hook = "
-    << stubEvent->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+                << stubEvent->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
   return ACL_ERROR_NONE;
 }
 
@@ -504,7 +479,7 @@ void SetCreateDataset(const bool isSuccess) {
 
 aclmdlDataset *aclmdlCreateDataset() {
   if (g_createDatasetStatus) {
-    return new(std::nothrow) aclmdlDataset();
+    return new (std::nothrow) aclmdlDataset();
   }
   return nullptr;
 }
@@ -531,7 +506,7 @@ aclDataBuffer *aclmdlGetDatasetBuffer(const aclmdlDataset *dataset, size_t index
 }
 
 aclDataBuffer *aclCreateDataBuffer(void *data, size_t size) {
-  return new(std::nothrow) aclDataBuffer(data, size);
+  return new (std::nothrow) aclDataBuffer(data, size);
 }
 
 bool g_aclDataBuf = true;
@@ -569,7 +544,7 @@ void SetCreateTensorDesc(const bool isSuccess) {
 
 aclTensorDesc *aclCreateTensorDesc(aclDataType dataType, int numDims, const int64_t *dims, aclFormat format) {
   if (g_createTensorDescStatus) {
-    return new(std::nothrow) aclTensorDesc();
+    return new (std::nothrow) aclTensorDesc();
   }
   return nullptr;
 }
@@ -586,7 +561,7 @@ void aclDestroyTensorDesc(const aclTensorDesc *desc) {
 }
 
 aclmdlDesc *aclmdlCreateDesc() {
-  return new(std::nothrow) aclmdlDesc();
+  return new (std::nothrow) aclmdlDesc();
 }
 
 aclError aclmdlDestroyDesc(aclmdlDesc *modelDesc) {
@@ -709,14 +684,14 @@ void RegAclRunGraphWithStreamAsyncStub(AclRunGraphWithStreamAsyncStub stub) {
 
 aclError aclmdlExecuteAsync(uint32_t modelId, const aclmdlDataset *inputs, aclmdlDataset *outputs, aclrtStream stream) {
   ADP_LOG(INFO) << "RunGraphWithStreamAsync enter, stream = " << stream;
-  AclStreamStub *stub = static_cast<AclStreamStub*>(stream);
-  stub->input_data = const_cast<aclmdlDataset*>(inputs);
+  AclStreamStub *stub = static_cast<AclStreamStub *>(stream);
+  stub->input_data = const_cast<aclmdlDataset *>(inputs);
   stub->output_data = outputs;
   stub->hook = nullptr;
   if (g_RunGraphWithStreamAsyncStub != nullptr) {
     (void)g_RunGraphWithStreamAsyncStub(modelId, inputs, outputs, stream);
     ADP_LOG(INFO) << "AclRunGraphWithStreamAsync proc hook, stream = " << stub << "hook = "
-      << stub->hook.target<aclError(*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
+                  << stub->hook.target<aclError (*)(const aclmdlDataset *input_data, aclmdlDataset *output_data)>();
   }
   return ACL_SUCCESS;
 }

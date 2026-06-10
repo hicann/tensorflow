@@ -69,7 +69,7 @@ class NpuAttrs {
   static bool GetNewDataTransferFlag();
   // only use for ut/st and host_queue_dataset set session_device_id
   static void SetNewDataTransferFlag(bool flag);
-  template<typename T>
+  template <typename T>
   static std::string VectorToString(const std::vector<T> &values) {
     std::stringstream ss;
     ss << '[';
@@ -83,7 +83,7 @@ class NpuAttrs {
     ss << ']';
     return ss.str();
   }
-  template<typename T>
+  template <typename T>
   static Status CheckValueAllowed(const std::string &option, const T &v, const std::vector<T> &allowed_values) {
     if (find(allowed_values.begin(), allowed_values.end(), v) != allowed_values.cend()) {
       return Status::OK();

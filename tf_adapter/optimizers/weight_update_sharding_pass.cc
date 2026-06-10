@@ -72,7 +72,7 @@ Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options
     }
 
     std::vector<Node *> in_nodes;
-    (void) std::copy(graphIn->nodes().begin(), graphIn->nodes().end(), std::back_inserter(in_nodes));
+    (void)std::copy(graphIn->nodes().begin(), graphIn->nodes().end(), std::back_inserter(in_nodes));
     for (int32_t i = static_cast<int32_t>(in_nodes.size()) - 1; i >= 0; i--) {
       Node *node = in_nodes.at(static_cast<size_t>(i));
       REQUIRES_NOT_NULL(node);
@@ -93,7 +93,7 @@ Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options
           }
         }
         std::vector<const Edge *> out_edges;
-        (void) std::copy(node->out_edges().begin(), node->out_edges().end(), std::back_inserter(out_edges));
+        (void)std::copy(node->out_edges().begin(), node->out_edges().end(), std::back_inserter(out_edges));
         for (auto out_edge : out_edges) {
           REQUIRES_NOT_NULL(out_edge);
           REQUIRES_NOT_NULL(out_edge->src());
@@ -176,13 +176,13 @@ Status WeightUpdateShardingPass::Run(const GraphOptimizationPassOptions &options
             graphIn->RemoveEdge(edge);
           }
           // add edge : variable --> broadcast
-          (void) graphIn->AddEdge(var_node, 0, broadcast_node, 0);
+          (void)graphIn->AddEdge(var_node, 0, broadcast_node, 0);
           for (auto var_edge : var_node->out_edges()) {
             REQUIRES_NOT_NULL(var_edge);
             REQUIRES_NOT_NULL(var_edge->src());
             REQUIRES_NOT_NULL(var_edge->dst());
             if (var_edge->dst() != broadcast_node) {
-              (void) graphIn->AddControlEdge(broadcast_node, var_edge->dst());
+              (void)graphIn->AddControlEdge(broadcast_node, var_edge->dst());
             }
           }
         }

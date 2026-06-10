@@ -18,7 +18,7 @@ std::string GetOptionVal(const std::map<std::string, std::string> &options, cons
   auto it = options.find(option_key);
   return (it != options.end() ? it->second : "");
 }
-}
+}  // namespace
 /**
  * @brief: get instance
  */

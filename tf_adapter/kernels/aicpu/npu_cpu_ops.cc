@@ -20,23 +20,30 @@ class EmbeddingRankIdOpKernel : public OpKernel {
  public:
   explicit EmbeddingRankIdOpKernel(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingRankIdOpKernel() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "EmbeddingRankIdOp Compute."; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "EmbeddingRankIdOp Compute.";
+  }
 };
 
 class EmbeddingLocalIndexOpKernel : public OpKernel {
  public:
   explicit EmbeddingLocalIndexOpKernel(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingLocalIndexOpKernel() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "EmbeddingLocalIndexOp Compute."; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "EmbeddingLocalIndexOp Compute.";
+  }
 };
 
 class LruCacheOp : public ResourceOpKernel<CacheInterface> {
  public:
-  explicit LruCacheOp(OpKernelConstruction* context) : ResourceOpKernel(context) {}
+  explicit LruCacheOp(OpKernelConstruction *context) : ResourceOpKernel(context) {}
   ~LruCacheOp() override {}
-  void Compute(OpKernelContext* context) override { ADP_LOG(INFO) << "LruCacheOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "LruCacheOp Compute";
+  }
+
  private:
-  Status CreateResource(CacheInterface** resource) override {
+  Status CreateResource(CacheInterface **resource) override {
     return Status::OK();
   }
 };
@@ -45,21 +52,27 @@ class CacheAddOp : public OpKernel {
  public:
   explicit CacheAddOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~CacheAddOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "CacheAddOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "CacheAddOp Compute";
+  }
 };
 
 class CacheRemoteIndexToLocalOp : public OpKernel {
  public:
   explicit CacheRemoteIndexToLocalOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~CacheRemoteIndexToLocalOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "CacheRemoteIndexToLocalOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "CacheRemoteIndexToLocalOp Compute";
+  }
 };
 
 class CacheAllIndexToLocalOp : public OpKernel {
  public:
   explicit CacheAllIndexToLocalOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~CacheAllIndexToLocalOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "CacheAllIndexToLocalOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "CacheAllIndexToLocalOp Compute";
+  }
 };
 
 template <typename T>
@@ -70,7 +83,9 @@ class DeformableOffsetsOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "DeformableOffsetsOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 template <typename T>
@@ -81,7 +96,9 @@ class DeformableOffsetsGradOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "DeformableOffsetsGradOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 class RandomChoiceWithMaskOp : public OpKernel {
@@ -99,7 +116,9 @@ class DenseImageWarpOp : public OpKernel {
   explicit DenseImageWarpOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~DenseImageWarpOp() override {}
   void Compute(OpKernelContext *context) override {}
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 template <typename T>
@@ -108,98 +127,126 @@ class DenseImageWarpGradOp : public OpKernel {
   explicit DenseImageWarpGradOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~DenseImageWarpGradOp() override {}
   void Compute(OpKernelContext *context) override {}
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 class BatchEnqueueOp : public OpKernel {
  public:
   explicit BatchEnqueueOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~BatchEnqueueOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "BatchEnqueueOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "BatchEnqueueOp Compute";
+  }
 };
 
 class OCRRecognitionPreHandleOp : public OpKernel {
  public:
   explicit OCRRecognitionPreHandleOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~OCRRecognitionPreHandleOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "OCRRecognitionPreHandleOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "OCRRecognitionPreHandleOp Compute";
+  }
 };
 
 class OCRDetectionPreHandleOp : public OpKernel {
  public:
   explicit OCRDetectionPreHandleOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~OCRDetectionPreHandleOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "OCRDetectionPreHandleOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "OCRDetectionPreHandleOp Compute";
+  }
 };
 
 class OCRIdentifyPreHandleOp : public OpKernel {
  public:
   explicit OCRIdentifyPreHandleOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~OCRIdentifyPreHandleOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "OCRIdentifyPreHandleOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "OCRIdentifyPreHandleOp Compute";
+  }
 };
 
 class BatchDilatePolysOp : public OpKernel {
-  public:
+ public:
   explicit BatchDilatePolysOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~BatchDilatePolysOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "BatchDilatePolysOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "BatchDilatePolysOp Compute";
+  }
 };
 
 class OCRFindContoursOp : public OpKernel {
-  public:
+ public:
   explicit OCRFindContoursOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~OCRFindContoursOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "OCRFindContoursOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "OCRFindContoursOp Compute";
+  }
 };
 
 class OCRDetectionPostHandleOp : public OpKernel {
  public:
   explicit OCRDetectionPostHandleOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~OCRDetectionPostHandleOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "OCRDetectionPostHandleOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "OCRDetectionPostHandleOp Compute";
+  }
 };
 
 class WarpAffineV2Op : public OpKernel {
  public:
   explicit WarpAffineV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~WarpAffineV2Op() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "WarpAffineV2Op Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "WarpAffineV2Op Compute";
+  }
 };
 
 class ResizeV2Op : public OpKernel {
  public:
   explicit ResizeV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~ResizeV2Op() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "ResizeV2Op Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "ResizeV2Op Compute";
+  }
 };
 
 class ResizeAndClipPolysOp : public OpKernel {
  public:
   explicit ResizeAndClipPolysOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~ResizeAndClipPolysOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "ResizeAndClipPolysOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "ResizeAndClipPolysOp Compute";
+  }
 };
 
 class DequeueOp : public OpKernel {
  public:
   explicit DequeueOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~DequeueOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "DequeueOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "DequeueOp Compute";
+  }
 };
 
 class NonZeroWithValueShapeOp : public OpKernel {
  public:
   explicit NonZeroWithValueShapeOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~NonZeroWithValueShapeOp() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "NonZeroWithValueShapeOp Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "NonZeroWithValueShapeOp Compute";
+  }
 };
 
 class NonZeroWithValueShapeV2Op : public OpKernel {
  public:
   explicit NonZeroWithValueShapeV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~NonZeroWithValueShapeV2Op() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "NonZeroWithValueShapeV2Op Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "NonZeroWithValueShapeV2Op Compute";
+  }
 };
 
 class ScatterElementsV2Op : public OpKernel {
@@ -207,7 +254,7 @@ class ScatterElementsV2Op : public OpKernel {
   explicit ScatterElementsV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~ScatterElementsV2Op() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) (context);
+    (void)(context);
     ADP_LOG(INFO) << "in ScatterElementsV2";
   }
   bool IsExpensive() override {
@@ -239,48 +286,41 @@ REGISTER_KERNEL_BUILDER(Name("WarpAffineV2").Device(DEVICE_CPU), WarpAffineV2Op)
 REGISTER_KERNEL_BUILDER(Name("ResizeV2").Device(DEVICE_CPU), ResizeV2Op);
 
 class DecodeImageV3Op : public OpKernel {
-public:
+ public:
   explicit DecodeImageV3Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~DecodeImageV3Op() override {}
-  void Compute(OpKernelContext *context) override { ADP_LOG(INFO) << "DecodeImageV3Op Compute"; }
+  void Compute(OpKernelContext *context) override {
+    ADP_LOG(INFO) << "DecodeImageV3Op Compute";
+  }
 };
 // Since the DecodeImage is registed on 2.x,
 // in order to ensure that there si no conflict between operators on 1.x and 2.x,
 // it is registered as the DecodeImageV3
 REGISTER_KERNEL_BUILDER(Name("DecodeImageV3").Device(DEVICE_CPU), DecodeImageV3Op);
 
-#define REGISTER_KERNEL(type)                                \
-REGISTER_KERNEL_BUILDER(Name("DeformableOffsets")            \
-                            .Device(DEVICE_CPU)              \
-                            .TypeConstraint<type>("T"),      \
-                        DeformableOffsetsOp<type>)
+#define REGISTER_KERNEL(type)                                                                     \
+  REGISTER_KERNEL_BUILDER(Name("DeformableOffsets").Device(DEVICE_CPU).TypeConstraint<type>("T"), \
+                          DeformableOffsetsOp<type>)
 REGISTER_KERNEL(float);
 REGISTER_KERNEL(Eigen::half);
 #undef REGISTER_KERNEL
 
-#define REGISTER_KERNEL(type)                                \
-REGISTER_KERNEL_BUILDER(Name("DeformableOffsetsGrad")        \
-                            .Device(DEVICE_CPU)              \
-                            .TypeConstraint<type>("T"),      \
-                        DeformableOffsetsGradOp<type>)
+#define REGISTER_KERNEL(type)                                                                         \
+  REGISTER_KERNEL_BUILDER(Name("DeformableOffsetsGrad").Device(DEVICE_CPU).TypeConstraint<type>("T"), \
+                          DeformableOffsetsGradOp<type>)
 REGISTER_KERNEL(float);
 REGISTER_KERNEL(Eigen::half);
 #undef REGISTER_KERNEL
 
-#define REGISTER_KERNEL(type)                                \
-REGISTER_KERNEL_BUILDER(Name("DenseImageWarp")               \
-                            .Device(DEVICE_CPU)              \
-                            .TypeConstraint<type>("T"),      \
-                        DenseImageWarpOp<type>)
+#define REGISTER_KERNEL(type) \
+  REGISTER_KERNEL_BUILDER(Name("DenseImageWarp").Device(DEVICE_CPU).TypeConstraint<type>("T"), DenseImageWarpOp<type>)
 REGISTER_KERNEL(float);
 REGISTER_KERNEL(Eigen::half);
 #undef REGISTER_KERNEL
 
-#define REGISTER_KERNEL(type)                                \
-REGISTER_KERNEL_BUILDER(Name("DenseImageWarpGrad")           \
-                            .Device(DEVICE_CPU)              \
-                            .TypeConstraint<type>("T"),      \
-                        DenseImageWarpGradOp<type>)
+#define REGISTER_KERNEL(type)                                                                      \
+  REGISTER_KERNEL_BUILDER(Name("DenseImageWarpGrad").Device(DEVICE_CPU).TypeConstraint<type>("T"), \
+                          DenseImageWarpGradOp<type>)
 REGISTER_KERNEL(float);
 REGISTER_KERNEL(Eigen::half);
 #undef REGISTER_KERNEL

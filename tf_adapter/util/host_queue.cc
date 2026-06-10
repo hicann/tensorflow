@@ -78,7 +78,7 @@ const static uint8_t kEndOfSequenceFlag = 0x5A;
 
 Status GetDataTypeByTensorType(acltdtTensorType tensor_type, int32_t &data_type) {
   const static std::unordered_map<acltdtTensorType, int32_t> type_map = {
-    {ACL_TENSOR_DATA_TENSOR, 0}, {ACL_TENSOR_DATA_END_OF_SEQUENCE, 1}, {ACL_TENSOR_DATA_ABNORMAL, 2}};
+      {ACL_TENSOR_DATA_TENSOR, 0}, {ACL_TENSOR_DATA_END_OF_SEQUENCE, 1}, {ACL_TENSOR_DATA_ABNORMAL, 2}};
   auto ret = type_map.find(tensor_type);
   if (ret == type_map.end()) {
     ADP_LOG(ERROR) << "invalid tensor_type: " << static_cast<int32_t>(tensor_type);
@@ -87,7 +87,7 @@ Status GetDataTypeByTensorType(acltdtTensorType tensor_type, int32_t &data_type)
 
   data_type = ret->second;
   ADP_LOG(INFO) << "get data type[" << data_type << "] by tensor type[" << static_cast<int32_t>(tensor_type)
-    << "] success.";
+                << "] success.";
   return Status::OK();
 }
 
@@ -197,8 +197,8 @@ Status SerializeDataItemInfo(std::vector<DataItemInfo> &items, void *&buff, cons
   }
   size_t offset = 0UL;
   for (size_t i = 0UL; i < cnt; ++i) {
-    auto ret = memcpy_s(ge::ValueToPtr(ge::PtrToValue(data) + offset), sizeof(ItemInfo),
-                        &items[i].ctrl_info, sizeof(ItemInfo));
+    auto ret = memcpy_s(ge::ValueToPtr(ge::PtrToValue(data) + offset), sizeof(ItemInfo), &items[i].ctrl_info,
+                        sizeof(ItemInfo));
     if (ret != EOK) {
       (void)rtMbufFree(buff);
       return errors::Internal("Copy item info failed, ret=", ret);
@@ -206,8 +206,8 @@ Status SerializeDataItemInfo(std::vector<DataItemInfo> &items, void *&buff, cons
     offset += sizeof(ItemInfo);
 
     for (size_t j = 0UL; j < items[i].ctrl_info.dim_num; ++j) {
-      ret = memcpy_s(ge::ValueToPtr(ge::PtrToValue(data) + offset), sizeof(int64_t),
-                     &(items[i].dims[j]), sizeof(int64_t));
+      ret = memcpy_s(ge::ValueToPtr(ge::PtrToValue(data) + offset), sizeof(int64_t), &(items[i].dims[j]),
+                     sizeof(int64_t));
       if (ret != EOK) {
         (void)rtMbufFree(buff);
         return errors::Internal("Copy dim info failed, ret=", ret);
@@ -215,7 +215,9 @@ Status SerializeDataItemInfo(std::vector<DataItemInfo> &items, void *&buff, cons
       offset += sizeof(int64_t);
     }
 
-    if (items[i].ctrl_info.data_len == 0UL) { continue; }
+    if (items[i].ctrl_info.data_len == 0UL) {
+      continue;
+    }
 
     auto status = LoopCopy(static_cast<char *>(ge::ValueToPtr(ge::PtrToValue(data) + offset)), (total_size - offset),
                            static_cast<char *>(items[i].data_ptr), items[i].ctrl_info.data_len);
@@ -285,7 +287,7 @@ Status HostQueueInit(const std::string &name, const uint32_t &depth, uint32_t &q
                errors::Internal("call rtMbufInit failed, ret=", ret));
 
   const std::lock_guard<std::mutex> lk(queue_id_to_trans_id_map_mutex);
-  (void) queue_id_to_trans_id_map.emplace(queue_id, 0UL);
+  (void)queue_id_to_trans_id_map.emplace(queue_id, 0UL);
   return Status::OK();
 }
 
@@ -302,7 +304,7 @@ void HostQueueDestroy(const uint32_t &queue_id) {
   }
 
   const std::lock_guard<std::mutex> lk(queue_id_to_trans_id_map_mutex);
-  (void) queue_id_to_trans_id_map.erase(queue_id);
+  (void)queue_id_to_trans_id_map.erase(queue_id);
 }
 
 Status MappingTensor2Buff(const acltdtTensorType &acl_type, const std::vector<tensorflow::Tensor> &tensors,

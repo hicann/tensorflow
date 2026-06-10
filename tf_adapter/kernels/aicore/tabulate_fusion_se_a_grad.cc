@@ -14,12 +14,12 @@
 namespace tensorflow {
 template <typename T>
 class TabulateFusionSeAGradOp : public OpKernel {
-public:
-  explicit TabulateFusionSeAGradOp(OpKernelConstruction* ctx) : OpKernel(ctx) {
+ public:
+  explicit TabulateFusionSeAGradOp(OpKernelConstruction *ctx) : OpKernel(ctx) {
     LOG(INFO) << "new TabulateFusionSeAGradOp";
   }
   ~TabulateFusionSeAGradOp() override = default;
-  void Compute(OpKernelContext* ctx) override {
+  void Compute(OpKernelContext *ctx) override {
     (void)ctx;
     LOG(INFO) << "in TabulateFusionSeAGradOp";
   }

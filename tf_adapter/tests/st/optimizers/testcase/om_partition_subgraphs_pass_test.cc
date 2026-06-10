@@ -37,7 +37,7 @@ class OmOptimizationPassTest : public testing::Test {
   }
 
   void InitGraph(const string &graph_def_path) {
-    char trusted_path[MMPA_MAX_PATH] = { "\0" };
+    char trusted_path[MMPA_MAX_PATH] = {"\0"};
     if (mmRealPath(graph_def_path.c_str(), trusted_path, MMPA_MAX_PATH) != EN_OK) {
       LOG(ERROR) << "Get real path failed.";
       return;
@@ -47,9 +47,11 @@ class OmOptimizationPassTest : public testing::Test {
     original_ = CanonicalGraphString(graph_.get());
   }
 
-  static bool IncludeNode(const Node *n) { return n->IsOp(); }
+  static bool IncludeNode(const Node *n) {
+    return n->IsOp();
+  }
 
-  static string EdgeId(const Node* n, int index) {
+  static string EdgeId(const Node *n, int index) {
     if (index == 0) {
       return n->name();
     } else if (index == Graph::kControlSlot) {
@@ -59,12 +61,11 @@ class OmOptimizationPassTest : public testing::Test {
     }
   }
 
-  string CanonicalGraphString(Graph* g) {
+  string CanonicalGraphString(Graph *g) {
     std::vector<string> edges;
-    for (const Edge* e : g->edges()) {
+    for (const Edge *e : g->edges()) {
       if (IncludeNode(e->src()) && IncludeNode(e->dst())) {
-        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->",
-                                        EdgeId(e->dst(), e->dst_input())));
+        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->", EdgeId(e->dst(), e->dst_input())));
       }
     }
     return strings::StrCat(absl::StrJoin(edges, ";"));
@@ -107,12 +108,17 @@ class OmOptimizationPassTest : public testing::Test {
     return result;
   }
 
-  const string &OriginalGraph() const { return original_; }
+  const string &OriginalGraph() const {
+    return original_;
+  }
 
   std::unique_ptr<Graph> graph_;
   string original_;
+
  protected:
-  virtual void SetUp() { *const_cast<bool *>(&kDumpGraph) = true; }
+  virtual void SetUp() {
+    *const_cast<bool *>(&kDumpGraph) = true;
+  }
   virtual void TearDown() {}
 };
 
@@ -153,7 +159,10 @@ TEST_F(OmOptimizationPassTest, BuildGetNextGeOpTest) {
 TEST_F(OmOptimizationPassTest, DpGraphTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/om_test_iterator_build_geop.pbtxt";
   InitGraph(org_graph_def_path);
-  std::string target_graph = "normalize_element/component_0->TensorSliceDataset;TensorSliceDataset->OptimizeDataset;optimizations->OptimizeDataset:1;OptimizeDataset->ModelDataset;ModelDataset->MakeIterator;IteratorV2->MakeIterator:1";
+  std::string target_graph =
+      "normalize_element/"
+      "component_0->TensorSliceDataset;TensorSliceDataset->OptimizeDataset;optimizations->OptimizeDataset:1;"
+      "OptimizeDataset->ModelDataset;ModelDataset->MakeIterator;IteratorV2->MakeIterator:1";
   EXPECT_EQ(DoRunOmOptimizationPassTest(), target_graph);
 }
 TEST_F(OmOptimizationPassTest, MergeClustersTest) {
@@ -161,8 +170,10 @@ TEST_F(OmOptimizationPassTest, MergeClustersTest) {
   InitGraph(org_graph_def_path);
   std::string target_graph = DoRunOmOptimizationPassTest(true);
   bool ret = false;
-  if (target_graph.find("v1->") != target_graph.npos && target_graph.find("v2->") != target_graph.npos
-    && target_graph.find("v3->") != target_graph.npos) { ret = true; }
+  if (target_graph.find("v1->") != target_graph.npos && target_graph.find("v2->") != target_graph.npos &&
+      target_graph.find("v3->") != target_graph.npos) {
+    ret = true;
+  }
   EXPECT_EQ(ret, true);
 }
 TEST_F(OmOptimizationPassTest, MixCompileTest) {
@@ -186,7 +197,8 @@ TEST_F(OmOptimizationPassTest, InOutPairFlagFalseTest) {
 TEST_F(OmOptimizationPassTest, InOutPairFlagTrueTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/om_test_in_out_pair_flag_true.pbtxt";
   InitGraph(org_graph_def_path);
-  EXPECT_EQ(DoRunOmOptimizationPassTest(), "Variable->Variable/read;GeOp10_0->Add;Variable/read->Add:1;Add->retval_Add_0_0");
+  EXPECT_EQ(DoRunOmOptimizationPassTest(),
+            "Variable->Variable/read;GeOp10_0->Add;Variable/read->Add:1;Add->retval_Add_0_0");
 }
 TEST_F(OmOptimizationPassTest, DynamicGetNextInputTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/om_test_getnext_lazy_recompile.pbtxt";
@@ -194,7 +206,9 @@ TEST_F(OmOptimizationPassTest, DynamicGetNextInputTest) {
   std::string target_graph = DoRunOmOptimizationPassTest(true);
   std::vector<std::string> result_graphs;
   Split(target_graph, result_graphs, "|");
-  EXPECT_EQ(result_graphs[1], "IteratorV2->IteratorGetNext;IteratorGetNext->IteratorGetNext_0_retval_RetVal;IteratorGetNext:1->IteratorGetNext_1_retval_RetVal");
+  EXPECT_EQ(result_graphs[1],
+            "IteratorV2->IteratorGetNext;IteratorGetNext->IteratorGetNext_0_retval_RetVal;IteratorGetNext:1->"
+            "IteratorGetNext_1_retval_RetVal");
 }
 TEST_F(OmOptimizationPassTest, IncludeNodeFuncTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/ctrl_if_test.pbtxt";
@@ -447,12 +461,8 @@ TEST_F(OmOptimizationPassTest, NpuOpsIdentifierTest08) {
   std::string custom_opp_path_02 = opp_path + "/custom_opp_path_02";
   std::string custom_opp_path_invalid_02 = opp_path + "/custom_opp_path_invalid_02";
   setenv("ASCEND_OPP_PATH", opp_path.c_str(), 1);
-  ge::SetCustomPathStub((custom_opp_path_01 + ":" +
-                    custom_opp_path_invalid_01 + ":" +
-                    custom_opp_path_empty + ":" +
-                    custom_opp_path_02 + ":" +
-                    custom_opp_path_invalid_02
-                  ));
+  ge::SetCustomPathStub((custom_opp_path_01 + ":" + custom_opp_path_invalid_01 + ":" + custom_opp_path_empty + ":" +
+                         custom_opp_path_02 + ":" + custom_opp_path_invalid_02));
   std::string path_builtin = opp_path + "built-in";
   std::string path_vendors = opp_path + "vendors";
   std::string path_config = path_vendors + "/config.ini";
@@ -468,5 +478,5 @@ TEST_F(OmOptimizationPassTest, NpuOpsIdentifierTest08) {
   ClearLogLevelForC();
   system(("rm -rf " + opp_path).c_str());
 }
-} // end namespace
-} // end tensorflow
+}  // end namespace
+}  // namespace tensorflow

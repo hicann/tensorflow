@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class DynamicRnnV2OP : public OpKernel {
  public:
   explicit DynamicRnnV2OP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class DynamicRnnV2OP : public OpKernel {
   }
   ~DynamicRnnV2OP() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "in DynamicRnnV2OP";
   }
   bool IsExpensive() override {

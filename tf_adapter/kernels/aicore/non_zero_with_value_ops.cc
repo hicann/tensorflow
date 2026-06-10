@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class NonZeroWithValueOP : public OpKernel {
  public:
   explicit NonZeroWithValueOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class NonZeroWithValueOP : public OpKernel {
   }
   ~NonZeroWithValueOP() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "compute in NonZeroWithValueOP";
   }
   bool IsExpensive() override {

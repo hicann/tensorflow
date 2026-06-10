@@ -29,7 +29,7 @@ int AscendDequantInternelCpu(struct DequantInputParam<T> input_param) {
     }
     unsigned int deqscale_int = (input_param.deqscale[channel_index] << DEQ_SCALE_BINS) >> DEQ_SCALE_BINS;
     unsigned int shift_n_int = (input_param.deqscale[channel_index] << N_LFET_BINS) >> N_RIGHT_BINS;
-    float* deqscale = reinterpret_cast<float*>(&(deqscale_int));
+    float *deqscale = reinterpret_cast<float *>(&(deqscale_int));
     NULLPTR_CHECK(deqscale);
     input_param.out[i] = input_param.input[i] * input_param.area_factor;
     if (shift_n_int > 0) {
@@ -48,7 +48,7 @@ int AscendDequantInternelCpu(struct DequantInputParam<T> input_param) {
 template <typename T>
 class AscendDequantOp : public OpKernel {
  public:
-  explicit AscendDequantOp(OpKernelConstruction* context) : OpKernel(context) {
+  explicit AscendDequantOp(OpKernelConstruction *context) : OpKernel(context) {
     OP_REQUIRES_OK(context, context->GetAttr("data_format", &(input_param.data_format)));
     OP_REQUIRES_OK(context, context->GetAttr("ksize", &(ksize)));
     input_param.area_factor = ksize[0] * ksize[1];
@@ -62,17 +62,17 @@ class AscendDequantOp : public OpKernel {
     input_param.transpose = false;
   }
 
-  ~AscendDequantOp(){}
+  ~AscendDequantOp() {}
 
-  void Compute(OpKernelContext* context) override {
+  void Compute(OpKernelContext *context) override {
     // Grab the input tensor
-    const Tensor& input_tensor = context->input(0);
+    const Tensor &input_tensor = context->input(0);
     TensorShape input_tensor_shape = input_tensor.shape();
-    const Tensor& deqscale_tensor = context->input(1);
+    const Tensor &deqscale_tensor = context->input(1);
     TensorShape deqscale_tensor_shape = deqscale_tensor.shape();
 
     // Create an output tensor
-    Tensor* output_tensor = NULL;
+    Tensor *output_tensor = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, input_tensor.shape(), &output_tensor));
 
     // Do the computation.
@@ -124,6 +124,5 @@ class AscendDequantOp : public OpKernel {
   std::vector<int> ksize;
 };
 
-REGISTER_KERNEL_BUILDER(
-  Name("AscendDequant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
-  AscendDequantOp<float>);
+REGISTER_KERNEL_BUILDER(Name("AscendDequant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
+                        AscendDequantOp<float>);

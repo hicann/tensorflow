@@ -23,8 +23,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -91,10 +90,7 @@ TEST(DropOutGenOrDoMaskOpTest, TestDropOutGenMaskInference) {
                   .Input(FakeInputStub(DT_INT64))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def,
-      {TShape({16}), TShape({})},
-      {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def, {TShape({16}), TShape({})}, {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 
@@ -109,10 +105,7 @@ TEST(DropOutGenOrDoMaskOpTest, TestDropOutGenMaskV3Inference) {
                   .Input(FakeInputStub(DT_INT64))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def,
-      {TShape({16}), TShape({})},
-      {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def, {TShape({16}), TShape({})}, {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 
@@ -127,10 +120,7 @@ TEST(DropOutGenOrDoMaskOpTest, TestDropOutGenMaskV4Inference) {
                   .Input(FakeInputStub(DT_INT64))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def,
-      {TShape({16}), TShape({})},
-      {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def, {TShape({16}), TShape({})}, {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 }  // namespace

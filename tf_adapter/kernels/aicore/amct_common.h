@@ -39,13 +39,12 @@ const int NCHW_W_DIM = 3;
 const int NHWC_H_DIM = 1;
 const int NHWC_W_DIM = 2;
 
-
 // Define the structure of data quantification
 template <typename T>
 struct QuantInputParam {
   int size;
-  const T* in;
-  T* out;
+  const T *in;
+  T *out;
   float scale;
   float offset;
   int quant_bits;
@@ -55,9 +54,9 @@ struct QuantInputParam {
 template <typename T>
 struct WeightQuantInputParam {
   int size;
-  const signed char* weight;
-  const signed char* offset;
-  T* out;
+  const signed char *weight;
+  const signed char *offset;
+  T *out;
   int channel_in_num;
   int channel_out_num;
   bool channel_wise;
@@ -68,8 +67,8 @@ struct WeightQuantInputParam {
 template <typename T>
 struct AntiQuantInputParam {
   int size;
-  const T* in;
-  T* out;
+  const T *in;
+  T *out;
   float scale;
   float offset;
 };
@@ -79,8 +78,8 @@ template <typename T>
 struct DequantInputParam {
   int area_factor;
   int size;
-  const T* input;
-  T* out;
+  const T *input;
+  T *out;
   const tensorflow::uint64 *deqscale;
   int channel_num;
   int hw_size;
@@ -92,22 +91,22 @@ struct DequantInputParam {
 const int SUCCESS = 0;
 const int NULL_PTR_ERROR = 1;
 
-#define NULLPTR_CHECK(ptr)                                                                          \
-  do {                                                                                              \
-    if (ptr == nullptr) {                                                                           \
-      return NULL_PTR_ERROR;                                                                        \
-    }                                                                                               \
+#define NULLPTR_CHECK(ptr)   \
+  do {                       \
+    if (ptr == nullptr) {    \
+      return NULL_PTR_ERROR; \
+    }                        \
   } while (0)
 
-#define ERROR_CHECK(errorCode)                                                                      \
-  do {                                                                                              \
-    switch (errorCode) {                                                                            \
-      case 1:                                                                                       \
-        OP_REQUIRES(context, false, errors::InvalidArgument("Null Ptr ERROR!"));                    \
-        break;                                                                                      \
-      default:                                                                                      \
-        break;                                                                                      \
-    }                                                                                               \
+#define ERROR_CHECK(errorCode)                                                   \
+  do {                                                                           \
+    switch (errorCode) {                                                         \
+      case 1:                                                                    \
+        OP_REQUIRES(context, false, errors::InvalidArgument("Null Ptr ERROR!")); \
+        break;                                                                   \
+      default:                                                                   \
+        break;                                                                   \
+    }                                                                            \
   } while (0)
 
 #endif

@@ -45,25 +45,23 @@ class NpuCallOp : public OpKernel {
       jit_compile_ = device->device_options["ge.jit_compile"];
     }
     if (device->device_options.find("ge.compile_dynamic_mode") != device->device_options.end()) {
-      DLOG() << "device_options ge.compile_dynamic_mode : " <<
-          device->device_options["ge.compile_dynamic_mode"];
+      DLOG() << "device_options ge.compile_dynamic_mode : " << device->device_options["ge.compile_dynamic_mode"];
       compile_dynamic_mode_ = device->device_options["ge.compile_dynamic_mode"];
     }
     if (device->device_options.find("shape_generalization_mode") != device->device_options.end()) {
-      DLOG() << "device_options shape_generalization_mode : " <<
-             device->device_options["shape_generalization_mode"];
+      DLOG() << "device_options shape_generalization_mode : " << device->device_options["shape_generalization_mode"];
       shape_generalization_mode_ = device->device_options["shape_generalization_mode"];
     }
     if (compile_dynamic_mode_ == "1" && shape_generalization_mode_ != "STRICT") {
-      DLOG() << "compile_dynamic_mode is 1, shape_generalization_mode["
-             << shape_generalization_mode_ << "] will be ignore, please set compile_dynamic_mode=0.";
+      DLOG() << "compile_dynamic_mode is 1, shape_generalization_mode[" << shape_generalization_mode_
+             << "] will be ignore, please set compile_dynamic_mode=0.";
     }
     if (jit_compile_ != "1" && shape_generalization_mode_ != "STRICT") {
       LOG(WARNING) << "jit_compile[" << jit_compile_ << "] is not 1, so shape_generalization_mode["
                    << shape_generalization_mode_ << "] will be ignore, please set jit_compile=1 "
                    << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
-      DLOG() << "jit_compile[" << jit_compile_ << "] is not 1, shape_generalization_mode["
-             << shape_generalization_mode_ << "] will be ignore, please set jit_compile=1 "
+      DLOG() << "jit_compile[" << jit_compile_ << "] is not 1, shape_generalization_mode[" << shape_generalization_mode_
+             << "] will be ignore, please set jit_compile=1 "
              << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
     }
     bool loaded = false;
@@ -139,8 +137,8 @@ class NpuCallOp : public OpKernel {
   }
 
   bool MaybeUpdateShape(const OpKernelContext *const ctx) {
-    DLOG() << "MaybeUpdateShape, compile_dynamic_mode: " << compile_dynamic_mode_ << ", jit_compile: "
-           << jit_compile_ << ", shape_generalization_mode: " << shape_generalization_mode_;
+    DLOG() << "MaybeUpdateShape, compile_dynamic_mode: " << compile_dynamic_mode_ << ", jit_compile: " << jit_compile_
+           << ", shape_generalization_mode: " << shape_generalization_mode_;
     bool updated = false;
     for (size_t i = 0UL; i < static_cast<size_t>(ctx->num_inputs()); i++) {
       auto &shape = input_shapes_[i];
@@ -161,7 +159,7 @@ class NpuCallOp : public OpKernel {
       if (!shape.value().IsCompatibleWith(value_shape)) {
         updated = true;
         DLOG() << "Compat input " << i << " shape " << shape.value().DebugString() << " vs. "
-                << value_shape.DebugString();
+               << value_shape.DebugString();
         if (compile_dynamic_mode_ != "1" && jit_compile_ == "1" && shape_generalization_mode_ == "STRICT") {
           shape = value_shape;
           DLOG() << "Dynamic shape, recommended to configure jit_compile value to false or auto";
@@ -256,8 +254,7 @@ class NpuCallOp : public OpKernel {
     static constexpr int64 kUnknownDim = -1;
     std::vector<int64> dims(size, kUnknownDim);
     PartialTensorShape out_shape;
-    auto status = PartialTensorShape::MakePartialShape(dims.data(),
-        static_cast<int32_t>(dims.size()), &out_shape);
+    auto status = PartialTensorShape::MakePartialShape(dims.data(), static_cast<int32_t>(dims.size()), &out_shape);
     return status.ok() ? out_shape : kUnknownRankShape;
   }
 

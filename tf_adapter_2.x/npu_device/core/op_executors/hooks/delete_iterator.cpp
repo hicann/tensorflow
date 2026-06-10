@@ -34,4 +34,4 @@ static const auto kernel = [](TFE_Context *context, NpuDevice *dev, const tensor
 };
 
 NPU_REGISTER_FALLBACK_HOOK("DeleteIterator", kernel);
-}
+}  // namespace npu

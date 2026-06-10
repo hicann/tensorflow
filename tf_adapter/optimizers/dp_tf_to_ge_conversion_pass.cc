@@ -40,9 +40,8 @@ const static std::vector<std::string> GE_OPS_WHITELIST = {
     "MapDataset",     "ParallelMapDataset",   "BatchDataset", "MapAndBatchDataset", "DeviceQueueDataset",
     "BatchDatasetV2", "MapAndBatchDatasetV2", "ModelDataset", "OptimizeDataset"};
 // Indicates the chips that allows datesets to be executed on the npu
-const static std::set<std::string> kToNpuDatasetChips = {
-    "Ascend910", "Ascend910A", "Ascend910B", "Ascend910ProA", "Ascend910ProB", "Ascend910PremiumA"
-};
+const static std::set<std::string> kToNpuDatasetChips = {"Ascend910",     "Ascend910A",    "Ascend910B",
+                                                         "Ascend910ProA", "Ascend910ProB", "Ascend910PremiumA"};
 // Used for 0-input NodeDefBuilder
 const static std::vector<NodeDefBuilder::NodeOut> EMPTY_DEF_INPUT;
 // Used for 0-input NodeBuilder
@@ -78,13 +77,11 @@ class DpTfToGEConversionPassImpl {
   inline bool CheckNode(const std::string &op) const;
   inline bool IsDeviceSupportedOp(const NodeDef &n) const;
   inline bool IsDeviceSupportedFunc(const std::string &fn) const;
-  inline Status GetSplitEdges(const Node &n, std::vector<const Edge *> &split_edges,
-                              const Edge *last_edge, const std::string &socVersion);
+  inline Status GetSplitEdges(const Node &n, std::vector<const Edge *> &split_edges, const Edge *last_edge,
+                              const std::string &socVersion);
   inline void RemoveSplitEdges(Node *topo_end);
-  Status InsertChannelQueue(Node *topo_end, std::string &host_queue_name,
-                            std::string &device_queue_name,
-                            const std::string &socVersion,
-                            const std::map<std::string, std::string> &all_options) const;
+  Status InsertChannelQueue(Node *topo_end, std::string &host_queue_name, std::string &device_queue_name,
+                            const std::string &socVersion, const std::map<std::string, std::string> &all_options) const;
   bool GetNodeFuncs(const FunctionLibraryDefinition &flib_def, const Node &node, std::vector<string> &node_funcs) const;
   bool RemoveIsolatedNode(Graph &g, std::unordered_set<Node *> visited) const;
   Status RemoveNotSupportDataset(Graph &g, const std::string &device_queue_dataset,
@@ -133,8 +130,8 @@ inline bool DpTfToGEConversionPassImpl::IsMakeIteratorNode(const Node &n) const 
 inline bool DpTfToGEConversionPassImpl::IsAddOptionAttrNode(const Node &n) const {
   // Need add option attr
   const static std::vector<std::string> NEED_OPTION_ATTR_DATASET_LIST = {"NpuMapDataset", "NpuMapAndBatchDataset"};
-  return std::find(NEED_OPTION_ATTR_DATASET_LIST.begin(), NEED_OPTION_ATTR_DATASET_LIST.end(),
-                   n.type_string()) != NEED_OPTION_ATTR_DATASET_LIST.end();
+  return std::find(NEED_OPTION_ATTR_DATASET_LIST.begin(), NEED_OPTION_ATTR_DATASET_LIST.end(), n.type_string()) !=
+         NEED_OPTION_ATTR_DATASET_LIST.end();
 }
 
 inline bool DpTfToGEConversionPassImpl::IsIteratorNode(const Node &n) const {
@@ -341,8 +338,9 @@ inline Status DpTfToGEConversionPassImpl::GetSplitEdges(const Node &n, std::vect
       REQUIRES_NOT_NULL(e->src());
       REQUIRES_NOT_NULL(e->dst());
       if (e->IsControlEdge() && !e->src()->IsSource()) {
-        return errors::InvalidArgument("Graph contains control edges witch not from _SOURCE, will not try "
-                                       "optimize");
+        return errors::InvalidArgument(
+            "Graph contains control edges witch not from _SOURCE, will not try "
+            "optimize");
       }
       // GE supported node, continue find
       if ((kIsHeterogeneous) || (!IsSupportNpuDatasetChip(socVersion))) {
@@ -369,8 +367,7 @@ inline Status DpTfToGEConversionPassImpl::GetSplitEdges(const Node &n, std::vect
   return Status::OK();
 }
 
-inline bool DpTfToGEConversionPassImpl::NeedDeviceDataset(const Node &n,
-                                                          const std::string &socVersion) const {
+inline bool DpTfToGEConversionPassImpl::NeedDeviceDataset(const Node &n, const std::string &socVersion) const {
   if (kIsHeterogeneous) {
     return false;
   }
@@ -381,14 +378,13 @@ inline bool DpTfToGEConversionPassImpl::NeedDeviceDataset(const Node &n,
 }
 
 Status DpTfToGEConversionPassImpl::InsertChannelQueue(Node *topo_end, std::string &host_queue_name,
-                                                      std::string &device_queue_name,
-                                                      const std::string &socVersion,
+                                                      std::string &device_queue_name, const std::string &socVersion,
                                                       const std::map<std::string, std::string> &all_options) const {
   ADP_LOG(INFO) << "Start to insert HostQueueDataset and DeviceQueueDataset.";
   REQUIRES_NOT_NULL(topo_end);
   const Node *iterator_node = nullptr;
   if (IsMakeIteratorNode(*topo_end)) {
-    (void) topo_end->input_node(1, &iterator_node);
+    (void)topo_end->input_node(1, &iterator_node);
   }
 
   for (const Edge *e : split_edges_.at(topo_end)) {
@@ -571,7 +567,7 @@ Status DpTfToGEConversionPassImpl::AddDataTransDatasets(Node *topo_end, std::str
   }
   // Start optimize graph
   // Insert Host and Device queue
-  ADP_LOG(INFO) << "Start to add host and device queue on split edges, SOC_VERSION [" + socVersion +"].";
+  ADP_LOG(INFO) << "Start to add host and device queue on split edges, SOC_VERSION [" + socVersion + "].";
   ret = InsertChannelQueue(topo_end, host_channel_name, device_channel_name, socVersion, all_options);
   if (!ret.ok()) {
     return ret;
@@ -595,7 +591,7 @@ Status DpTfToGEConversionPassImpl::BuildDeviceDpGraph(const Node &topo_end, Grap
       std::find_if(device_graph->op_nodes().begin(), device_graph->op_nodes().end(),
                    [this, &topo_end](const Node *n) { return IsMakeIteratorNode(*n) && n->name() == topo_end.name(); });
   if (iter != device_graph->op_nodes().end()) {
-    (void) visiable_ge.emplace(*iter);
+    (void)visiable_ge.emplace(*iter);
   }
   Status ret = RemoveNotSupportDataset(*device_graph, device_channel_name, topo_end.name());
   if (!ret.ok()) {
@@ -603,7 +599,7 @@ Status DpTfToGEConversionPassImpl::BuildDeviceDpGraph(const Node &topo_end, Grap
   }
 
   ADP_LOG(INFO) << "Start to to PruneForReverseReachability.";
-  (void) PruneForReverseReachability(device_graph, visiable_ge);
+  (void)PruneForReverseReachability(device_graph, visiable_ge);
   return ret;
 }
 
@@ -650,7 +646,7 @@ Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fd
                                                           const string &default_device) const {
   // Add DPOP node(visable only by function of geop)
   string func_def_str;
-  (void) fdeflib.SerializeToString(&func_def_str);
+  (void)fdeflib.SerializeToString(&func_def_str);
 
   // DPOP node should created by function of geop
   ADP_LOG(INFO) << "Start to convert dpop node to geop function";
@@ -675,11 +671,9 @@ Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fd
   return Status::OK();
 }
 
-Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(FunctionDefLibrary &fdeflib,
-    const std::string &fn_geop,
-    const std::string &fn_geop_dataset,
-    const string &default_device,
-    const std::map<std::string, std::string> &all_options) const {
+Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(
+    FunctionDefLibrary &fdeflib, const std::string &fn_geop, const std::string &fn_geop_dataset,
+    const string &default_device, const std::map<std::string, std::string> &all_options) const {
   // GEOP node should created by function of geopDataset
   ADP_LOG(INFO) << "Start to convert geop node to geopdataset function";
   FunctionDef *fd = fdeflib.add_function();
@@ -710,11 +704,9 @@ Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(FunctionDefLibrary 
   return Status::OK();
 }
 
-Status DpTfToGEConversionPassImpl::BuildGeOpDatasetFunction(FunctionDefLibrary &fdeflib,
-    const Graph &device_graph,
-    const std::string &fn_geop_dataset,
-    const string &default_device,
-    const std::map<std::string, std::string> &all_options) const {
+Status DpTfToGEConversionPassImpl::BuildGeOpDatasetFunction(
+    FunctionDefLibrary &fdeflib, const Graph &device_graph, const std::string &fn_geop_dataset,
+    const string &default_device, const std::map<std::string, std::string> &all_options) const {
   // Convert GE graph to GEOP function body
   Status ret;
   std::string fn_dpop = GetRandomName("dpop_function");
@@ -789,8 +781,8 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetFunctionLibrary(
   // Update graph function libray
   ADP_LOG(INFO) << "Start to add geop and geopdataset function in graph library";
   // Not a must, just for Tensorbord viewing convenience
-  (void) graph_->AddFunctionLibrary(fdeflib);
-  (void) flib->AddLibrary(fdeflib);
+  (void)graph_->AddFunctionLibrary(fdeflib);
+  (void)flib->AddLibrary(fdeflib);
 
   return Status::OK();
 }
@@ -826,7 +818,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
       inputs.emplace_back(NodeBuilder::NodeOut(n, 0));
     }
     if (n->type_string() == "DeviceQueueDataset" && n->name() == device_channel_name) {
-      (void) isolated_nodes.insert(n);
+      (void)isolated_nodes.insert(n);
     }
   }
 
@@ -853,7 +845,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
   for (Node *n : graph_->op_nodes()) {
     if (n->type_string() == "HostQueueDataset" && n->name() == host_channel_name) {
       graph_->RemoveEdge(*(n->in_edges().begin()));
-      (void) graph_->AddEdge(geop_dataset_node, 0, n, 0);
+      (void)graph_->AddEdge(geop_dataset_node, 0, n, 0);
     }
   }
   // Remove all edges flow to MakeIterator except the one from IteratorV2
@@ -865,7 +857,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
   for (const Edge *e : topo_end_input_edges) {
     ADP_LOG(INFO) << "node:" << topo_end.name() << ", input node is:" << e->src()->name();
     if (!IsIteratorNode(*(e->src()))) {
-      (void) CHECK_NOTNULL(graph_->AddEdge(dpgroup_dataset_node, 0, e->dst(), e->dst_input()));
+      (void)CHECK_NOTNULL(graph_->AddEdge(dpgroup_dataset_node, 0, e->dst(), e->dst_input()));
       ADP_LOG(INFO) << "Remove_" << GetEdgeName(e);
       graph_->RemoveEdge(e);
     }
@@ -874,7 +866,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetAndDpGroupDataset(const Node &t
   // Prune for the final optimized graph
   ADP_LOG(INFO) << "Start to prune final optimized graph.";
 
-  (void) RemoveIsolatedNode(*graph_, isolated_nodes);
+  (void)RemoveIsolatedNode(*graph_, isolated_nodes);
   ADP_LOG(INFO) << "Start to assign unassigned node on default device.";
   // We do pass after assign, so we must assign all new added nodes
   for (Node *n : graph_->op_nodes()) {
@@ -1023,7 +1015,7 @@ Status DpTfToGEConversionPass::Run(const GraphOptimizationPassOptions &options) 
 }
 
 bool DpTfToGEConversionPassImpl::GetSkipOptimizeFlag(const std::map<std::string, std::string> &pass_options,
-  const OptimizationPassRegistry::Grouping pass_group_value) const {
+                                                     const OptimizationPassRegistry::Grouping pass_group_value) const {
   std::string job;
   std::string enable_dp_cfg;
   std::string use_off_line_cfg;
@@ -1108,7 +1100,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
     REQUIRES_NOT_NULL(n);
     if (n->type_string() == "DvppDataset") {
       uint32_t device_id = 0;
-      (void) GetEnvDeviceID(device_id);
+      (void)GetEnvDeviceID(device_id);
       n->AddAttr("queue_name", "device" + std::to_string(device_id) + "_" + channel_name);
       NpuAttrs::SetUseAdpStatus(channel_name, true);
       ADP_LOG(INFO) << "The graph include DvppDataset, set channel_name:" << channel_name
@@ -1131,7 +1123,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
   }
   auto process_graph = [this](const std::unique_ptr<Graph> *g, FunctionLibraryDefinition *flib,
                               const std::map<std::string, std::string> &all_options) {
-    (void) RunPass(g, flib, all_options);
+    (void)RunPass(g, flib, all_options);
   };
 
   // For any pre-partitioning phase, graph is stored in options.graph.

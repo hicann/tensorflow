@@ -187,8 +187,7 @@ void NpuDevice::EraseIteratorProvider(const TFE_Context *const context, const te
  */
 std::string NpuDevice::CreateDevice(const char *name, int device_index,
                                     const std::map<std::string, std::string> &global_options,
-                                    const std::map<std::string, std::string> &session_options,
-                                    NpuDevice **device) {
+                                    const std::map<std::string, std::string> &session_options, NpuDevice **device) {
   LOG(INFO) << "entering Create Device";
   const auto session_options_ascend_string = StringToAscendString(session_options);
   auto *ge_session = new (std::nothrow) ge::Session(session_options_ascend_string);
@@ -964,8 +963,8 @@ uint64_t NpuDevice::AddGeGraphInner(TFE_Context *context, uint64_t graph_id, con
   }
   options["ge.exec.graphIOMemAllocMode"] = "ByGE";
   const auto options_ascend_string = StringToAscendString(options);
-  NPU_CTX_REQUIRES_GE_OK_RETURN(status, "Graph engine Add graph", GeSession()->AddGraph(graph_id, ge_graph, options_ascend_string),
-                                graph_id);
+  NPU_CTX_REQUIRES_GE_OK_RETURN(status, "Graph engine Add graph",
+                                GeSession()->AddGraph(graph_id, ge_graph, options_ascend_string), graph_id);
   return graph_id;
 }
 
@@ -1008,9 +1007,9 @@ tensorflow::Status NpuDevice::TransTfGraph2GeGraph(TFE_Context *context, const s
   std::map<ge::AscendString, ge::AscendString> const_value_map;
   std::vector<ge::AscendString> partition_graph;
   NPU_REQUIRES_OK(SeparateGraphDef(const_cast<tensorflow::GraphDef *>(&def), partition_graph, const_value_map));
-  NPU_REQUIRES(GeApiWrapper_ParseProtoWithSubgraph(partition_graph, const_value_map,
-      request_subgraph, ge_compute_graph) == ge::SUCCESS,
-      tensorflow::errors::Internal("NPU Parse tensorflow model failed"));
+  NPU_REQUIRES(GeApiWrapper_ParseProtoWithSubgraph(partition_graph, const_value_map, request_subgraph,
+                                                   ge_compute_graph) == ge::SUCCESS,
+               tensorflow::errors::Internal("NPU Parse tensorflow model failed"));
 
   if (GeApiWrapper_GetAllNodesSize(ge_compute_graph) != 0) {
     ge_graph = GeApiWrapper_CreateGraphFromComputeGraph(ge_compute_graph);
@@ -1359,7 +1358,8 @@ tensorflow::Status NpuDevice::LoadSupportedOps() {
  */
 bool NpuDevice::Supported(const std::string &op) const {
   const static std::unordered_set<std::string> kUnsupportedOps = {"_EagerConst"};
-  return npu_supported_ops_.count(op) > 0 || npu_supported_custom_ops_.count(op) > 0 || (npu_supported_ops_.empty() && kUnsupportedOps.count(op) == 0);
+  return npu_supported_ops_.count(op) > 0 || npu_supported_custom_ops_.count(op) > 0 ||
+         (npu_supported_ops_.empty() && kUnsupportedOps.count(op) == 0);
 }
 
 bool NpuDevice::IsNpuSpecificOp(const std::string &op) const {

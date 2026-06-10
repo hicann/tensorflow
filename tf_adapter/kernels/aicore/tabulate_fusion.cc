@@ -14,12 +14,12 @@
 namespace tensorflow {
 template <typename T>
 class TabulateFusionOp : public OpKernel {
-public:
-  explicit TabulateFusionOp(OpKernelConstruction* ctx) : OpKernel(ctx) {
+ public:
+  explicit TabulateFusionOp(OpKernelConstruction *ctx) : OpKernel(ctx) {
     LOG(INFO) << "new TabulateFusionOp";
   }
   ~TabulateFusionOp() override = default;
-  void Compute(OpKernelContext* ctx) override {
+  void Compute(OpKernelContext *ctx) override {
     (void)ctx;
     LOG(INFO) << "in TabulateFusionOp";
   }

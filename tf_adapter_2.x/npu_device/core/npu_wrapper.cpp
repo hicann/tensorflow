@@ -104,8 +104,7 @@ const std::map<std::string, std::string> kGlobalConfigOptions = {
   {"_distribute.cm_chief_port", ge::OPTION_EXEC_CM_CHIEF_PORT},
   {"_distribute.cm_chief_worker_device", ge::OPTION_EXEC_CM_CHIEF_DEVICE},
   {"_distribute.cm_worker_ip", ge::OPTION_EXEC_CM_WORKER_IP},
-  {"_distribute.cm_worker_size", ge::OPTION_EXEC_CM_WORKER_SIZE}
-};
+  {"_distribute.cm_worker_size", ge::OPTION_EXEC_CM_WORKER_SIZE}};
 
 const std::map<std::string, std::string> kSessionConfigOptions = {
   {"graph_run_mode", ge::OPTION_GRAPH_RUN_MODE},
@@ -149,8 +148,7 @@ const std::map<std::string, std::string> kSessionConfigOptions = {
   {"input_fusion_size", "ge.exec.input_fusion_size"},
   {"compile_dynamic_mode", "ge.compile_dynamic_mode"},
   {"all_tensor_not_empty", ge::OPTION_ALL_TENSOR_NOT_EMPTY},
-  {"auto_multistream_parallel_mode", "ge.autoMultistreamParallelMode"}
-};
+  {"auto_multistream_parallel_mode", "ge.autoMultistreamParallelMode"}};
 }  // namespace
 
 #undef PYBIND11_CHECK_PYTHON_VERSION
@@ -159,7 +157,7 @@ const std::map<std::string, std::string> kSessionConfigOptions = {
 namespace {
 std::unordered_set<std::string> npu_specify_ops_cache;
 constexpr uint32_t kDeviceSatModeLimit = 2U;
-}
+}  // namespace
 namespace npu {
 void SetOptionNameMap(json &option_name_map) {
   for (auto iter : kGlobalConfigOptions) {
@@ -267,14 +265,12 @@ PYBIND11_MODULE(_npu_device_backends, m) {
                   const auto global_options_ascend_string = StringToAscendString(global_options);
                   auto ge_status = ge::GEInitialize(global_options_ascend_string);
                   if (ge_status != ge::SUCCESS) {
-                    return "Failed start graph engine:" +
-                        std::string(ge::GEGetErrorMsgV2().GetString());
+                    return "Failed start graph engine:" + std::string(ge::GEGetErrorMsgV2().GetString());
                   }
                   LOG(INFO) << "Start graph engine succeed";
                   ge_status = GeApiWrapper_ParserInitialize(global_options_ascend_string);
                   if (ge_status != ge::SUCCESS) {
-                    return "Failed start tensorflow model parser:" +
-                        std::string(ge::GEGetErrorMsgV2().GetString());
+                    return "Failed start tensorflow model parser:" + std::string(ge::GEGetErrorMsgV2().GetString());
                   }
                   LOG(INFO) << "Start tensorflow model parser succeed";
 
@@ -306,9 +302,8 @@ PYBIND11_MODULE(_npu_device_backends, m) {
                 ParserSessionOptions(user_options, device_options, session_option);
                 NpuThreadPool::GetInstance().Init(kDefaultThreadNum);
                 // Currently only support global basic options
-                auto status =
-                    npu::CreateDevice(InputTFE_Context(context), full_name.c_str(),
-                    device_index, global_options, session_option);
+                auto status = npu::CreateDevice(InputTFE_Context(context), full_name.c_str(), device_index,
+                                                global_options, session_option);
                 pybind11::gil_scoped_acquire acquire;
                 return status;
               });

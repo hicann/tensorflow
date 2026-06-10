@@ -41,8 +41,7 @@ class NpuDevice {
  public:
   static std::string CreateDevice(const char *name, int device_index,
                                   const std::map<std::string, std::string> &global_options,
-                                  const std::map<std::string, std::string> &session_options,
-                                  NpuDevice **device);
+                                  const std::map<std::string, std::string> &session_options, NpuDevice **device);
 
   static void DeleteDevice(void *device);
 

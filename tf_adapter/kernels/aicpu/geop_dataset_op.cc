@@ -18,11 +18,8 @@ namespace tensorflow {
 namespace data {
 namespace {
 class GEOPDatasetOp : public DatasetOpKernel {
-public:
-  explicit GEOPDatasetOp(OpKernelConstruction *ctx)
-    : DatasetOpKernel(ctx),
-      f_handle_(kInvalidHandle),
-      lib_(nullptr) {
+ public:
+  explicit GEOPDatasetOp(OpKernelConstruction *ctx) : DatasetOpKernel(ctx), f_handle_(kInvalidHandle), lib_(nullptr) {
     FunctionMetadata::Params params;
     OP_REQUIRES_OK(ctx, FunctionMetadata::Create(ctx, "f", params, &func_metadata_));
   }
@@ -44,17 +41,21 @@ public:
     OP_REQUIRES(ctx, *output != nullptr, errors::Internal("Failed new dataset of GEOPDatasetOp"));
   }
 
-private:
+ private:
   class Dataset : public DatasetBase {
-  public:
+   public:
     explicit Dataset(OpKernelContext *ctx, GEOPDatasetOp *op_kernel)
-      : DatasetBase(DatasetContext(ctx)), op_kernel_(op_kernel), tf_session_(ctx->session_handle()) {}
+        : DatasetBase(DatasetContext(ctx)), op_kernel_(op_kernel), tf_session_(ctx->session_handle()) {}
 
     ~Dataset() override {}
 
-    GEOPDatasetOp *kernel() const { return op_kernel_; }
+    GEOPDatasetOp *kernel() const {
+      return op_kernel_;
+    }
 
-    std::string tf_session() const { return tf_session_; }
+    std::string tf_session() const {
+      return tf_session_;
+    }
 
     std::unique_ptr<IteratorBase> MakeIteratorInternal(const string &prefix) const override {
       return absl::make_unique<Iterator>(Iterator::Params({this, prefix + "::GEOP"}));
@@ -70,10 +71,12 @@ private:
       return empty_shapes;
     }
 
-    string DebugString() const override { return "GEOPDatasetOp::Dataset"; }
+    string DebugString() const override {
+      return "GEOPDatasetOp::Dataset";
+    }
 
 #ifdef TF_VERSION_TF2
-    Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
+    Status InputDatasets(std::vector<const DatasetBase *> *inputs) const override {
       return Status::OK();
     }
 #endif
@@ -83,14 +86,14 @@ private:
     GEOPDatasetOp *op_kernel_;
     std::string tf_session_;
 
-  protected:
+   protected:
     Status AsGraphDefInternal(SerializationContext *ctx, DatasetGraphDefBuilder *b, Node **output) const override {
       return Status::OK();
     }
 
-  private:
+   private:
     class Iterator : public DatasetIterator<Dataset> {
-    public:
+     public:
       explicit Iterator(const Params &para) : DatasetIterator<Dataset>(para) {}
       ~Iterator() override = default;
       Status Initialize(IteratorContext *ctx) override {
@@ -108,7 +111,9 @@ private:
           AddSessionInfo(*metadata->lib_def(), metadata->func().name(), dataset()->tf_session());
           inst_opts.lib_def = metadata->lib_def();
           inst_opts.create_kernels_eagerly = true;
-          if (!metadata->use_inter_op_parallelism()) { inst_opts.executor_type = "SINGLE_THREADED_EXECUTOR"; }
+          if (!metadata->use_inter_op_parallelism()) {
+            inst_opts.executor_type = "SINGLE_THREADED_EXECUTOR";
+          }
           inst_opts.is_multi_device_function = false;
           REQUIRES_NOT_NULL(lib->device());
           inst_opts.target = lib->device()->name();
@@ -144,8 +149,7 @@ private:
         return s;
       }
 
-      void AddSessionInfo(const FunctionLibraryDefinition &flib_def, std::string func_name,
-                          std::string session) const {
+      void AddSessionInfo(const FunctionLibraryDefinition &flib_def, std::string func_name, std::string session) const {
         FunctionDef *fdef = const_cast<FunctionDef *>(flib_def.Find(func_name));
         if (fdef != nullptr) {
           for (NodeDef &ndef : *fdef->mutable_node_def()) {
@@ -163,13 +167,15 @@ private:
         return Status::OK();
       }
 
-    protected:
+     protected:
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override {
+        return Status::OK();
+      }
 
-    private:
+     private:
       mutex mu_;
     };
   };

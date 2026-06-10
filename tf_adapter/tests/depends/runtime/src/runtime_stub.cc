@@ -24,7 +24,7 @@
 
 bool g_runtime_stub_mock = true;
 
-void setMockStub(bool g_stub){
+void setMockStub(bool g_stub) {
   g_runtime_stub_mock = g_stub;
   ADP_LOG(INFO) << "g_runtime_stub_mock = " << g_runtime_stub_mock;
 }
@@ -40,7 +40,7 @@ void del_fun(rtMbuf *buf_ptr) {
   }
 }
 
-static std::unordered_set<std::unique_ptr<rtMbuf, void(*)(rtMbuf *)>> buff_set;
+static std::unordered_set<std::unique_ptr<rtMbuf, void (*)(rtMbuf *)>> buff_set;
 
 rtError_t rtSetDevice(int32_t device) {
   ADP_LOG(INFO) << "rtSetDevice, g_runtime_stub_mock = " << g_runtime_stub_mock;
@@ -59,29 +59,53 @@ rtError_t rtMemQueueCreate(int32_t devId, const rtMemQueueAttr_t *queAttr, uint3
   return RT_ERROR_NONE;
 }
 
-rtError_t rtMemQueueDestroy(int32_t devId, uint32_t qid) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueDestroy(int32_t devId, uint32_t qid) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueInit(int32_t devId) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueInit(int32_t devId) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueEnQueue(int32_t devId, uint32_t qid, void *mbuf) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueEnQueue(int32_t devId, uint32_t qid, void *mbuf) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueDeQueue(int32_t devId, uint32_t qid, void **mbuf) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueDeQueue(int32_t devId, uint32_t qid, void **mbuf) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueQueryInfo(int32_t device, uint32_t qid, rtMemQueueInfo_t *queueInfo) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueQueryInfo(int32_t device, uint32_t qid, rtMemQueueInfo_t *queueInfo) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueGrant(int32_t devId, uint32_t qid, int32_t pid, rtMemQueueShareAttr_t *attr) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueGrant(int32_t devId, uint32_t qid, int32_t pid, rtMemQueueShareAttr_t *attr) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemQueueAttach(int32_t devId, uint32_t qid, int32_t timeout) { return RT_ERROR_NONE; }
+rtError_t rtMemQueueAttach(int32_t devId, uint32_t qid, int32_t timeout) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMbufInit(rtMemBuffCfg_t *cfg) { return RT_ERROR_NONE; }
+rtError_t rtMbufInit(rtMemBuffCfg_t *cfg) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemGrpCreate(const char *name, const rtMemGrpConfig_t *cfg) { return RT_ERROR_NONE; }
+rtError_t rtMemGrpCreate(const char *name, const rtMemGrpConfig_t *cfg) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemGrpAddProc(const char *name, int32_t pid, const rtMemGrpShareAttr_t *attr) { return RT_ERROR_NONE; }
+rtError_t rtMemGrpAddProc(const char *name, int32_t pid, const rtMemGrpShareAttr_t *attr) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMemGrpAttach(const char *name, int32_t timeout) { return RT_ERROR_NONE; }
+rtError_t rtMemGrpAttach(const char *name, int32_t timeout) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtBuffConfirm(void *buff, const uint64_t size) { return RT_ERROR_NONE; }
+rtError_t rtBuffConfirm(void *buff, const uint64_t size) {
+  return RT_ERROR_NONE;
+}
 
 rtError_t rtBuffAlloc(const uint64_t size, void **const buff) {
   if (size > 0) {
@@ -93,27 +117,31 @@ rtError_t rtBuffAlloc(const uint64_t size, void **const buff) {
 }
 
 rtError_t rtBuffFree(void *buff) {
-  auto *buffer = reinterpret_cast<uint8_t*>(buff);
-  delete []buffer;
+  auto *buffer = reinterpret_cast<uint8_t *>(buff);
+  delete[] buffer;
   return RT_ERROR_NONE;
 }
 
-rtError_t rtBuffGetInfo(rtBuffGetCmdType type, const void * const inBuff, uint32_t inLen,
-                        void * const outBuff, uint32_t * const outLen) {
+rtError_t rtBuffGetInfo(rtBuffGetCmdType type, const void *const inBuff, uint32_t inLen, void *const outBuff,
+                        uint32_t *const outLen) {
   return RT_ERROR_NONE;
 }
-rtError_t rtMbufBuild(void *buff, const uint64_t size, rtMbufPtr_t *mbuf) { return RT_ERROR_NONE; }
+rtError_t rtMbufBuild(void *buff, const uint64_t size, rtMbufPtr_t *mbuf) {
+  return RT_ERROR_NONE;
+}
 
-rtError_t rtMbufUnBuild(rtMbufPtr_t mbuf, void **buff, uint64_t *const size) { return RT_ERROR_NONE; }
+rtError_t rtMbufUnBuild(rtMbufPtr_t mbuf, void **buff, uint64_t *const size) {
+  return RT_ERROR_NONE;
+}
 
 rtError_t rtMbufAlloc(rtMbufPtr_t *mbuf, uint64_t size) {
   rtMbuf *buf = new rtMbuf();
-  void *data = malloc(size+256);
+  void *data = malloc(size + 256);
   buf->data = data;
   buf->size = size;
   *mbuf = buf;
-//  std::cout << "mbuf: " << buf << ", data: " << data << std::endl;
-  buff_set.insert(std::unique_ptr<rtMbuf, void(*)(rtMbuf *)>(buf, del_fun));
+  //  std::cout << "mbuf: " << buf << ", data: " << data << std::endl;
+  buff_set.insert(std::unique_ptr<rtMbuf, void (*)(rtMbuf *)>(buf, del_fun));
   return RT_ERROR_NONE;
 }
 

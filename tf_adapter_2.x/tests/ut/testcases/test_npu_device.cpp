@@ -267,7 +267,7 @@ TEST(NpuUtils, SeparateGraphDef) {
   node_def2->set_name("ConstOp2");
   auto attr2 = node_def2->mutable_attr();
   for (int j = 0; j < 3; j++) {
-    for (int64_t i = 0; i < 1024*1024*1024; i++) {
+    for (int64_t i = 0; i < 1024 * 1024 * 1024; i++) {
       tensor_content.append("a");
     }
   }

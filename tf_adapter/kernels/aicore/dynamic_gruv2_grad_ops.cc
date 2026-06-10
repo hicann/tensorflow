@@ -14,13 +14,13 @@
 namespace tensorflow {
 template <typename T>
 class DynamicGruV2GradOP : public OpKernel {
-public:
-  explicit DynamicGruV2GradOP(OpKernelConstruction* ctx) : OpKernel(ctx) {
+ public:
+  explicit DynamicGruV2GradOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
     LOG(INFO) << "new DynamicGruV2GradOP";
   }
   ~DynamicGruV2GradOP() override = default;
-  void Compute(OpKernelContext* ctx) override {
-    (void) ctx;
+  void Compute(OpKernelContext *ctx) override {
+    (void)ctx;
     LOG(INFO) << "in DynamicGruV2GradOP";
   }
   bool IsExpensive() override {

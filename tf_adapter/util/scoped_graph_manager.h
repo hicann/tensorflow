@@ -16,12 +16,11 @@
 #include "tensorflow/core/lib/core/status.h"
 #include <thread>
 
-
 namespace tensorflow {
 
 class ScopedGraphManager {
-public:
-  static ScopedGraphManager& Instance();
+ public:
+  static ScopedGraphManager &Instance();
 
   // 启用图生命周期控制
   void EnableControl();
@@ -32,12 +31,12 @@ public:
   bool IsControlEnabled() const;
 
   // 注册图
-  bool SetGraph(const std::string& tf_session, const uint32_t& graph_id);
+  bool SetGraph(const std::string &tf_session, const uint32_t &graph_id);
 
   // 清理状态，卸载图并释放其占用内存
   void Clear();
 
-private:
+ private:
   ScopedGraphManager() = default;
 
   static uint32_t graph_id_;
@@ -48,6 +47,6 @@ private:
 
   static bool graph_life_control_enabled_;
 };
-}
+}  // namespace tensorflow
 
 #endif

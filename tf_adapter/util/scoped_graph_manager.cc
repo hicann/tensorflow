@@ -19,43 +19,43 @@ std::string ScopedGraphManager::tf_session_;
 std::mutex ScopedGraphManager::mutex_;
 bool ScopedGraphManager::graph_life_control_enabled_;
 
-ScopedGraphManager& ScopedGraphManager::Instance() {
-    static ScopedGraphManager instance;
-    return instance;
+ScopedGraphManager &ScopedGraphManager::Instance() {
+  static ScopedGraphManager instance;
+  return instance;
 }
 
 void ScopedGraphManager::EnableControl() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    graph_life_control_enabled_ = true;
-    ADP_LOG(INFO) << "[ScopedGraphManager] Set graph_life_control_enabled_ true";
+  std::lock_guard<std::mutex> lock(mutex_);
+  graph_life_control_enabled_ = true;
+  ADP_LOG(INFO) << "[ScopedGraphManager] Set graph_life_control_enabled_ true";
 }
 
 void ScopedGraphManager::DisableControl() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    graph_life_control_enabled_ = false;
-    ADP_LOG(INFO) << "[ScopedGraphManager] Set graph_life_control_enabled_ false";
+  std::lock_guard<std::mutex> lock(mutex_);
+  graph_life_control_enabled_ = false;
+  ADP_LOG(INFO) << "[ScopedGraphManager] Set graph_life_control_enabled_ false";
 }
 
 bool ScopedGraphManager::IsControlEnabled() const {
-    ADP_LOG(INFO) << "[ScopedGraphManager] Get graph_life_control_enabled_: " << graph_life_control_enabled_;
-    return graph_life_control_enabled_;
+  ADP_LOG(INFO) << "[ScopedGraphManager] Get graph_life_control_enabled_: " << graph_life_control_enabled_;
+  return graph_life_control_enabled_;
 }
 
-bool ScopedGraphManager::SetGraph(const std::string& tf_session, const uint32_t& graph_id) {
-    if (graph_id_ != UINT32_MAX) {
-        ADP_LOG(ERROR) << "[ScopedGraphManager] Only support call sess.run once in scope of ScopedGraphManager.";
-        return false;
-    }
-    ADP_LOG(INFO) << "[ScopedGraphManager] SetGraph tf_session: " << tf_session << ", graph_id: " << graph_id;
+bool ScopedGraphManager::SetGraph(const std::string &tf_session, const uint32_t &graph_id) {
+  if (graph_id_ != UINT32_MAX) {
+    ADP_LOG(ERROR) << "[ScopedGraphManager] Only support call sess.run once in scope of ScopedGraphManager.";
+    return false;
+  }
+  ADP_LOG(INFO) << "[ScopedGraphManager] SetGraph tf_session: " << tf_session << ", graph_id: " << graph_id;
 
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        tf_session_ = tf_session;
-        graph_id_ = graph_id;
-    }
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    tf_session_ = tf_session;
+    graph_id_ = graph_id;
+  }
 
-    ADP_LOG(INFO) << "[ScopedGraphManager] SetGraph success for tf_session: " << tf_session << ", graph_id: " << graph_id;
-    return true;
+  ADP_LOG(INFO) << "[ScopedGraphManager] SetGraph success for tf_session: " << tf_session << ", graph_id: " << graph_id;
+  return true;
 }
 
 void ScopedGraphManager::Clear() {
@@ -63,7 +63,7 @@ void ScopedGraphManager::Clear() {
   DisableControl();
 
   std::lock_guard<std::mutex> lock(mutex_);
-  ge::Session* global_ge_session = nullptr;
+  ge::Session *global_ge_session = nullptr;
   std::map<std::string, std::string> global_sess_options;
   // 空图，未注册图，tf_session_为空
   if (tf_session_.empty()) {
@@ -77,11 +77,11 @@ void ScopedGraphManager::Clear() {
   }
   if (global_ge_session != nullptr) {
     global_ge_session->RemoveGraph(graph_id_);
-    ADP_LOG(INFO) << "[ScopedGraphManager] RemoveGraph success for tf_session: "
-                    << tf_session_ << ", graph_id: " << graph_id_;
+    ADP_LOG(INFO) << "[ScopedGraphManager] RemoveGraph success for tf_session: " << tf_session_
+                  << ", graph_id: " << graph_id_;
   }
   graph_id_ = UINT32_MAX;
   tf_session_.clear();
   ADP_LOG(INFO) << "[ScopedGraphManager] Clear finished";
 }
-}
+}  // namespace tensorflow

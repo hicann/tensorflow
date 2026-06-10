@@ -28,7 +28,7 @@ class OutfeedEnqueueOp : public OpKernel {
     ADP_LOG(INFO) << "OutfeedEnqueueOp has been destructed";
   }
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     ADP_LOG(INFO) << "OutfeedEnqueueOp running";
   }
   bool IsExpensive() override {
@@ -90,7 +90,7 @@ class OutfeedDequeueOp : public OpKernel {
     ADP_LOG(INFO) << "Start recv tensors by acl out-feed dequeue op " << channel_name_;
     auto status = RecvTensorByAcl(acl_handle_, tensors);
     ADP_LOG(INFO) << "Start de-register callback out-feed dequeue op " << channel_name_;
-    (void) cm->DeregisterCallback(token);
+    (void)cm->DeregisterCallback(token);
     OP_REQUIRES_OK(ctx, status);
     OP_REQUIRES(ctx, !tensors.empty(), errors::OutOfRange("out-feed op ", channel_name_, " received end-of-sequence"));
     OP_REQUIRES(ctx, tensors.size() == output_shapes_.size(),

@@ -27,8 +27,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -46,9 +45,9 @@ TEST(LruCacheV2Test, TestLruCacheV2) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   LRUCacheV2Op lrucachev2op(context);
   OpKernelContext *ctx = nullptr;
   lrucachev2op.Compute(ctx);
@@ -73,11 +72,9 @@ TEST(LruCacheV2Test, TestLruCacheV2) {
                   .Input(FakeInputStub(DT_INT32_REF))
                   .Input(FakeInputStub(DT_INT32))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def1,
-      {TShape({1}), TShape({1}), TShape({1}), TShape({1})}, {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def1, {TShape({1}), TShape({1}), TShape({1}), TShape({1})}, {}, {},
+                                      {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
-
 }
-}
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

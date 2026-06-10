@@ -17,49 +17,49 @@
 
 namespace tensorflow {
 class InitEmbeddingHashmapV2Op : public OpKernel {
-public:
+ public:
   explicit InitEmbeddingHashmapV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~InitEmbeddingHashmapV2Op() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class DeinitEmbeddingHashmapV2Op : public OpKernel {
-public:
+ public:
   explicit DeinitEmbeddingHashmapV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~DeinitEmbeddingHashmapV2Op() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class TableToResourceV2Op : public OpKernel {
-public:
+ public:
   explicit TableToResourceV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~TableToResourceV2Op() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class EmbeddingHashmapExportOp : public OpKernel {
-public:
+ public:
   explicit EmbeddingHashmapExportOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashmapExportOp() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class EmbeddingHashmapSizeOp : public OpKernel {
-public:
+ public:
   explicit EmbeddingHashmapSizeOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashmapSizeOp() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class EmbeddingHashmapFileSizeOp : public OpKernel {
-public:
+ public:
   explicit EmbeddingHashmapFileSizeOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashmapFileSizeOp() override {}
   void Compute(OpKernelContext *context) override {}
 };
 
 class EmbeddingHashmapImportOp : public OpKernel {
-public:
+ public:
   explicit EmbeddingHashmapImportOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashmapImportOp() override {}
   void Compute(OpKernelContext *context) override {}

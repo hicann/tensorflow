@@ -26,7 +26,7 @@ int AscendAntiQuantInternelCpu(struct AntiQuantInputParam<T> input_param) {
 template <typename T>
 class AscendAntiQuantOp : public OpKernel {
  public:
-  explicit AscendAntiQuantOp(OpKernelConstruction* context) : OpKernel(context) {
+  explicit AscendAntiQuantOp(OpKernelConstruction *context) : OpKernel(context) {
     OP_REQUIRES_OK(context, context->GetAttr("scale", &(scale)));
     OP_REQUIRES_OK(context, context->GetAttr("offset", &(offset)));
     input_param.size = 0;
@@ -36,14 +36,14 @@ class AscendAntiQuantOp : public OpKernel {
     input_param.offset = offset;
   }
 
-  ~AscendAntiQuantOp(){}
+  ~AscendAntiQuantOp() {}
 
-  void Compute(OpKernelContext* context) override {
+  void Compute(OpKernelContext *context) override {
     // Grab the input tensor
-    const Tensor& input_tensor = context->input(0);
+    const Tensor &input_tensor = context->input(0);
 
     // Create an output tensor
-    Tensor* output_tensor = NULL;
+    Tensor *output_tensor = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, input_tensor.shape(), &output_tensor));
 
     // Do the computation.
@@ -66,6 +66,5 @@ class AscendAntiQuantOp : public OpKernel {
   float offset;
 };
 
-REGISTER_KERNEL_BUILDER(
-  Name("AscendAntiQuant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
-  AscendAntiQuantOp<float>);
+REGISTER_KERNEL_BUILDER(Name("AscendAntiQuant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
+                        AscendAntiQuantOp<float>);

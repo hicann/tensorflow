@@ -69,9 +69,7 @@ class NpuConcreteGraph : public OpExecutor {
   void RunAoeTuning(TFE_Context *context, NpuDevice *device, std::vector<TFE_TensorHandle *> inputs, bool loaded,
                     TF_Status *status) const;
 
-  void SetFunctionOpFlag(bool is_function_op) const {
-    function_op_ = is_function_op;
-  }
+  void SetFunctionOpFlag(bool is_function_op) const { function_op_ = is_function_op; }
 
  protected:
   std::string AttachedDebugString() const override;

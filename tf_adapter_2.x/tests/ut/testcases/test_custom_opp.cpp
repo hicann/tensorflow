@@ -16,10 +16,9 @@
 namespace {
 const char *kNpuDeviceName = "/job:localhost/replica:0/task:0/device:NPU:0";
 const int kNpuDeviceIndex = 0;
-}
+}  // namespace
 
-class ST_CustomOp : public ::testing::Test {
-};
+class ST_CustomOp : public ::testing::Test {};
 TEST_F(ST_CustomOp, load_custom_op) {
   std::string cust_path = __FILE__;
   cust_path = cust_path.substr(0, cust_path.rfind("/") + 1) + "cust_path/";
@@ -35,7 +34,8 @@ TEST_F(ST_CustomOp, load_custom_op) {
   global_options["ge.graph_compiler_cache_dir"] = "./";
   std::map<std::string, std::string> session_options;
   npu::NpuDevice *device = nullptr;
-  auto create_status = npu::NpuDevice::CreateDevice(kNpuDeviceName, kNpuDeviceIndex, global_options, session_options, &device);
+  auto create_status =
+    npu::NpuDevice::CreateDevice(kNpuDeviceName, kNpuDeviceIndex, global_options, session_options, &device);
   auto isSupported = device->Supported("AddCustom");
   CHECK_EQ(isSupported, true);
 }

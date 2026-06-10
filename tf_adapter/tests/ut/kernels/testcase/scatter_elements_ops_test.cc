@@ -27,47 +27,47 @@ class ScatterElementsV2OpTest : public testing::Test {
 };
 
 TEST_F(ScatterElementsOpTest, TestScatterElements) {
-    std::vector<DataType> in_types_vec = {DT_INT32, DT_INT32, DT_INT32};
-    DataTypeSlice input_types(in_types_vec);
-    MemoryTypeSlice input_memory_types;
-    std::vector<DataType> out_types_vec = {DT_INT32};
-    DataTypeSlice output_types(out_types_vec);
-    MemoryTypeSlice output_memory_types;
-    DeviceBase *device = new DeviceBase(Env::Default());
-    NodeDef *node_def = new NodeDef();
-    OpDef *op_def = new OpDef();
-    OpKernelConstruction *context = new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr,
-                                                             input_types, input_memory_types, output_types, output_memory_types,
-                                                             1, nullptr);
-    ScatterElementsOp scatter_elements(context);
-    OpKernelContext *ctx = nullptr;
-    scatter_elements.Compute(ctx);
-    ASSERT_FALSE(scatter_elements.IsExpensive());
-    delete device;
-    delete node_def;
-    delete op_def;
-    delete context;
+  std::vector<DataType> in_types_vec = {DT_INT32, DT_INT32, DT_INT32};
+  DataTypeSlice input_types(in_types_vec);
+  MemoryTypeSlice input_memory_types;
+  std::vector<DataType> out_types_vec = {DT_INT32};
+  DataTypeSlice output_types(out_types_vec);
+  MemoryTypeSlice output_memory_types;
+  DeviceBase *device = new DeviceBase(Env::Default());
+  NodeDef *node_def = new NodeDef();
+  OpDef *op_def = new OpDef();
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
+  ScatterElementsOp scatter_elements(context);
+  OpKernelContext *ctx = nullptr;
+  scatter_elements.Compute(ctx);
+  ASSERT_FALSE(scatter_elements.IsExpensive());
+  delete device;
+  delete node_def;
+  delete op_def;
+  delete context;
 }
 TEST_F(ScatterElementsV2OpTest, TestScatterElementsV2) {
-    std::vector<DataType> in_types_vec = {DT_INT32, DT_INT32, DT_INT32};
-    DataTypeSlice input_types(in_types_vec);
-    MemoryTypeSlice input_memory_types;
-    std::vector<DataType> out_types_vec = {DT_INT32};
-    DataTypeSlice output_types(out_types_vec);
-    MemoryTypeSlice output_memory_types;
-    DeviceBase *device = new DeviceBase(Env::Default());
-    NodeDef *node_def = new NodeDef();
-    OpDef *op_def = new OpDef();
-    OpKernelConstruction *context = new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr,
-                                                             input_types, input_memory_types, output_types, output_memory_types,
-                                                             1, nullptr);
-    ScatterElementsV2Op scatter_elements_V2(context);
-    OpKernelContext *ctx = nullptr;
-    scatter_elements_V2.Compute(ctx);
-    ASSERT_FALSE(scatter_elements_V2.IsExpensive());
-    delete device;
-    delete node_def;
-    delete op_def;
-    delete context;
+  std::vector<DataType> in_types_vec = {DT_INT32, DT_INT32, DT_INT32};
+  DataTypeSlice input_types(in_types_vec);
+  MemoryTypeSlice input_memory_types;
+  std::vector<DataType> out_types_vec = {DT_INT32};
+  DataTypeSlice output_types(out_types_vec);
+  MemoryTypeSlice output_memory_types;
+  DeviceBase *device = new DeviceBase(Env::Default());
+  NodeDef *node_def = new NodeDef();
+  OpDef *op_def = new OpDef();
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
+  ScatterElementsV2Op scatter_elements_V2(context);
+  OpKernelContext *ctx = nullptr;
+  scatter_elements_V2.Compute(ctx);
+  ASSERT_FALSE(scatter_elements_V2.IsExpensive());
+  delete device;
+  delete node_def;
+  delete op_def;
+  delete context;
 }
-}
+}  // namespace tensorflow

@@ -122,8 +122,8 @@ class IteratorH2D : public OpKernel {
     }
     channels_.clear();
   }
-  bool use_global_channel_ {true};
-  std::atomic_bool initialized_ {false};
+  bool use_global_channel_{true};
+  std::atomic_bool initialized_{false};
   std::string channel_name_;
   std::vector<int> device_ids_;
   std::vector<std::shared_ptr<npu::HdcChannel>> channels_;

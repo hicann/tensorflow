@@ -31,7 +31,7 @@ Tensor AsTensor(gtl::ArraySlice<T> tensor_vals) {
 
 // Constructs a tensor of "shape" with values "tensor_vals".
 template <typename T>
-Tensor AsTensor(gtl::ArraySlice<T> tensor_vals, const TensorShape& shape) {
+Tensor AsTensor(gtl::ArraySlice<T> tensor_vals, const TensorShape &shape) {
   Tensor tensor;
   CHECK(tensor.CopyFrom(AsTensor(tensor_vals), shape));
   return tensor;
@@ -39,7 +39,7 @@ Tensor AsTensor(gtl::ArraySlice<T> tensor_vals, const TensorShape& shape) {
 
 // Constructs a scalar tensor with 'val'.
 template <typename T>
-Tensor AsScalar(const T& val) {
+Tensor AsScalar(const T &val) {
   Tensor tensor(DataTypeToEnum<T>::value, {});
   tensor.scalar<T>()() = val;
   return tensor;
@@ -49,7 +49,7 @@ Tensor AsScalar(const T& val) {
 //   Tensor x(&alloc, DT_FLOAT, TensorShape({2, 2}));
 //   test::FillFn<float>(&x, [](int i)->float { return i*i; });
 template <typename T>
-void FillFn(Tensor* tensor, std::function<T(int)> func) {
+void FillFn(Tensor *tensor, std::function<T(int)> func) {
   auto flat = tensor->flat<T>();
   for (int i = 0; i < flat.size(); ++i) flat(i) = func(i);
 }
@@ -58,7 +58,7 @@ void FillFn(Tensor* tensor, std::function<T(int)> func) {
 //   Tensor x(&alloc, DT_FLOAT, TensorShape({2, 2}));
 //   test::FillValues<float>(&x, {11, 21, 21, 22});
 template <typename T>
-void FillValues(Tensor* tensor, gtl::ArraySlice<T> vals) {
+void FillValues(Tensor *tensor, gtl::ArraySlice<T> vals) {
   auto flat_data = tensor->flat<T>();
   CHECK_EQ(flat_data.size(), vals.size());
   if (flat_data.size() > 0) {
@@ -70,14 +70,14 @@ void FillValues(Tensor* tensor, gtl::ArraySlice<T> vals) {
 //   Tensor x(&alloc, DT_FLOAT, TensorShape({2, 2}));
 //   test::FillIota<float>(&x, 1.0);
 template <typename T>
-void FillIota(Tensor* tensor, const T& val) {
+void FillIota(Tensor *tensor, const T &val) {
   auto flat_data = tensor->flat<T>();
   std::iota(flat_data.data(), flat_data.data() + flat_data.size(), val);
 }
 
 // Fills in '*tensor' with 'vals', converting the types as needed.
 template <typename T, typename SrcType>
-void FillValues(Tensor* tensor, std::initializer_list<SrcType> vals) {
+void FillValues(Tensor *tensor, std::initializer_list<SrcType> vals) {
   auto flat_data = tensor->flat<T>();
   CHECK_EQ(flat_data.size(), vals.size());
   if (flat_data.size() > 0) {

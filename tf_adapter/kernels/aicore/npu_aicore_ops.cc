@@ -19,11 +19,10 @@
 #include "tf_adapter/common/common.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class FastGeluOp : public tensorflow::OpKernel {
  public:
-  explicit FastGeluOp(tensorflow::OpKernelConstruction *context)
-    : OpKernel(context) {}
+  explicit FastGeluOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~FastGeluOp() {}
   void Compute(tensorflow::OpKernelContext *context) override {
     // Grab the input tensor
@@ -32,77 +31,60 @@ class FastGeluOp : public tensorflow::OpKernel {
 
     // Create an output tensor
     Tensor *output_tensor = nullptr;
-    OP_REQUIRES_OK(context, context->allocate_output(0, input_tensor.shape(),
-                                                     &output_tensor));
+    OP_REQUIRES_OK(context, context->allocate_output(0, input_tensor.shape(), &output_tensor));
   }
 };
 
 class EmbeddingHashTableImportOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit EmbeddingHashTableImportOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashTableImportOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableImport")
-.Device(tensorflow::DEVICE_CPU), EmbeddingHashTableImportOp);
+REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableImport").Device(tensorflow::DEVICE_CPU), EmbeddingHashTableImportOp);
 
 class EmbeddingHashTableExportOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit EmbeddingHashTableExportOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashTableExportOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableExport")
-.Device(tensorflow::DEVICE_CPU), EmbeddingHashTableExportOp);
+REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableExport").Device(tensorflow::DEVICE_CPU), EmbeddingHashTableExportOp);
 
 class EmbeddingHashTableLookupOrInsertOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit EmbeddingHashTableLookupOrInsertOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashTableLookupOrInsertOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableLookupOrInsert")
-.Device(tensorflow::DEVICE_CPU), EmbeddingHashTableLookupOrInsertOp);
+REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableLookupOrInsert").Device(tensorflow::DEVICE_CPU),
+                        EmbeddingHashTableLookupOrInsertOp);
 
 class StatelessRandomChoiceWithMaskOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit StatelessRandomChoiceWithMaskOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~StatelessRandomChoiceWithMaskOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("StatelessRandomChoiceWithMask")
-.Device(tensorflow::DEVICE_CPU), EmbeddingHashTableLookupOrInsertOp);
+REGISTER_KERNEL_BUILDER(Name("StatelessRandomChoiceWithMask").Device(tensorflow::DEVICE_CPU),
+                        EmbeddingHashTableLookupOrInsertOp);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGelu")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<float>("T"),
-FastGeluOp<float>);
+REGISTER_KERNEL_BUILDER(Name("FastGelu").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"), FastGeluOp<float>);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGelu")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<double>("T"),
-FastGeluOp<double>);
+REGISTER_KERNEL_BUILDER(Name("FastGelu").Device(tensorflow::DEVICE_CPU).TypeConstraint<double>("T"),
+                        FastGeluOp<double>);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGelu")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<Eigen::half>("T"),
-FastGeluOp<Eigen::half>);
+REGISTER_KERNEL_BUILDER(Name("FastGelu").Device(tensorflow::DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
+                        FastGeluOp<Eigen::half>);
 
-template<typename T>
+template <typename T>
 class FastGeluGradOp : public tensorflow::OpKernel {
  public:
-  explicit FastGeluGradOp(tensorflow::OpKernelConstruction *context)
-    : OpKernel(context) {}
+  explicit FastGeluGradOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~FastGeluGradOp() override = default;
   void Compute(tensorflow::OpKernelContext *context) override {
     // Grab the grad input tensor
@@ -114,50 +96,35 @@ class FastGeluGradOp : public tensorflow::OpKernel {
     const Tensor &input_tensor = context->input(1);
     auto input = input_tensor.flat<T>();
 
-    OP_REQUIRES(
-      context, grad_input.size() == input.size(),
-      errors::InvalidArgument("grad_input size is not equal input size"));
+    OP_REQUIRES(context, grad_input.size() == input.size(),
+                errors::InvalidArgument("grad_input size is not equal input size"));
 
     // Create an output tensor
     Tensor *grad_output_tensor = nullptr;
-    OP_REQUIRES_OK(context, context->allocate_output(0, grad_input_tensor.shape(),
-                                                     &grad_output_tensor));
+    OP_REQUIRES_OK(context, context->allocate_output(0, grad_input_tensor.shape(), &grad_output_tensor));
   }
 };
 
 class StatelessDropoutOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit StatelessDropoutOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~StatelessDropoutOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("StatelessDropout")
-.Device(tensorflow::DEVICE_CPU), StatelessDropoutOp);
+REGISTER_KERNEL_BUILDER(Name("StatelessDropout").Device(tensorflow::DEVICE_CPU), StatelessDropoutOp);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGeluGrad")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<float>("T"),
-FastGeluGradOp<float>);
+REGISTER_KERNEL_BUILDER(Name("FastGeluGrad").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
+                        FastGeluGradOp<float>);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGeluGrad")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<double>("T"),
-FastGeluGradOp<double>);
+REGISTER_KERNEL_BUILDER(Name("FastGeluGrad").Device(tensorflow::DEVICE_CPU).TypeConstraint<double>("T"),
+                        FastGeluGradOp<double>);
 
-REGISTER_KERNEL_BUILDER(
-  Name("FastGeluGrad")
-.
-Device(tensorflow::DEVICE_CPU)
-.TypeConstraint<Eigen::half>("T"),
-FastGeluGradOp<Eigen::half>);
+REGISTER_KERNEL_BUILDER(Name("FastGeluGrad").Device(tensorflow::DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
+                        FastGeluGradOp<Eigen::half>);
 
 class InitEmbeddingHashTableOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit InitEmbeddingHashTableOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~InitEmbeddingHashTableOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
@@ -166,23 +133,21 @@ public:
 REGISTER_KERNEL_BUILDER(Name("InitEmbeddingHashTable").Device(tensorflow::DEVICE_CPU), InitEmbeddingHashTableOp);
 
 class EmbeddingHashTableApplyAdamWOp : public tensorflow::OpKernel {
-public:
-  explicit EmbeddingHashTableApplyAdamWOp(tensorflow::OpKernelConstruction *context)
-    : OpKernel(context) {}
+ public:
+  explicit EmbeddingHashTableApplyAdamWOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashTableApplyAdamWOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
 REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableApplyAdamW").Device(tensorflow::DEVICE_CPU),
-  EmbeddingHashTableApplyAdamWOp);
+                        EmbeddingHashTableApplyAdamWOp);
 
 class EmbeddingHashTableEvictOp : public tensorflow::OpKernel {
-public:
+ public:
   explicit EmbeddingHashTableEvictOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
   ~EmbeddingHashTableEvictOp() override {}
   void Compute(tensorflow::OpKernelContext *context) override {}
 };
 
-REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableEvict")
-.Device(tensorflow::DEVICE_CPU), EmbeddingHashTableEvictOp);
+REGISTER_KERNEL_BUILDER(Name("EmbeddingHashTableEvict").Device(tensorflow::DEVICE_CPU), EmbeddingHashTableEvictOp);
 }  // namespace tensorflow

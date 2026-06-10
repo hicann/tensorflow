@@ -55,10 +55,10 @@ class NpuAoe {
                                   std::vector<TFE_TensorHandle *> &inputs);
   tensorflow::Status AoeTuningFinalize();
 
-  NpuAoe(const NpuAoe&) = delete;
+  NpuAoe(const NpuAoe &) = delete;
   NpuAoe(NpuAoe &&) = delete;
-  NpuAoe& operator=(const NpuAoe&) = delete;
-  NpuAoe& operator=(NpuAoe &&) = delete;
+  NpuAoe &operator=(const NpuAoe &) = delete;
+  NpuAoe &operator=(NpuAoe &&) = delete;
 
  private:
   tensorflow::Status LoadAoeFunc();

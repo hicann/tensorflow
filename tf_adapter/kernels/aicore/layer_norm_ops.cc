@@ -13,19 +13,20 @@
 
 namespace tensorflow {
 class LayerNormOp : public OpKernel {
-public:
+ public:
   explicit LayerNormOp(OpKernelConstruction *context) : OpKernel(context) {
-    (void) context;
+    (void)context;
     LOG(INFO) << "new LayerNormOp";
   }
   ~LayerNormOp() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) context;
+    (void)context;
     LOG(INFO) << "LayerNormOp Compute";
   }
   bool IsExpensive() override {
     LOG(INFO) << "in LayerNorm IsExpensive";
-    return false; }
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("FusedLayerNorm").Device(DEVICE_CPU), LayerNormOp);

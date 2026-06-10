@@ -27,8 +27,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -37,9 +36,8 @@ FakeInputFunctor FakeInputStub(DataType dt) {
 }
 
 TEST(DynamicAUGRUGradTest, TestDynamicAUGRUGrad) {
-  std::vector<DataType> in_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT,
-                                        DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT,
-                                        DT_FLOAT, DT_FLOAT, DT_INT32};
+  std::vector<DataType> in_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT,
+                                        DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_INT32};
   DataTypeSlice input_types(in_types_vec);
   MemoryTypeSlice input_memory_types;
   std::vector<DataType> out_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT};
@@ -48,9 +46,9 @@ TEST(DynamicAUGRUGradTest, TestDynamicAUGRUGrad) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   DynamicAUGRUGradOP<int> dynamic_augru_grad(context);
   OpKernelContext *ctx = nullptr;
   dynamic_augru_grad.Compute(ctx);
@@ -87,12 +85,11 @@ TEST(DynamicAUGRUGradOpTest, TestDynamicAUGRUGradShapeInference) {
                   .Finalize(&def));
   shape_inference::InferenceContext c(
       0, &def, op_def,
-      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
-       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
-       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
-       TShape({16, 16}), TShape({16})},
+      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}), TShape({16, 16}), TShape({16, 16}),
+       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
+       TShape({16, 16}), TShape({16, 16}), TShape({16})},
       {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

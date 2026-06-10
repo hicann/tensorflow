@@ -24,8 +24,7 @@ class GE_FUNC_VISIBILITY ModelParser {
 
   Status ParseProtoWithSubgraph(const std::vector<ge::AscendString> &partitioned_serialized,
                                 const std::map<ge::AscendString, ge::AscendString> &const_value_map,
-                                GetGraphCallbackV3 callback,
-                                ge::ComputeGraphPtr &graph);
+                                GetGraphCallbackV3 callback, ge::ComputeGraphPtr &graph);
 };
 }  // namespace domi
 

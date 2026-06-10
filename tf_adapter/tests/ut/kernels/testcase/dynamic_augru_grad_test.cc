@@ -27,8 +27,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -84,12 +83,12 @@ TEST(DynamicAUGRUGradOpTest, TestDynamicAUGRUGradShapeInference) {
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_INT32))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,
-                                      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
-                                       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
-                                       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
-                                       TShape({16, 16}), TShape({16, 16}), TShape({16})},
-                                      {}, {}, {});
+  shape_inference::InferenceContext c(
+      0, &def, op_def,
+      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}), TShape({16, 16}), TShape({16, 16}),
+       TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}), TShape({16, 16}),
+       TShape({16, 16}), TShape({16, 16}), TShape({16})},
+      {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 }  // namespace

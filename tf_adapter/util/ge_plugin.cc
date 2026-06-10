@@ -41,13 +41,14 @@ inline string ToString(ge::Status status) {
 }
 void GeFinalize() {
   // 先等待可能的异步初始化结束
-  (void) GePlugin::GetInstance()->GetInitStatus();
+  (void)GePlugin::GetInstance()->GetInitStatus();
   // ge finalize
   ge::Status status = ge::GEFinalize();
   if (status != ge::SUCCESS) {
     ADP_LOG(ERROR) << "[GePlugin] GE finalize failed, ret : " << ToString(status);
     LOG(ERROR) << "[GePlugin] GE finalize failed, ret : " << ToString(status) << std::endl
-               << "Error Message is : " << std::endl << ge::GEGetErrorMsgV2().GetString();
+               << "Error Message is : " << std::endl
+               << ge::GEGetErrorMsgV2().GetString();
   }
 
   // parser finalize
@@ -161,14 +162,14 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   init_options_ = init_options;
 
   std::string enable_hf32_execution;
-  (void) ReadStringFromEnvVar("ENABLE_HF32_EXECUTION", "", &enable_hf32_execution);
+  (void)ReadStringFromEnvVar("ENABLE_HF32_EXECUTION", "", &enable_hf32_execution);
   if (!enable_hf32_execution.empty()) {
     init_options["ge.exec.allow_hf32"] = enable_hf32_execution;
     ADP_LOG(INFO) << "[GePlugin] allow_hf32 : " << init_options["ge.exec.allow_hf32"];
   }
 
   std::string tf_config;
-  (void) ReadStringFromEnvVar("TF_CONFIG", "", &tf_config);
+  (void)ReadStringFromEnvVar("TF_CONFIG", "", &tf_config);
   int exec_hccl_flag = 1;
   if (!tf_config.empty()) {
     json config_info;
@@ -201,7 +202,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   ADP_LOG(INFO) << "[GePlugin] device id : " << init_options[ge::OPTION_EXEC_DEVICE_ID];
 
   std::string env_job_id;
-  (void) ReadStringFromEnvVar("JOB_ID", "", &env_job_id);
+  (void)ReadStringFromEnvVar("JOB_ID", "", &env_job_id);
   if (!env_job_id.empty()) {
     init_options[ge::OPTION_EXEC_JOB_ID] = env_job_id;
   } else {
@@ -210,11 +211,11 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   }
 
   std::string cm_chief_ip;
-  (void) ReadStringFromEnvVar("CM_CHIEF_IP", "", &cm_chief_ip);
-  (void) ReadInt64FromEnvVar("CM_WORKER_SIZE", kInvalidRankSize, &work_size_num);
+  (void)ReadStringFromEnvVar("CM_CHIEF_IP", "", &cm_chief_ip);
+  (void)ReadInt64FromEnvVar("CM_WORKER_SIZE", kInvalidRankSize, &work_size_num);
   std::string env_rank_table_file;
-  (void) ReadStringFromEnvVar("RANK_TABLE_FILE", "", &env_rank_table_file);
-  (void) ReadInt64FromEnvVar("RANK_SIZE", kInvalidRankSize, &rank_size_num);
+  (void)ReadStringFromEnvVar("RANK_TABLE_FILE", "", &env_rank_table_file);
+  (void)ReadInt64FromEnvVar("RANK_SIZE", kInvalidRankSize, &rank_size_num);
   if (!cm_chief_ip.empty() && !env_rank_table_file.empty()) {
     ADP_LOG(ERROR) << "[GePlugin] CM_CHIEF_IP and RANK_TABLE_FILE cannot be configured at the same time.";
     LOG(ERROR) << "[GePlugin] CM_CHIEF_IP and RANK_TABLE_FILE cannot be configured at the same time.";
@@ -227,7 +228,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   }
 
   std::string cluster_info;
-  (void) ReadStringFromEnvVar("HELP_CLUSTER", "", &cluster_info);
+  (void)ReadStringFromEnvVar("HELP_CLUSTER", "", &cluster_info);
   if (!cluster_info.empty()) {
     is_use_hcom = true;
   }
@@ -316,7 +317,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   }
 
   bool tdt_uninit_env = false;
-  (void) ReadBoolFromEnvVar("ASCEND_TDT_UNINIT", false, &tdt_uninit_env);
+  (void)ReadBoolFromEnvVar("ASCEND_TDT_UNINIT", false, &tdt_uninit_env);
   if (!kIsHeterogeneous && !tdt_uninit_env) {
     // Open TsdClient first, then call GEInitialize
     ADP_LOG(INFO) << "[GePlugin] Open TsdClient and Init tdt host.";
@@ -357,8 +358,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
     ge::Status status = ge::GEInitialize(init_options_ascend_string);
     warning_message_ = std::string(ge::GEGetWarningMsgV2().GetString());
     if (!warning_message_.empty()) {
-        LOG(WARNING) << "[GePlugin] GEInitialize warning message: " << std::endl
-                     << warning_message_;
+      LOG(WARNING) << "[GePlugin] GEInitialize warning message: " << std::endl << warning_message_;
     }
     if (status != ge::SUCCESS) {
       std::this_thread::sleep_for(std::chrono::milliseconds(kFatalSleepTime));
@@ -387,12 +387,12 @@ void GePlugin::SetRankTableFileEnv(std::map<std::string, std::string> &init_opti
     is_use_hcom = true;
     init_options[ge::OPTION_EXEC_RANK_TABLE_FILE] = rankTableFile;
     std::string env_pod_name;
-    (void) ReadStringFromEnvVar("POD_NAME", "", &env_pod_name);
+    (void)ReadStringFromEnvVar("POD_NAME", "", &env_pod_name);
     if (!env_pod_name.empty()) {
       init_options[ge::OPTION_EXEC_POD_NAME] = env_pod_name;
     }
     std::string env_rank_id;
-    (void) ReadStringFromEnvVar("RANK_ID", "", &env_rank_id);
+    (void)ReadStringFromEnvVar("RANK_ID", "", &env_rank_id);
     if (!env_rank_id.empty()) {
       ADP_LOG(INFO) << "[GePlugin] env RANK_ID:" << env_rank_id;
       init_options[ge::OPTION_EXEC_RANK_ID] = env_rank_id;
@@ -402,13 +402,13 @@ void GePlugin::SetRankTableFileEnv(std::map<std::string, std::string> &init_opti
 
 void GePlugin::SetCmChiefWorkSizeEnv(std::map<std::string, std::string> &init_options, std::string &cmChiefIp) {
   std::string cm_chief_port;
-  (void) ReadStringFromEnvVar("CM_CHIEF_PORT", "", &cm_chief_port);
+  (void)ReadStringFromEnvVar("CM_CHIEF_PORT", "", &cm_chief_port);
   std::string cm_chief_device;
-  (void) ReadStringFromEnvVar("CM_CHIEF_DEVICE", "", &cm_chief_device);
+  (void)ReadStringFromEnvVar("CM_CHIEF_DEVICE", "", &cm_chief_device);
   std::string cm_worker_ip;
-  (void) ReadStringFromEnvVar("CM_WORKER_IP", "", &cm_worker_ip);
+  (void)ReadStringFromEnvVar("CM_WORKER_IP", "", &cm_worker_ip);
   std::string cm_worker_size;
-  (void) ReadStringFromEnvVar("CM_WORKER_SIZE", "", &cm_worker_size);
+  (void)ReadStringFromEnvVar("CM_WORKER_SIZE", "", &cm_worker_size);
   work_size_num = (work_size_num == kInvalidRankSize) ? kDefaultRankSize : work_size_num;
   if (work_size_num > UINT32_MAX) {
     work_size_num = UINT32_MAX;
@@ -513,8 +513,8 @@ void AoeFinalizeIfNeed() {
     return;
   }
 
-  (void) aoe_finalize();
-  (void) mmDlclose(handle);
+  (void)aoe_finalize();
+  (void)mmDlclose(handle);
 
   ADP_LOG(INFO) << "Finish to call aoe finalize when npu close.";
 }
@@ -525,7 +525,7 @@ void NpuClose() {
   GeFinalize();
   AoeFinalizeIfNeed();
   uint32_t device_id = 0;
-  (void) GetEnvDeviceID(device_id);
+  (void)GetEnvDeviceID(device_id);
   if (NpuAttrs::GetUseTdtStatus(device_id)) {
     ADP_LOG(INFO) << "[GePlugin] the process has turned on TDT resource, finalize resource at exit.";
     int32_t tdt_status = TdtInFeedDestroy(device_id);

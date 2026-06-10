@@ -163,7 +163,7 @@ TEST_F(NpuAttrTest, CheckDumpData) {
   EXPECT_EQ(s.ok(), false);
 }
 
-TEST_F(NpuAttrTest, CheckPrecisionMode ) {
+TEST_F(NpuAttrTest, CheckPrecisionMode) {
   GraphOptimizationPassOptions options;
   SessionOptions session_options;
   session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
@@ -320,28 +320,27 @@ TEST_F(NpuAttrTest, CheckVariablePlacement) {
 }
 
 TEST_F(NpuAttrTest, GetDumpPath) {
-setenv("DUMP_GRAPH_PATH", "./", 1);
-string path = GetDumpPath();
-EXPECT_EQ(path, ".//");
-setenv("DUMP_GRAPH_PATH", "./dump_fold", 1);
-string new_path = GetDumpPath();
-EXPECT_EQ(new_path, "./dump_fold/");
+  setenv("DUMP_GRAPH_PATH", "./", 1);
+  string path = GetDumpPath();
+  EXPECT_EQ(path, ".//");
+  setenv("DUMP_GRAPH_PATH", "./dump_fold", 1);
+  string new_path = GetDumpPath();
+  EXPECT_EQ(new_path, "./dump_fold/");
 }
 
 TEST_F(NpuAttrTest, GetCollectionPath) {
-setenv("NPU_COLLECT_PATH", "./collection", 1);
-setenv("DUMP_GRAPH_PATH", "./dump_fold", 1);
-string new_path = GetDumpPath();
-EXPECT_NE(new_path, "./dump_fold/");
+  setenv("NPU_COLLECT_PATH", "./collection", 1);
+  setenv("DUMP_GRAPH_PATH", "./dump_fold", 1);
+  string new_path = GetDumpPath();
+  EXPECT_NE(new_path, "./dump_fold/");
 }
 
 TEST_F(NpuAttrTest, SetNpuOptimizerAttrInvalidEnableDump) {
   GraphOptimizationPassOptions options;
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-      ->mutable_optimizer_options()
-      ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   options.session_options = &session_options;
   Status s = NpuAttrs::SetNpuOptimizerAttr(options, nullptr);
@@ -426,10 +425,9 @@ TEST_F(NpuAttrTest, SetNpuOptimizerAttrInvalidEnableDump) {
 TEST_F(NpuAttrTest, SetNpuOptimizerAttrInvalidEnableOnlineInference) {
   GraphOptimizationPassOptions options;
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-      ->mutable_optimizer_options()
-      ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   options.session_options = &session_options;
   Status s = NpuAttrs::SetNpuOptimizerAttr(options, nullptr);
@@ -802,5 +800,5 @@ TEST_F(NpuAttrTest, GetAllAttrOptions_optimization_switch) {
   const auto &all_options = NpuAttrs::GetAllAttrOptions(attrs);
   EXPECT_NE(all_options.find("ge.optimizationSwitch"), all_options.cend());
 }
-}
-} // end tensorflow
+}  // namespace
+}  // namespace tensorflow

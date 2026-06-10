@@ -363,8 +363,8 @@ tensorflow::Status NpuManagedBuffer::AssembleFrom(const tensorflow::Tensor *tens
  */
 tensorflow::Status NpuManagedBuffer::TransRepresentationOnNpu(NpuManagedBuffer *dst_buff) {
   DLOG() << "Trans representation on npu, format " << GetFormatName(format_) << " to "
-         << GetFormatName(dst_buff->format_) << ", data type " << static_cast<int>(data_type_)
-         << " to " << static_cast<int>(dst_buff->data_type_);
+         << GetFormatName(dst_buff->format_) << ", data type " << static_cast<int>(data_type_) << " to "
+         << static_cast<int>(dst_buff->data_type_);
   NPU_REQUIRES(format_ != dst_buff->format_ || data_type_ != dst_buff->data_type_, tensorflow::errors::Internal(""));
 
   aclrtStream rts = nullptr;

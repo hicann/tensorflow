@@ -25,8 +25,7 @@ struct RunContextOptions {
   MemoryOptimizeOptions memory_optimize_options;
   void Clean() { memory_optimize_options.Clean(); }
   std::map<std::string, std::string> GetGraphOptions() {
-    std::map<std::string, std::string> kOptions = {
-      {"ge.recompute", memory_optimize_options.recompute}};
+    std::map<std::string, std::string> kOptions = {{"ge.recompute", memory_optimize_options.recompute}};
     return kOptions;
   }
 };

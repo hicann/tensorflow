@@ -16,30 +16,32 @@
 #include "tensorflow/core/lib/core/status.h"
 
 namespace tensorflow {
-  class Profiler {
-   public:
-    static Profiler &GetInstance();
-    Status Enable(const std::string &level,
-        const std::string &aic_metrics, const std::string &output_path);
-    Status Start();
-    Status Stop();
-    void Disable();
-    bool IsEnabled() { return enable_flag_; }
-   private:
-    Profiler() = default;
-    explicit Profiler(const Profiler &obj) = delete;
-    Profiler& operator=(const Profiler &obj) = delete;
-    explicit Profiler(Profiler &&obj) = delete;
-    Profiler& operator=(Profiler &&obj) = delete;
-    Status GetLevel(const std::string &level);
-    Status GetAicMetrics(const std::string &aic_metrics);
-    aclprofConfig *prof_config_{nullptr};
-    uint64_t level_{0UL};
-    aclprofAicoreMetrics aic_metrics_{ACL_AICORE_NONE};
-    bool enable_flag_{false};
-    bool has_start_{false};
-    std::string output_path_;
-  };
-}
+class Profiler {
+ public:
+  static Profiler &GetInstance();
+  Status Enable(const std::string &level, const std::string &aic_metrics, const std::string &output_path);
+  Status Start();
+  Status Stop();
+  void Disable();
+  bool IsEnabled() {
+    return enable_flag_;
+  }
+
+ private:
+  Profiler() = default;
+  explicit Profiler(const Profiler &obj) = delete;
+  Profiler &operator=(const Profiler &obj) = delete;
+  explicit Profiler(Profiler &&obj) = delete;
+  Profiler &operator=(Profiler &&obj) = delete;
+  Status GetLevel(const std::string &level);
+  Status GetAicMetrics(const std::string &aic_metrics);
+  aclprofConfig *prof_config_{nullptr};
+  uint64_t level_{0UL};
+  aclprofAicoreMetrics aic_metrics_{ACL_AICORE_NONE};
+  bool enable_flag_{false};
+  bool has_start_{false};
+  std::string output_path_;
+};
+}  // namespace tensorflow
 
 #endif

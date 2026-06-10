@@ -12,16 +12,20 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class DynamicRnnOP : public OpKernel {
  public:
-  explicit DynamicRnnOP(OpKernelConstruction *ctx) : OpKernel(ctx) { LOG(INFO) << "new DynamicRnnOP"; }
+  explicit DynamicRnnOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
+    LOG(INFO) << "new DynamicRnnOP";
+  }
   ~DynamicRnnOP() override = default;
-  void Compute(OpKernelContext* ctx) override {
-    (void) ctx;
+  void Compute(OpKernelContext *ctx) override {
+    (void)ctx;
     LOG(INFO) << "in DynamicRnnOP";
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("DynamicRnn").Device(DEVICE_CPU), DynamicRnnOP<float>);

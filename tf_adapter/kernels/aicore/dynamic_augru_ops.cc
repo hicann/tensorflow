@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class DynamicAUGRUOP : public OpKernel {
  public:
   explicit DynamicAUGRUOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class DynamicAUGRUOP : public OpKernel {
   }
   ~DynamicAUGRUOP() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "in DynamicAUGRUOP";
   }
   bool IsExpensive() override {

@@ -27,8 +27,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -40,16 +39,16 @@ TEST(DynamicRnnOpTest, TestDynamicRnn) {
   std::vector<DataType> in_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_INT32, DT_FLOAT, DT_FLOAT};
   DataTypeSlice input_types(in_types_vec);
   MemoryTypeSlice input_memory_types;
-  std::vector<DataType> out_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT,
-                                         DT_FLOAT, DT_FLOAT, DT_FLOAT};
+  std::vector<DataType> out_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT,
+                                         DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT};
   DataTypeSlice output_types(out_types_vec);
   MemoryTypeSlice output_memory_types;
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   DynamicRnnOP<int> dynamic_rnn(context);
   OpKernelContext *ctx = nullptr;
   dynamic_rnn.Compute(ctx);
@@ -75,11 +74,10 @@ TEST(DynamicRnnOpTest, TestDynamicRnnShapeInference) {
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,
-                                      {TShape({1, 16, 16}), TShape({32, 64}),
-                                       TShape({64}), TShape({64}),
-                                       TShape({1, 16, 16}), TShape({64})},
-                                      {}, {}, {});
+  shape_inference::InferenceContext c(
+      0, &def, op_def,
+      {TShape({1, 16, 16}), TShape({32, 64}), TShape({64}), TShape({64}), TShape({1, 16, 16}), TShape({64})}, {}, {},
+      {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 
@@ -91,7 +89,7 @@ TEST(DynamicRnnOpTest, TestDynamicRnnShapeInference02) {
   TF_CHECK_OK(NodeDefBuilder("dummy", &op_def)
                   .Attr("T", DT_FLOAT)
                   .Attr("direction", "BIDIRECTIONAL")
-                  .Attr("num_proj",6)
+                  .Attr("num_proj", 6)
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
@@ -99,12 +97,11 @@ TEST(DynamicRnnOpTest, TestDynamicRnnShapeInference02) {
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,
-                                      {TShape({1, 16, 16}), TShape({32, 64}),
-                                       TShape({64}), TShape({64}),
-                                       TShape({1, 16, 16}), TShape({64})},
-                                      {}, {}, {});
+  shape_inference::InferenceContext c(
+      0, &def, op_def,
+      {TShape({1, 16, 16}), TShape({32, 64}), TShape({64}), TShape({64}), TShape({1, 16, 16}), TShape({64})}, {}, {},
+      {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

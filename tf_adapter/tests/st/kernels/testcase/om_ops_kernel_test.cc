@@ -127,7 +127,7 @@ TEST_F(LoadAndExecuteOmTest, TestOmNodeExecuteDynamicBatchSuccess) {
   tensors.emplace_back(tensor);
   Tensor tensor_var = Tensor(DT_STRING, {});
   tensors.emplace_back(tensor_var);
-  SetDynamicType(0); // set dynamic batch
+  SetDynamicType(0);  // set dynamic batch
   ASSERT_EQ(Run(tensors), Status::OK());
   SetDynamicType(-1);
 }

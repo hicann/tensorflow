@@ -19,7 +19,9 @@ class LambApplyWeightAssignOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "LambApplyWeightAssignOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LambApplyWeightAssign").Device(DEVICE_CPU), LambApplyWeightAssignOp);

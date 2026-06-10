@@ -22,8 +22,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -32,18 +31,18 @@ FakeInputFunctor FakeInputStub(DataType dt) {
 }
 
 TEST(ProdEnvMatAOpTest, TestProdEnvMatA) {
-  std::vector<DataType> in_types_vec = {DT_FLOAT, DT_INT32, DT_INT32, DT_FLOAT, DT_INT32, DT_FLOAT,DT_FLOAT};
+  std::vector<DataType> in_types_vec = {DT_FLOAT, DT_INT32, DT_INT32, DT_FLOAT, DT_INT32, DT_FLOAT, DT_FLOAT};
   DataTypeSlice input_types(in_types_vec);
   MemoryTypeSlice input_memory_types;
-  std::vector<DataType> out_types_vec = {DT_FLOAT, DT_FLOAT,DT_FLOAT,DT_INT32};
+  std::vector<DataType> out_types_vec = {DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_INT32};
   DataTypeSlice output_types(out_types_vec);
   MemoryTypeSlice output_memory_types;
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   ProdEnvMatAOP<int> prod_env_mat_a(context);
   OpKernelContext *ctx = nullptr;
   prod_env_mat_a.Compute(ctx);
@@ -64,8 +63,8 @@ TEST(ProdEnvMatAOpTest, TestProdEnvMatAShapeInference) {
                   .Attr("rcut_a", 0.0)
                   .Attr("rcut_r", 9.0)
                   .Attr("rcut_r_smth", 2.0)
-                  .Attr("sel_a", {600,600,600})
-                  .Attr("sel_r", {0,0})
+                  .Attr("sel_a", {600, 600, 600})
+                  .Attr("sel_r", {0, 0})
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_INT32))
                   .Input(FakeInputStub(DT_INT32))
@@ -74,8 +73,10 @@ TEST(ProdEnvMatAOpTest, TestProdEnvMatAShapeInference) {
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def, {TShape({1, 27957}), TShape({1, 9319}),TShape({1, 1,1}),
-                                      TShape({1,57000}),TShape({2101249}), TShape({3,7200}), TShape({3,7200})}, {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def,
+                                      {TShape({1, 27957}), TShape({1, 9319}), TShape({1, 1, 1}), TShape({1, 57000}),
+                                       TShape({2101249}), TShape({3, 7200}), TShape({3, 7200})},
+                                      {}, {}, {});
   std::vector<shape_inference::ShapeHandle> input_shapes;
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[1,88473600]", c.DebugString(c.output(0)));
@@ -83,5 +84,5 @@ TEST(ProdEnvMatAOpTest, TestProdEnvMatAShapeInference) {
   ASSERT_EQ("[1,66355200]", c.DebugString(c.output(2)));
   ASSERT_EQ("[1,22118400]", c.DebugString(c.output(3)));
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

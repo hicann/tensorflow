@@ -19,15 +19,14 @@
 #include "ge/ge_api.h"
 namespace tensorflow {
 namespace {
-  const uint32_t kWaitingForLogRecord = 1U;
+const uint32_t kWaitingForLogRecord = 1U;
 }
 
 Status MappingTfDtypeToAcl(const tensorflow::DataType tf_type, aclDataType &acl_type) {
   const static std::map<tensorflow::DataType, aclDataType> type_mapping = {
-      {DT_FLOAT, ACL_FLOAT}, {DT_HALF, ACL_FLOAT16}, {DT_INT8, ACL_INT8},
-      {DT_INT32, ACL_INT32}, {DT_UINT8, ACL_UINT8}, {DT_INT16, ACL_INT16},
-      {DT_UINT16, ACL_UINT16}, {DT_UINT32, ACL_UINT32}, {DT_INT64, ACL_INT64},
-      {DT_UINT64, ACL_UINT64}, {DT_DOUBLE, ACL_DOUBLE}, {DT_BOOL, ACL_BOOL},
+      {DT_FLOAT, ACL_FLOAT},  {DT_HALF, ACL_FLOAT16},  {DT_INT8, ACL_INT8},     {DT_INT32, ACL_INT32},
+      {DT_UINT8, ACL_UINT8},  {DT_INT16, ACL_INT16},   {DT_UINT16, ACL_UINT16}, {DT_UINT32, ACL_UINT32},
+      {DT_INT64, ACL_INT64},  {DT_UINT64, ACL_UINT64}, {DT_DOUBLE, ACL_DOUBLE}, {DT_BOOL, ACL_BOOL},
       {DT_STRING, ACL_STRING}};
   auto found = type_mapping.find(tf_type);
   if (found == type_mapping.end()) {
@@ -39,10 +38,9 @@ Status MappingTfDtypeToAcl(const tensorflow::DataType tf_type, aclDataType &acl_
 
 Status MappingAclDtypeToTf(const aclDataType &acl_type, tensorflow::DataType &tf_type) {
   const static std::map<aclDataType, tensorflow::DataType> type_mapping = {
-      {ACL_FLOAT, DT_FLOAT}, {ACL_FLOAT16, DT_HALF}, {ACL_INT8, DT_INT8},
-      {ACL_INT32, DT_INT32}, {ACL_UINT8, DT_UINT8}, {ACL_INT16, DT_INT16},
-      {ACL_UINT16, DT_UINT16}, {ACL_UINT32, DT_UINT32}, {ACL_INT64, DT_INT64},
-      {ACL_UINT64, DT_UINT64}, {ACL_DOUBLE, DT_DOUBLE}, {ACL_BOOL, DT_BOOL},
+      {ACL_FLOAT, DT_FLOAT},  {ACL_FLOAT16, DT_HALF},  {ACL_INT8, DT_INT8},     {ACL_INT32, DT_INT32},
+      {ACL_UINT8, DT_UINT8},  {ACL_INT16, DT_INT16},   {ACL_UINT16, DT_UINT16}, {ACL_UINT32, DT_UINT32},
+      {ACL_INT64, DT_INT64},  {ACL_UINT64, DT_UINT64}, {ACL_DOUBLE, DT_DOUBLE}, {ACL_BOOL, DT_BOOL},
       {ACL_STRING, DT_STRING}};
   auto found = type_mapping.find(acl_type);
   if (found == type_mapping.end()) {
@@ -82,8 +80,7 @@ Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> 
     }
     Tensor tensor(tf_type, TensorShape({}));
     if (acl_data != nullptr) {
-      tensor.scalar<npu::compat_tf1_tf2::string>()() =
-          std::move(npu::compat_tf1_tf2::string(acl_data, acl_data_len));
+      tensor.scalar<npu::compat_tf1_tf2::string>()() = std::move(npu::compat_tf1_tf2::string(acl_data, acl_data_len));
     } else {
       LOG(INFO) << "This is a empty DT_STRING tensor.";
     }
@@ -95,7 +92,9 @@ Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> 
       return errors::Internal("Failed get dim-size from acl channel data");
     }
     TensorShape tf_shape;
-    for (auto dim : dims) { tf_shape.AddDim(dim); }
+    for (auto dim : dims) {
+      tf_shape.AddDim(dim);
+    }
     Tensor tensor = Tensor(tf_type, tf_shape);
     auto tensor_data = const_cast<char *>(tensor.tensor_data().data());
     auto tensor_size = tensor.tensor_data().size();
@@ -239,8 +238,9 @@ Status SendTensorsByAcl(const acltdtChannelHandle *acl_handle, acltdtTensorType 
   }
   if (acl_status != ACL_ERROR_NONE) {
     sleep(kWaitingForLogRecord);
-    LOG(FATAL) << "Failed to send data by acl, error code : "<< acl_status << std::endl
-               << "Error Message is " << std::endl << ge::GEGetErrorMsgV2().GetString();
+    LOG(FATAL) << "Failed to send data by acl, error code : " << acl_status << std::endl
+               << "Error Message is " << std::endl
+               << ge::GEGetErrorMsgV2().GetString();
     return errors::Internal("Acl send data failed, acl status:", acl_status);
   }
   return Status::OK();

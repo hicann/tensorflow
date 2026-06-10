@@ -38,6 +38,7 @@ class RtsCtx {
   static tensorflow::Status CreateGlobalCtx(int32_t device_index);
   static tensorflow::Status EnsureInitialized();
   static tensorflow::Status DestroyGlobalCtx();
+
  private:
   static aclrtContext global_ctx_;
   static tensorflow::mutex global_ctx_mutex_;

@@ -17,7 +17,7 @@ class ScatterElementsOp : public OpKernel {
   explicit ScatterElementsOp(OpKernelConstruction *ctx) : OpKernel(ctx) {}
   ~ScatterElementsOp() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) (ctx);
+    (void)(ctx);
     LOG(INFO) << "in ScatterElements";
   }
   bool IsExpensive() override {

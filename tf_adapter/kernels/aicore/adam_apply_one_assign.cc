@@ -19,7 +19,9 @@ class AdamApplyOneAssignOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "AdamApplyOneAssignOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("AdamApplyOneAssign").Device(DEVICE_CPU), AdamApplyOneAssignOp);

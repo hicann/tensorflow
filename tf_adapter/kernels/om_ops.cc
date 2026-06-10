@@ -26,8 +26,7 @@ class LoadAndExecuteOmOp : public OpKernel {
   void Compute(OpKernelContext *ctx) override {
     std::unique_lock<std::mutex> lk(mu_);
     auto input_num = ctx->num_inputs();
-    OP_REQUIRES(ctx, input_num > 0,
-                errors::Internal("input num should more than 0"));
+    OP_REQUIRES(ctx, input_num > 0, errors::Internal("input num should more than 0"));
     model_data_ = ctx->input(input_num - 1).scalar<tstring>()();
     OP_REQUIRES_OK(ctx, Initialize());
     std::vector<Tensor> inputs;

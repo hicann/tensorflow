@@ -19,7 +19,7 @@ class FastGeluV2Op : public OpKernel {
   }
   ~FastGeluV2Op() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) context;
+    (void)context;
     LOG(INFO) << "FastGeluV2Op Compute";
   }
   bool IsExpensive() override {

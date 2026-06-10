@@ -33,9 +33,9 @@ TEST(LruCacheV2Test, TestLruCacheV2) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   LRUCacheV2Op lrucachev2op(context);
   OpKernelContext *ctx = nullptr;
   lrucachev2op.Compute(ctx);
@@ -45,5 +45,5 @@ TEST(LruCacheV2Test, TestLruCacheV2) {
   delete op_def;
   delete context;
 }
-}
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

@@ -22,13 +22,13 @@ static constexpr int64_t UNKNOWN_DIM_SIZE = -1;
 class ShapeImpl {
  public:
   ShapeImpl() = default;
-  ShapeImpl(const std::vector<int64_t> &dims)
-   : dims_(dims) {};
+  ShapeImpl(const std::vector<int64_t> &dims) : dims_(dims){};
   ~ShapeImpl() = default;
 
   size_t GetDimNum() const {
-    return std::any_of(dims_.cbegin(), dims_.cend(), [](const int64_t i) { return i == UNKNOWN_DIM_NUM; }) ?
-     0 : dims_.size();
+    return std::any_of(dims_.cbegin(), dims_.cend(), [](const int64_t i) { return i == UNKNOWN_DIM_NUM; })
+               ? 0
+               : dims_.size();
   }
 
   int64_t GetDim(size_t idx) const {
@@ -65,10 +65,13 @@ class ShapeImpl {
   std::vector<int64_t> dims_;
 };
 
+Shape::Shape() {
+  impl_ = ComGraphMakeShared<ShapeImpl>();
+}
 
-Shape::Shape() { impl_ = ComGraphMakeShared<ShapeImpl>(); }
-
-Shape::Shape(const std::vector<int64_t> &dims) { impl_ = ComGraphMakeShared<ShapeImpl>(dims); }
+Shape::Shape(const std::vector<int64_t> &dims) {
+  impl_ = ComGraphMakeShared<ShapeImpl>(dims);
+}
 
 size_t Shape::GetDimNum() const {
   return impl_->GetDimNum();
@@ -96,29 +99,27 @@ class TensorDescImpl {
   TensorDescImpl() = default;
   ~TensorDescImpl() = default;
   TensorDescImpl(const Shape &shape, Format format = FORMAT_ND, DataType dt = DT_FLOAT)
-    : shape_(shape),
-      format_(format),
-      type_(dt) {};
+      : shape_(shape), format_(format), type_(dt){};
   TensorDescImpl(const TensorDescImpl &desc)
-    : range_(desc.range_),
-      origin_shape_(desc.origin_shape_),
-      shape_(desc.shape_),
-      origin_shape_set_(desc.origin_shape_set_),
-      origin_format_(desc.origin_format_),
-      format_(desc.format_),
-      origin_format_set_(desc.origin_format_set_),
-      type_(desc.type_),
-      name_(desc.name_) {};
+      : range_(desc.range_),
+        origin_shape_(desc.origin_shape_),
+        shape_(desc.shape_),
+        origin_shape_set_(desc.origin_shape_set_),
+        origin_format_(desc.origin_format_),
+        format_(desc.format_),
+        origin_format_set_(desc.origin_format_set_),
+        type_(desc.type_),
+        name_(desc.name_){};
   TensorDescImpl(TensorDescImpl &&desc)
-    : range_(std::move(desc.range_)),
-      origin_shape_(std::move(desc.origin_shape_)),
-      shape_(std::move(desc.shape_)),
-      origin_shape_set_(desc.origin_shape_set_),
-      origin_format_(desc.origin_format_),
-      format_(desc.format_),
-      origin_format_set_(desc.origin_format_set_),
-      type_(desc.type_),
-      name_(std::move(desc.name_)) {};
+      : range_(std::move(desc.range_)),
+        origin_shape_(std::move(desc.origin_shape_)),
+        shape_(std::move(desc.shape_)),
+        origin_shape_set_(desc.origin_shape_set_),
+        origin_format_(desc.origin_format_),
+        format_(desc.format_),
+        origin_format_set_(desc.origin_format_set_),
+        type_(desc.type_),
+        name_(std::move(desc.name_)){};
 
   TensorDescImpl &operator=(const TensorDescImpl &desc) {
     range_ = desc.range_;
@@ -184,6 +185,7 @@ class TensorDescImpl {
   void SetDataType(DataType dt) {
     type_ = dt;
   }
+
  private:
   std::vector<std::pair<int64_t, int64_t>> range_;
   Shape origin_shape_;
@@ -196,20 +198,20 @@ class TensorDescImpl {
   std::string name_;
 };
 
-static const Tensor::DeleteFunc kDeleterFuncDef = [](uint8_t *p){ delete[] p; };
+static const Tensor::DeleteFunc kDeleterFuncDef = [](uint8_t *p) { delete[] p; };
 class TensorImpl {
  public:
-  TensorImpl() {};
-  ~TensorImpl() { if (data_ != nullptr) { deleter_func_(data_); } };
-  TensorImpl(const TensorDesc &tensor_desc)
-    : tensorDesc_(tensor_desc) {};
-  TensorImpl(const TensorDesc &tensor_desc, const uint8_t *data, uint64_t size)
-    : tensorDesc_(tensor_desc) {
+  TensorImpl(){};
+  ~TensorImpl() {
+    if (data_ != nullptr) {
+      deleter_func_(data_);
+    }
+  };
+  TensorImpl(const TensorDesc &tensor_desc) : tensorDesc_(tensor_desc){};
+  TensorImpl(const TensorDesc &tensor_desc, const uint8_t *data, uint64_t size) : tensorDesc_(tensor_desc) {
     SetData(data, size);
   };
-  TensorImpl(const TensorImpl &tensor)
-    : tensorDesc_(tensor.tensorDesc_),
-      size_(tensor.size_) {
+  TensorImpl(const TensorImpl &tensor) : tensorDesc_(tensor.tensorDesc_), size_(tensor.size_) {
     data_ = new uint8_t[size_];
     std::memcpy(data_, tensor.data_, size_);
   }
@@ -226,7 +228,7 @@ class TensorImpl {
     return tensorDesc_;
   }
 
-  uint8_t* GetData() {
+  uint8_t *GetData() {
     return data_;
   }
 
@@ -262,6 +264,7 @@ class TensorImpl {
     deleter_func_ = deleter_func;
     return GRAPH_SUCCESS;
   }
+
  private:
   TensorDesc tensorDesc_;
   uint8_t *data_ = nullptr;
@@ -345,13 +348,21 @@ void TensorDesc::SetDataType(DataType dt) {
 }
 
 static Placement ge_placement = ge::kPlacementHost;
-Placement TensorDesc::GetPlacement() const { return ge_placement; }
+Placement TensorDesc::GetPlacement() const {
+  return ge_placement;
+}
 
-void TensorDesc::SetPlacement(ge::Placement placement) { ge_placement = placement; }
+void TensorDesc::SetPlacement(ge::Placement placement) {
+  ge_placement = placement;
+}
 
-void TensorDesc::SetOriginShape(const Shape &originShape) { impl->SetShape(originShape); }
+void TensorDesc::SetOriginShape(const Shape &originShape) {
+  impl->SetShape(originShape);
+}
 
-Tensor::Tensor() { impl = ComGraphMakeShared<TensorImpl>(); }
+Tensor::Tensor() {
+  impl = ComGraphMakeShared<TensorImpl>();
+}
 
 Tensor::Tensor(const TensorDesc &tensor_desc) {
   impl = ComGraphMakeShared<TensorImpl>(tensor_desc);
@@ -418,4 +429,4 @@ std::unique_ptr<uint8_t[], Tensor::DeleteFunc> Tensor::ResetData() {
   return std::unique_ptr<uint8_t[], Tensor::DeleteFunc>(nullptr, nullptr);
 }
 
-} // end ge
+}  // namespace ge

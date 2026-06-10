@@ -67,7 +67,7 @@ bool NpuOpsIdentifier::GetOppPluginVendors(const std::string &vendors_config, st
     ADP_LOG(ERROR) << "Format of file content is invalid!";
     return false;
   }
-  (void) for_each(vendors.begin(), vendors.end(), [](std::string &str) -> void {
+  (void)for_each(vendors.begin(), vendors.end(), [](std::string &str) -> void {
     if (str.empty()) {
       return;
     }
@@ -127,7 +127,8 @@ bool NpuOpsIdentifier::GetCustomOpPath(const std::string &ops_path, std::string 
     return true;
   }
   for (const auto &vendor : vendors) {
-    custom_ops_json_path_vec.push_back(ops_path + "/vendors/" + vendor + "/framework/tensorflow/npu_supported_ops.json");
+    custom_ops_json_path_vec.push_back(ops_path + "/vendors/" + vendor +
+                                       "/framework/tensorflow/npu_supported_ops.json");
   }
   return true;
 }

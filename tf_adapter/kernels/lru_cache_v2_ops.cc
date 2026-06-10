@@ -13,15 +13,17 @@
 
 namespace tensorflow {
 class LRUCacheV2Op : public OpKernel {
-public:
+ public:
   explicit LRUCacheV2Op(OpKernelConstruction *context) : OpKernel(context) {}
   ~LRUCacheV2Op() override = default;
   void Compute(OpKernelContext *context) override {
     (void)context;
     ADP_LOG(INFO) << "LRUCacheV2Op Compute running";
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LRUCacheV2").Device(DEVICE_CPU), LRUCacheV2Op);
-} // namespace tensorflow
+}  // namespace tensorflow

@@ -70,7 +70,8 @@ TEST(StatelessRandomChoiceWithMaskOpTest, TestStatelessRandomChoiceWithMaskShape
                   .Input(FakeInputStub(DT_INT64))
                   .Input(FakeInputStub(DT_INT64))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,{TShape({2, 2}), TShape({1}), TShape({1}), TShape({1})}, {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def, {TShape({2, 2}), TShape({1}), TShape({1}), TShape({1})}, {}, {},
+                                      {});
   std::vector<shape_inference::ShapeHandle> input_shapes;
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[2,2]", c.DebugString(c.output(0)));

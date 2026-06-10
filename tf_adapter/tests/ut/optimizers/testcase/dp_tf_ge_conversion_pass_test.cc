@@ -33,7 +33,7 @@ class DpOptimizationPassTest : public testing::Test {
   }
 
   void InitGraph(const string &graph_def_path) {
-    char trusted_path[MMPA_MAX_PATH] = { "\0" };
+    char trusted_path[MMPA_MAX_PATH] = {"\0"};
     if (mmRealPath(graph_def_path.c_str(), trusted_path, MMPA_MAX_PATH) != EN_OK) {
       LOG(ERROR) << "Get real path failed.";
       return;
@@ -43,9 +43,11 @@ class DpOptimizationPassTest : public testing::Test {
     original_ = CanonicalGraphString(graph_.get());
   }
 
-  static bool IncludeNode(const Node *n) { return n->IsOp(); }
+  static bool IncludeNode(const Node *n) {
+    return n->IsOp();
+  }
 
-  static string EdgeId(const Node* n, int index) {
+  static string EdgeId(const Node *n, int index) {
     if (index == 0) {
       return n->type_string();
     } else if (index == Graph::kControlSlot) {
@@ -55,12 +57,11 @@ class DpOptimizationPassTest : public testing::Test {
     }
   }
 
-  string CanonicalGraphString(Graph* g) {
+  string CanonicalGraphString(Graph *g) {
     std::vector<string> edges;
-    for (const Edge* e : g->edges()) {
+    for (const Edge *e : g->edges()) {
       if (IncludeNode(e->src()) && IncludeNode(e->dst())) {
-        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->",
-                                        EdgeId(e->dst(), e->dst_input())));
+        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->", EdgeId(e->dst(), e->dst_input())));
       }
     }
     // Canonicalize
@@ -83,40 +84,50 @@ class DpOptimizationPassTest : public testing::Test {
     return result;
   }
 
-  const string &OriginalGraph() const { return original_; }
+  const string &OriginalGraph() const {
+    return original_;
+  }
 
   std::unique_ptr<Graph> graph_;
   string original_;
+
  protected:
-  virtual void SetUp() { *const_cast<bool *>(&kDumpGraph) = true; }
+  virtual void SetUp() {
+    *const_cast<bool *>(&kDumpGraph) = true;
+  }
   virtual void TearDown() {}
 };
 
 TEST_F(DpOptimizationPassTest, BuildGeOpTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/dp_test_build_geop.pbtxt";
   InitGraph(org_graph_def_path);
-  std::string target_graph = "Const->TensorSliceDataset;IteratorV2->MakeIterator:1;" \
-    "TensorSliceDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;" \
-    "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
+  std::string target_graph =
+      "Const->TensorSliceDataset;IteratorV2->MakeIterator:1;"
+      "TensorSliceDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;"
+      "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
   EXPECT_EQ(DoRunDpOptimizationPassTest(), target_graph);
 }
 TEST_F(DpOptimizationPassTest, DatasetNotInDeviceTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/dp_test_no_dataset_in_device.pbtxt";
   InitGraph(org_graph_def_path);
-  std::string target_graph = "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;Const->BatchDatasetV2:1;"\
-    "Const->BatchDatasetV2:2;BatchDatasetV2->RepeatDataset;Const->RepeatDataset:1;RepeatDataset->OptimizeDataset;"\
-    "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;ModelDataset->HostQueueDataset:1;"\
-    "HostQueueDataset->DPGroupDataset;GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
+  std::string target_graph =
+      "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;Const->BatchDatasetV2:1;"
+      "Const->BatchDatasetV2:2;BatchDatasetV2->RepeatDataset;Const->RepeatDataset:1;RepeatDataset->OptimizeDataset;"
+      "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;ModelDataset->"
+      "HostQueueDataset:1;"
+      "HostQueueDataset->DPGroupDataset;GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
   EXPECT_EQ(DoRunDpOptimizationPassTest(), target_graph);
 }
 TEST_F(DpOptimizationPassTest, NewDatasetNotInDeviceTest) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/dp_test_no_dataset_in_device.pbtxt";
   NpuAttrs::SetNewDataTransferFlag(true);
   InitGraph(org_graph_def_path);
-  std::string target_graph = "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;Const->BatchDatasetV2:1;"\
-    "Const->BatchDatasetV2:2;BatchDatasetV2->RepeatDataset;Const->RepeatDataset:1;RepeatDataset->OptimizeDataset;"\
-    "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;ModelDataset->HostQueueDataset:1;"\
-    "HostQueueDataset->DPGroupDataset;GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
+  std::string target_graph =
+      "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;Const->BatchDatasetV2:1;"
+      "Const->BatchDatasetV2:2;BatchDatasetV2->RepeatDataset;Const->RepeatDataset:1;RepeatDataset->OptimizeDataset;"
+      "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;ModelDataset->"
+      "HostQueueDataset:1;"
+      "HostQueueDataset->DPGroupDataset;GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
   EXPECT_EQ(DoRunDpOptimizationPassTest(), target_graph);
   NpuAttrs::SetNewDataTransferFlag(false);
 }
@@ -124,9 +135,10 @@ TEST_F(DpOptimizationPassTest, Device_1980) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/dp_test_build_geop.pbtxt";
   NpuAttrs::SetNewDataTransferFlag(true);
   InitGraph(org_graph_def_path);
-  std::string target_graph = "Const->TensorSliceDataset;IteratorV2->MakeIterator:1;" \
-    "TensorSliceDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;" \
-    "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
+  std::string target_graph =
+      "Const->TensorSliceDataset;IteratorV2->MakeIterator:1;"
+      "TensorSliceDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;"
+      "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
   EXPECT_EQ(DoRunDpOptimizationPassTest(), target_graph);
   NpuAttrs::SetNewDataTransferFlag(false);
 }
@@ -134,15 +146,16 @@ TEST_F(DpOptimizationPassTest, Host_Not1980) {
   string org_graph_def_path = "tf_adapter/tests/ut/optimizers/pbtxt/dp_test_build_geop.pbtxt";
   NpuAttrs::SetNewDataTransferFlag(true);
   InitGraph(org_graph_def_path);
-  std::string target_graph = "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;"\
-    "Const->BatchDatasetV2:1;Const->BatchDatasetV2:2;BatchDatasetV2->MapDataset;MapDataset->OptimizeDataset;"\
-    "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;"\
-    "ModelDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;"\
-    "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
+  std::string target_graph =
+      "Const->TensorSliceDataset;TensorSliceDataset->BatchDatasetV2;"
+      "Const->BatchDatasetV2:1;Const->BatchDatasetV2:2;BatchDatasetV2->MapDataset;MapDataset->OptimizeDataset;"
+      "Const->OptimizeDataset:1;OptimizeDataset->ModelDataset;IteratorV2->MakeIterator:1;"
+      "ModelDataset->HostQueueDataset:1;HostQueueDataset->DPGroupDataset;"
+      "GEOPDataset->HostQueueDataset;DPGroupDataset->MakeIterator";
   aclrtSetSocNameStub("Ascend910B1");
   EXPECT_EQ(DoRunDpOptimizationPassTest(), target_graph);
   NpuAttrs::SetNewDataTransferFlag(false);
   aclrtSetDefaultSocNameStub();
 }
-} // end namespace
-} // end tensorflow
+}  // end namespace
+}  // namespace tensorflow

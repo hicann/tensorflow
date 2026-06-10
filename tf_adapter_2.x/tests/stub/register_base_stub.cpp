@@ -11,6 +11,4 @@
 #include <cstdlib>
 #include "register/register_base.h"
 
-extern "C" const char *aclGetCustomOpLibPath() {
-  return std::getenv("ASCEND_CUSTOM_OPP_PATH");
-}
+extern "C" const char *aclGetCustomOpLibPath() { return std::getenv("ASCEND_CUSTOM_OPP_PATH"); }

@@ -28,6 +28,7 @@ class HostThreadPool {
   void PushTask(const std::function<void()> &closure);
   void StopThreadPool();
   ~HostThreadPool();
+
  private:
   void ParallelForCopyThread();
   std::mutex queue_lock_;
@@ -37,5 +38,5 @@ class HostThreadPool {
   std::atomic<bool> thread_stop_flag_;
   uint32_t device_id_;
 };
-}
+}  // namespace tensorflow
 #endif

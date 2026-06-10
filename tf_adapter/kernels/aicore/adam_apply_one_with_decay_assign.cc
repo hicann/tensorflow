@@ -19,7 +19,9 @@ class AdamApplyOneWithDecayAssignOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "AdamApplyOneWithDecayAssignOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("AdamApplyOneWithDecayAssign").Device(DEVICE_CPU), AdamApplyOneWithDecayAssignOp);

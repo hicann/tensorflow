@@ -36,15 +36,20 @@ class NpuOpsTest : public testing::Test {
 
 class DummyDevice : public DeviceBase {
  public:
-  DummyDevice(Env* env, bool save) : DeviceBase(env), save_(save) {}
-  bool RequiresRecordingAccessedTensors() const override { return save_; }
-  Allocator* GetAllocator(AllocatorAttributes /*attr*/) override { return cpu_allocator(); }
+  DummyDevice(Env *env, bool save) : DeviceBase(env), save_(save) {}
+  bool RequiresRecordingAccessedTensors() const override {
+    return save_;
+  }
+  Allocator *GetAllocator(AllocatorAttributes /*attr*/) override {
+    return cpu_allocator();
+  }
+
  private:
   bool save_;
 };
 
 Status NpuOpCompute(std::string graph_def_path, NodeDef &npu_node_def, std::string node_name) {
-  Env* env = Env::Default();
+  Env *env = Env::Default();
   GraphDef graph_def;
   ReadTextProto(env, graph_def_path, &graph_def);
   for (int i = 0; i < graph_def.node_size(); i++) {
@@ -56,8 +61,8 @@ Status NpuOpCompute(std::string graph_def_path, NodeDef &npu_node_def, std::stri
       auto device = absl::make_unique<DummyDevice>(env, params.record_tensor_accesses);
       params.device = device.get();
       Status status;
-      std::unique_ptr<OpKernel> op(CreateOpKernel(DEVICE_CPU, params.device, cpu_allocator(),
-                                                  *node_def, TF_GRAPH_DEF_VERSION, &status));
+      std::unique_ptr<OpKernel> op(
+          CreateOpKernel(DEVICE_CPU, params.device, cpu_allocator(), *node_def, TF_GRAPH_DEF_VERSION, &status));
       EXPECT_TRUE(status.ok());
       params.op_kernel = op.get();
       auto ctx = absl::make_unique<OpKernelContext>(&params);
@@ -85,17 +90,16 @@ TEST(NpuOpsTest, TestGetNextShapeInference) {
   *(output_shapes.mutable_list()->add_shape()) = shape_proto;
   output_types.mutable_list()->add_type(DT_STRING);
   output_types.mutable_list()->add_type(DT_INT32);
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("GetNext", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
   TF_CHECK_OK(NodeDefBuilder("GetNext", &op_def)
-                   .Attr("channel_name", channel_name)
-                   .Attr("output_types", output_types)
-                   .Attr("output_shapes", output_shapes)
-                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,
-    {TShape({})}, {}, {}, {});
+                  .Attr("channel_name", channel_name)
+                  .Attr("output_types", output_types)
+                  .Attr("output_shapes", output_shapes)
+                  .Finalize(&def));
+  shape_inference::InferenceContext c(0, &def, op_def, {TShape({})}, {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 

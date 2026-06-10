@@ -15,7 +15,7 @@
 namespace tensorflow {
 namespace {
 class GetNextOp : public OpKernel {
-public:
+ public:
   explicit GetNextOp(OpKernelConstruction *ctx) : OpKernel(ctx) {
     OP_REQUIRES_OK(ctx, ctx->GetAttr("channel_name", &channel_name_));
     ADP_LOG(INFO) << "GetNextOp built " << channel_name_;
@@ -24,11 +24,11 @@ public:
     ADP_LOG(INFO) << "GetNextOp has been destructed";
   }
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     ADP_LOG(INFO) << "GetNextOp running";
   }
 
-private:
+ private:
   std::string channel_name_;
 };
 

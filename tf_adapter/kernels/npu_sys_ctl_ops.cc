@@ -68,7 +68,7 @@ NPUInit::NPUInit(OpKernelConstruction *ctx) : OpKernel(ctx) {
 }
 
 void NPUInit::Compute(OpKernelContext *ctx) {
-  (void) ctx;
+  (void)ctx;
   if (GePlugin::GetInstance()->IsGlobal()) {
     ADP_LOG(INFO) << "[NPUInit] GePlugin global, skip GePlugin init";
     return;
@@ -111,7 +111,7 @@ class NPUShutdown : public OpKernel {
   ~NPUShutdown() override = default;
 };
 void NPUShutdown::Compute(OpKernelContext *ctx) {
-  (void) ctx;
+  (void)ctx;
   ADP_LOG(INFO) << "[NPUShutdown] NPUShutdown Compute.";
   {
     mutex_lock lock{g_mu};

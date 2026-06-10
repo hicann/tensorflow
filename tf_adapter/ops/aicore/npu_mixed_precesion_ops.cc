@@ -48,17 +48,13 @@ REGISTER_OP("NpuGetFloatStatus")
     )doc")
     .SetIsStateful();
 
-REGISTER_OP("NpuGetFloatStatusV2")
-    .Output("data: int32")
-    .SetIsStateful()
-    .SetShapeFn([](InferenceContext *c) {
-        std::vector<DimensionHandle> output_dims;
-        output_dims.emplace_back(c->MakeDim(8));
-        auto output_shape = c->MakeShape(output_dims);
-        c->set_output(0, output_shape);
-        return Status::OK();
-    });
-
+REGISTER_OP("NpuGetFloatStatusV2").Output("data: int32").SetIsStateful().SetShapeFn([](InferenceContext *c) {
+  std::vector<DimensionHandle> output_dims;
+  output_dims.emplace_back(c->MakeDim(8));
+  auto output_shape = c->MakeShape(output_dims);
+  c->set_output(0, output_shape);
+  return Status::OK();
+});
 
 REGISTER_OP("NpuClearFloatStatus")
     .Input("float_status: float")

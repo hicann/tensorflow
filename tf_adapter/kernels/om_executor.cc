@@ -25,7 +25,7 @@ ModelProcess::~ModelProcess() {
   run_flag_ = false;
   ADP_LOG(INFO) << "send request to thread.";
   {
-    std::unique_lock<std::mutex> lk {mu_request_};
+    std::unique_lock<std::mutex> lk{mu_request_};
     request_flag_ = true;
     cond_request_.notify_one();
   }
@@ -70,7 +70,7 @@ Status ModelProcess::GetDynamicGearInfo() {
     for (size_t i = 0U; i < dynamic_batch.batchCount; ++i) {
       std::vector<uint64_t> current_batch;
       current_batch.emplace_back(dynamic_batch.batch[i]);
-      ADP_LOG(INFO) << "this "<< i << " batch is " << dynamic_batch.batch[i];
+      ADP_LOG(INFO) << "this " << i << " batch is " << dynamic_batch.batch[i];
       dynamic_gear_info_.emplace_back(current_batch);
     }
     for (size_t j = 0U; j < is_input_dynamic_.size(); ++j) {
@@ -80,12 +80,12 @@ Status ModelProcess::GetDynamicGearInfo() {
         break;
       }
     }
-    ADP_LOG(INFO) << "dynamic gear input index is "<< dynamic_gear_input_index_;
+    ADP_LOG(INFO) << "dynamic gear input index is " << dynamic_gear_input_index_;
     aclmdlIODims dims = {};
     REQUIRES_ACL_STATUS_OK(aclmdlGetInputDims(model_desc_, dynamic_gear_input_index_, &dims), aclmdlGetInputDims);
     for (size_t k = 0U; k < dims.dimCount; ++k) {
       if (dims.dims[k] == -1) {
-        ADP_LOG(INFO) << "dynamic gear shape index is "<< k;
+        ADP_LOG(INFO) << "dynamic gear shape index is " << k;
         dynamic_gear_shape_index_.emplace_back(k);
         break;
       }
@@ -100,7 +100,7 @@ Status ModelProcess::GetDynamicGearInfo() {
 }
 
 Status ModelProcess::LoadModelFromFile() {
-  const aclError acl_ret =  aclInit(nullptr);
+  const aclError acl_ret = aclInit(nullptr);
   if ((acl_ret != ACL_SUCCESS) && (acl_ret != ACL_ERROR_REPEAT_INITIALIZE)) {
     return tensorflow::errors::Internal("aclInit fail");
   }
@@ -116,12 +116,12 @@ Status ModelProcess::LoadModelFromFile() {
   for (size_t i = 0U; i < aclmdlGetNumInputs(model_desc_); ++i) {
     REQUIRES_ACL_STATUS_OK(aclmdlGetInputDims(model_desc_, i, &dims), aclmdlGetInputDims);
     is_input_dynamic_.emplace_back(IsDynamic(dims));
-    ADP_LOG(INFO) << "this "<< i << " input is " << is_input_dynamic_[i];
+    ADP_LOG(INFO) << "this " << i << " input is " << is_input_dynamic_[i];
   }
   for (size_t j = 0U; j < aclmdlGetNumOutputs(model_desc_); ++j) {
     REQUIRES_ACL_STATUS_OK(aclmdlGetOutputDims(model_desc_, j, &dims), aclmdlGetOutputDims);
     is_output_dynamic_.emplace_back(IsDynamic(dims));
-    ADP_LOG(INFO) << "this "<< j << " output is " << is_output_dynamic_[j];
+    ADP_LOG(INFO) << "this " << j << " output is " << is_output_dynamic_[j];
   }
   TF_RETURN_IF_ERROR(GetDynamicGearInfo());
   return Status::OK();
@@ -133,7 +133,7 @@ Status ModelProcess::CreateInput() {
   size_t input_num = aclmdlGetNumInputs(model_desc_);
   for (size_t i = 0U; i < input_num; ++i) {
     size_t input_size = aclmdlGetInputSizeByIndex(model_desc_, i);
-    ADP_LOG(INFO) << "this "<< i << " input size is " << input_size;
+    ADP_LOG(INFO) << "this " << i << " input size is " << input_size;
     void *dev_ptr = nullptr;
     if (input_size > 0U) {
       REQUIRES_ACL_STATUS_OK(aclrtMalloc(&dev_ptr, input_size, ACL_MEM_MALLOC_NORMAL_ONLY), aclrtMalloc);
@@ -159,7 +159,7 @@ Status ModelProcess::CreateOutput() {
   size_t output_num = aclmdlGetNumOutputs(model_desc_);
   for (size_t i = 0U; i < output_num; ++i) {
     size_t output_size = aclmdlGetOutputSizeByIndex(model_desc_, i);
-    ADP_LOG(INFO) << "this "<< i << " output size is " << output_size;
+    ADP_LOG(INFO) << "this " << i << " output size is " << output_size;
     void *dev_ptr = nullptr;
     if (output_size > 0U) {
       REQUIRES_ACL_STATUS_OK(aclrtMalloc(&dev_ptr, output_size, ACL_MEM_MALLOC_NORMAL_ONLY), aclrtMalloc);
@@ -194,25 +194,25 @@ Status ModelProcess::ProcessDynamicGearInput(const std::vector<Tensor> &inputs) 
   if (dymainc_gear_type_ == DynamicGearType::DYNAMIC_BATCH) {
     if (inputs.size() <= dynamic_gear_input_index_) {
       ADP_LOG(ERROR) << "input size " << inputs.size() << " is invalid, need be larger than "
-        << dynamic_gear_input_index_;
-      return tensorflow::errors::Internal("input size %zu is invalid, need be larger than %zu",
-        inputs.size(), dynamic_gear_input_index_);
+                     << dynamic_gear_input_index_;
+      return tensorflow::errors::Internal("input size %zu is invalid, need be larger than %zu", inputs.size(),
+                                          dynamic_gear_input_index_);
     }
     auto dims = inputs[dynamic_gear_input_index_].shape().dim_sizes();
     if (dims.size() <= dynamic_gear_shape_index_[0]) {
       ADP_LOG(ERROR) << "input dim size " << dims.size() << " is invalid, need be larger than "
-        << dynamic_gear_shape_index_[0];
-      return tensorflow::errors::Internal("input dim size %zu is invalid, need be larger than %zu",
-        dims.size(), dynamic_gear_shape_index_[0]);
+                     << dynamic_gear_shape_index_[0];
+      return tensorflow::errors::Internal("input dim size %zu is invalid, need be larger than %zu", dims.size(),
+                                          dynamic_gear_shape_index_[0]);
     }
     const auto current_batch = dims[dynamic_gear_shape_index_[0]];
     size_t dynamic_batch_index = 0U;
     REQUIRES_ACL_STATUS_OK(aclmdlGetInputIndexByName(model_desc_, ACL_DYNAMIC_TENSOR_NAME, &dynamic_batch_index),
-      aclmdlGetInputIndexByName);
-    ADP_LOG(INFO) << "current batch is " << current_batch << ", shape index is " << dynamic_gear_shape_index_[0] <<
-      ", dynamic_batch_index is " << dynamic_batch_index;
+                           aclmdlGetInputIndexByName);
+    ADP_LOG(INFO) << "current batch is " << current_batch << ", shape index is " << dynamic_gear_shape_index_[0]
+                  << ", dynamic_batch_index is " << dynamic_batch_index;
     REQUIRES_ACL_STATUS_OK(aclmdlSetDynamicBatchSize(model_id_, input_, dynamic_batch_index, current_batch),
-      aclmdlSetDynamicBatchSize);
+                           aclmdlSetDynamicBatchSize);
     return Status::OK();
   }
   return Status::OK();
@@ -228,8 +228,8 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
   }
   // dynamic gear data need to be feeded alone
   size_t need_feed_input_cnts = ((dymainc_gear_type_ == DynamicGearType::DYNAMIC_UNDEFINED) && (model_input_size >= 1U))
-    ? model_input_size
-    : (model_input_size - 1U);
+                                    ? model_input_size
+                                    : (model_input_size - 1U);
   for (size_t i = 0U; i < need_feed_input_cnts; ++i) {
     auto tensor_data = inputs[i].tensor_data().data();
     auto tensor_size = inputs[i].tensor_data().size();
@@ -238,23 +238,24 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
     void *dev_ptr = aclGetDataBufferAddr(data_buf);
     size_t cur_size = aclGetDataBufferSizeV2(data_buf);
     ADP_LOG(INFO) << "current input tensor is " << inputs[i].DebugString() << " model cur size is " << cur_size;
-    if (tensor_size > cur_size) { // dynamic input maybe larger than last, free and malloc larger size
-      if (dev_ptr != nullptr) { // only not nullptr need to be free, first infer maybe nullptr and 0 size
+    if (tensor_size > cur_size) {  // dynamic input maybe larger than last, free and malloc larger size
+      if (dev_ptr != nullptr) {    // only not nullptr need to be free, first infer maybe nullptr and 0 size
         (void)aclrtFree(dev_ptr);
       }
       REQUIRES_ACL_STATUS_OK(aclrtMalloc(&dev_ptr, tensor_size, ACL_MEM_MALLOC_NORMAL_ONLY), aclrtMalloc);
       (void)aclUpdateDataBuffer(data_buf, dev_ptr, tensor_size);
     }
     REQUIRES_NOT_NULL(dev_ptr);
-    REQUIRES_ACL_STATUS_OK(aclrtMemcpy(dev_ptr, tensor_size,
-      tensor_data, tensor_size, ACL_MEMCPY_HOST_TO_DEVICE), aclrtMemcpy);
+    REQUIRES_ACL_STATUS_OK(aclrtMemcpy(dev_ptr, tensor_size, tensor_data, tensor_size, ACL_MEMCPY_HOST_TO_DEVICE),
+                           aclrtMemcpy);
     // set shpae
     tensorflow::DataType tf_type = inputs[i].dtype();
     aclDataType acl_dt = ACL_DT_UNDEFINED;
     TF_RETURN_IF_ERROR(MappingTfDtToAcl(tf_type, acl_dt));
     auto dims = inputs[i].shape().dim_sizes();
-    aclTensorDesc *tensor_desc = aclCreateTensorDesc(acl_dt, dims.size(),
-      (dims.empty() ? nullptr : reinterpret_cast<const int64_t *>(dims.data())), ACL_FORMAT_UNDEFINED);
+    aclTensorDesc *tensor_desc = aclCreateTensorDesc(
+        acl_dt, dims.size(), (dims.empty() ? nullptr : reinterpret_cast<const int64_t *>(dims.data())),
+        ACL_FORMAT_UNDEFINED);
     REQUIRES_NOT_NULL(tensor_desc);
     const aclError ret = aclmdlSetDatasetTensorDesc(input_, tensor_desc, i);
     aclDestroyTensorDesc(tensor_desc);
@@ -266,7 +267,7 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
 }
 
 Status ModelProcess::ProcessStaticOutput(const size_t index, const tensorflow::DataType tf_type,
-    const aclDataBuffer *data_buf, std::vector<Tensor> &outputs) const {
+                                         const aclDataBuffer *data_buf, std::vector<Tensor> &outputs) const {
   ADP_LOG(INFO) << "this out " << index << " is static.";
   void *dev_ptr = aclGetDataBufferAddr(data_buf);
   REQUIRES_NOT_NULL(dev_ptr);
@@ -284,14 +285,14 @@ Status ModelProcess::ProcessStaticOutput(const size_t index, const tensorflow::D
   auto tensor_data = const_cast<char *>(tensor.tensor_data().data());
   auto tensor_size = tensor.tensor_data().size();
   ADP_LOG(INFO) << "current output " << index << ", tensor is " << tensor.DebugString();
-  REQUIRES_ACL_STATUS_OK(
-    aclrtMemcpy(tensor_data, tensor_size, dev_ptr, tensor_size, ACL_MEMCPY_DEVICE_TO_HOST), aclrtMemcpy);
+  REQUIRES_ACL_STATUS_OK(aclrtMemcpy(tensor_data, tensor_size, dev_ptr, tensor_size, ACL_MEMCPY_DEVICE_TO_HOST),
+                         aclrtMemcpy);
   outputs.emplace_back(std::move(tensor));
   return Status::OK();
 }
 
 Status ModelProcess::ProcessDynamicOutput(const size_t index, const tensorflow::DataType tf_type,
-    aclDataBuffer *data_buf, std::vector<Tensor> &outputs) const {
+                                          aclDataBuffer *data_buf, std::vector<Tensor> &outputs) const {
   ADP_LOG(INFO) << "this out " << index << " is dynamic.";
   void *dev_ptr = aclGetDataBufferAddr(data_buf);
   REQUIRES_NOT_NULL(dev_ptr);
@@ -300,8 +301,7 @@ Status ModelProcess::ProcessDynamicOutput(const size_t index, const tensorflow::
   size_t real_size = aclGetTensorDescSize(desc);
   TensorShape tf_shape;
   size_t shape_size = aclGetTensorDescNumDims(desc);
-  ADP_LOG(INFO) << "get model output size is " << real_size << ", shape size is "
-                << shape_size << " dt is " << tf_type;
+  ADP_LOG(INFO) << "get model output size is " << real_size << ", shape size is " << shape_size << " dt is " << tf_type;
   int64_t cur_dim = 0;
   for (size_t j = 0U; j < shape_size; ++j) {
     REQUIRES_ACL_STATUS_OK(aclGetTensorDescDimV2(desc, j, &cur_dim), aclGetTensorDescDimV2);
@@ -310,8 +310,8 @@ Status ModelProcess::ProcessDynamicOutput(const size_t index, const tensorflow::
   Tensor tensor = Tensor(tf_type, tf_shape);
   auto tensor_data = const_cast<char *>(tensor.tensor_data().data());
   auto tensor_size = tensor.tensor_data().size();
-  REQUIRES_ACL_STATUS_OK(
-    aclrtMemcpy(tensor_data, tensor_size, dev_ptr, tensor_size, ACL_MEMCPY_DEVICE_TO_HOST), aclrtMemcpy);
+  REQUIRES_ACL_STATUS_OK(aclrtMemcpy(tensor_data, tensor_size, dev_ptr, tensor_size, ACL_MEMCPY_DEVICE_TO_HOST),
+                         aclrtMemcpy);
   ADP_LOG(INFO) << "current output " << index << " tensor is " << tensor.DebugString();
   outputs.emplace_back(std::move(tensor));
   if (outputs_feed_nullptr_vec_[index]) {
@@ -346,7 +346,7 @@ void ModelProcess::WorkThread() {
   bool is_prepared = false;
   while (run_flag_) {
     {
-      std::unique_lock<std::mutex> lk {mu_request_};
+      std::unique_lock<std::mutex> lk{mu_request_};
       ADP_LOG(INFO) << "start wait request.";
       cond_request_.wait(lk, [this] { return (!this->run_flag_.load() || this->request_flag_.load()); });
       request_flag_ = false;
@@ -364,7 +364,7 @@ void ModelProcess::WorkThread() {
         DestroyResource();
         ADP_LOG(ERROR) << "prepare fail";
         {
-          std::unique_lock<std::mutex> lk {mu_reply_};
+          std::unique_lock<std::mutex> lk{mu_reply_};
           reply_flag_ = true;
           cond_reply_.notify_one();
         }
@@ -374,7 +374,7 @@ void ModelProcess::WorkThread() {
     thread_ret_ = Execute(inputs_, outputs_);
     ADP_LOG(INFO) << "execute end " << thread_ret_.ToString();
     {
-      std::unique_lock<std::mutex> lk {mu_reply_};
+      std::unique_lock<std::mutex> lk{mu_reply_};
       reply_flag_ = true;
       cond_reply_.notify_one();
     }
@@ -388,10 +388,10 @@ void ModelProcess::StartWorkThread() {
 
 Status ModelProcess::MappingTfDtToAcl(const tensorflow::DataType tf_type, aclDataType &acl_type) const {
   const static std::map<tensorflow::DataType, aclDataType> type_mapping = {
-    {DT_FLOAT, ACL_FLOAT},  {DT_HALF, ACL_FLOAT16},  {DT_INT8, ACL_INT8},     {DT_INT32, ACL_INT32},
-    {DT_UINT8, ACL_UINT8},  {DT_INT16, ACL_INT16},   {DT_UINT16, ACL_UINT16}, {DT_UINT32, ACL_UINT32},
-    {DT_INT64, ACL_INT64},  {DT_UINT64, ACL_UINT64}, {DT_DOUBLE, ACL_DOUBLE}, {DT_BOOL, ACL_BOOL},
-    {DT_STRING, ACL_STRING}};
+      {DT_FLOAT, ACL_FLOAT},  {DT_HALF, ACL_FLOAT16},  {DT_INT8, ACL_INT8},     {DT_INT32, ACL_INT32},
+      {DT_UINT8, ACL_UINT8},  {DT_INT16, ACL_INT16},   {DT_UINT16, ACL_UINT16}, {DT_UINT32, ACL_UINT32},
+      {DT_INT64, ACL_INT64},  {DT_UINT64, ACL_UINT64}, {DT_DOUBLE, ACL_DOUBLE}, {DT_BOOL, ACL_BOOL},
+      {DT_STRING, ACL_STRING}};
   auto found = type_mapping.find(tf_type);
   if (found == type_mapping.end()) {
     return errors::Internal("Unsupported tf data type", DataTypeString(tf_type), " by acl.");
@@ -402,10 +402,10 @@ Status ModelProcess::MappingTfDtToAcl(const tensorflow::DataType tf_type, aclDat
 
 Status ModelProcess::MappingAclDtToTf(const aclDataType &acl_type, tensorflow::DataType &tf_type) const {
   const static std::map<aclDataType, tensorflow::DataType> type_mapping = {
-    {ACL_FLOAT, DT_FLOAT},  {ACL_FLOAT16, DT_HALF},  {ACL_INT8, DT_INT8},     {ACL_INT32, DT_INT32},
-    {ACL_UINT8, DT_UINT8},  {ACL_INT16, DT_INT16},   {ACL_UINT16, DT_UINT16}, {ACL_UINT32, DT_UINT32},
-    {ACL_INT64, DT_INT64},  {ACL_UINT64, DT_UINT64}, {ACL_DOUBLE, DT_DOUBLE}, {ACL_BOOL, DT_BOOL},
-    {ACL_STRING, DT_STRING}};
+      {ACL_FLOAT, DT_FLOAT},  {ACL_FLOAT16, DT_HALF},  {ACL_INT8, DT_INT8},     {ACL_INT32, DT_INT32},
+      {ACL_UINT8, DT_UINT8},  {ACL_INT16, DT_INT16},   {ACL_UINT16, DT_UINT16}, {ACL_UINT32, DT_UINT32},
+      {ACL_INT64, DT_INT64},  {ACL_UINT64, DT_UINT64}, {ACL_DOUBLE, DT_DOUBLE}, {ACL_BOOL, DT_BOOL},
+      {ACL_STRING, DT_STRING}};
   auto found = type_mapping.find(acl_type);
   if (found == type_mapping.end()) {
     return errors::Internal("Acl channel receive unsupported data type", acl_type);
@@ -447,8 +447,8 @@ void ModelProcess::DestroyOutput() {
     return;
   }
   for (size_t i = 0U; i < aclmdlGetDatasetNumBuffers(output_); ++i) {
-    aclDataBuffer* dataBuffer = aclmdlGetDatasetBuffer(output_, i);
-    void* data = aclGetDataBufferAddr(dataBuffer);
+    aclDataBuffer *dataBuffer = aclmdlGetDatasetBuffer(output_, i);
+    void *data = aclGetDataBufferAddr(dataBuffer);
     (void)aclrtFree(data);
     (void)aclDestroyDataBuffer(dataBuffer);
   }
@@ -460,7 +460,7 @@ void ModelProcess::SendRequest(const std::vector<Tensor> &inputs) {
   inputs_ = inputs;
   ADP_LOG(INFO) << "send request to thread.";
   {
-    std::unique_lock<std::mutex> lk {mu_request_};
+    std::unique_lock<std::mutex> lk{mu_request_};
     request_flag_ = true;
     cond_request_.notify_one();
   }
@@ -468,7 +468,7 @@ void ModelProcess::SendRequest(const std::vector<Tensor> &inputs) {
 
 void ModelProcess::WaitReply(std::vector<Tensor> &outputs) {
   {
-    std::unique_lock<std::mutex> lk {mu_reply_};
+    std::unique_lock<std::mutex> lk{mu_reply_};
     cond_reply_.wait(lk, [this] { return this->reply_flag_.load(); });
     reply_flag_ = false;
   }
@@ -484,7 +484,7 @@ Status OmExecutor::Create(const std::string &model_data, std::unique_ptr<OmExecu
   if (executor == nullptr) {
     return errors::Internal("Failed create executor for om");
   }
-  executor->model_process_ = std::unique_ptr<ModelProcess> (new (std::nothrow) ModelProcess(model_data));
+  executor->model_process_ = std::unique_ptr<ModelProcess>(new (std::nothrow) ModelProcess(model_data));
   REQUIRES_NOT_NULL(executor->model_process_);
   return Status::OK();
 }
@@ -498,4 +498,4 @@ Status OmExecutor::Execute(const std::vector<Tensor> &inputs, std::vector<Tensor
   ADP_LOG(INFO) << "execute end " << ret.ToString();
   return ret;
 }
-} // namespace tensorflow
+}  // namespace tensorflow

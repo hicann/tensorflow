@@ -258,5 +258,5 @@ TEST_F(GePluginTest, PluginInitTest_optimization_switch) {
   ASSERT_FALSE(GePlugin::GetInstance()->GetInitOptions().empty());
   NpuClose();
 }
-}
-} // end tensorflow
+}  // namespace
+}  // namespace tensorflow

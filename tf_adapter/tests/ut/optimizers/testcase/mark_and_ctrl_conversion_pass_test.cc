@@ -43,7 +43,7 @@ class MarkAndCtrlOptimizationPassTest : public testing::Test {
   }
 
   void InitGraph(const string &graph_def_path) {
-    char trusted_path[MMPA_MAX_PATH] = { "\0" };
+    char trusted_path[MMPA_MAX_PATH] = {"\0"};
     if (mmRealPath(graph_def_path.c_str(), trusted_path, MMPA_MAX_PATH) != EN_OK) {
       LOG(ERROR) << "Get real path failed.";
       return;
@@ -53,9 +53,11 @@ class MarkAndCtrlOptimizationPassTest : public testing::Test {
     original_ = CanonicalGraphString(graph_.get());
   }
 
-  static bool IncludeNode(const Node *n) { return n->IsOp(); }
+  static bool IncludeNode(const Node *n) {
+    return n->IsOp();
+  }
 
-  static string EdgeId(const Node* n, int index) {
+  static string EdgeId(const Node *n, int index) {
     if (index == 0) {
       return n->type_string();
     } else if (index == Graph::kControlSlot) {
@@ -65,12 +67,11 @@ class MarkAndCtrlOptimizationPassTest : public testing::Test {
     }
   }
 
-  string CanonicalGraphString(Graph* g) {
+  string CanonicalGraphString(Graph *g) {
     std::vector<string> edges;
-    for (const Edge* e : g->edges()) {
+    for (const Edge *e : g->edges()) {
       if (IncludeNode(e->src()) && IncludeNode(e->dst())) {
-        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->",
-                                        EdgeId(e->dst(), e->dst_input())));
+        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->", EdgeId(e->dst(), e->dst_input())));
       }
     }
     // Canonicalize
@@ -95,12 +96,17 @@ class MarkAndCtrlOptimizationPassTest : public testing::Test {
     return result;
   }
 
-  const string &OriginalGraph() const { return original_; }
+  const string &OriginalGraph() const {
+    return original_;
+  }
 
   std::unique_ptr<Graph> graph_;
   string original_;
+
  protected:
-  virtual void SetUp() { *const_cast<bool *>(&kDumpGraph) = true; }
+  virtual void SetUp() {
+    *const_cast<bool *>(&kDumpGraph) = true;
+  }
   virtual void TearDown() {}
 };
 
@@ -109,10 +115,9 @@ TEST_F(MarkAndCtrlOptimizationPassTest, FuncTest) {
   InitGraph(org_graph_def_path);
   std::string target_graph = "_Arg->Greater;Const->Greater:1;Greater->If;_Arg->If:1;If->_Retval";
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-    ->mutable_optimizer_options()
-    ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   AttrValue job = AttrValue();
   job.set_s("localhost");
@@ -124,10 +129,9 @@ TEST_F(MarkAndCtrlOptimizationPassTest, Func1Test) {
   InitGraph(org_graph_def_path);
   std::string target_graph = "_Arg->Greater;Const->Greater:1;Greater->If;_Arg->If:1;If->_Retval";
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-    ->mutable_optimizer_options()
-    ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   AttrValue job = AttrValue();
   job.set_s("ps");
@@ -139,10 +143,9 @@ TEST_F(MarkAndCtrlOptimizationPassTest, Func2Test) {
   InitGraph(org_graph_def_path);
   std::string target_graph = "_Arg->Greater;Const->Greater:1;Greater->If;_Arg->If:1;If->_Retval";
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-    ->mutable_optimizer_options()
-    ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   AttrValue job = AttrValue();
   job.set_s("localhost");
@@ -152,5 +155,5 @@ TEST_F(MarkAndCtrlOptimizationPassTest, Func2Test) {
   (*custom_config->mutable_parameter_map())["use_off_line"] = use_off_line;
   EXPECT_EQ(DoRunMarkAndCtrlOptimizationPassTest(session_options), target_graph);
 }
-} // end namespace
-} // end tensorflow
+}  // end namespace
+}  // namespace tensorflow

@@ -32,17 +32,14 @@ typedef FunctionDefHelper FDH;
 class DeviceQueueDatasetParams : public DatasetParams {
  public:
   DeviceQueueDatasetParams(DataTypeVector output_dtypes, std::vector<PartialTensorShape> output_shapes,
-      string node_name)
+                           string node_name)
       : DatasetParams(output_dtypes, output_shapes, node_name) {
-      dataset_node_def = test::function::NDef(
-        node_name, name_utils::OpName(kNodeName),
-        {},
-        {{"channel_name", "aaa"},
-         {"output_types", output_dtypes},
-         {"output_shapes", output_shapes}});
-    };
+    dataset_node_def = test::function::NDef(
+        node_name, name_utils::OpName(kNodeName), {},
+        {{"channel_name", "aaa"}, {"output_types", output_dtypes}, {"output_shapes", output_shapes}});
+  };
 
-  Status MakeInputs(gtl::InlinedVector<TensorValue, 4>* inputs) override {
+  Status MakeInputs(gtl::InlinedVector<TensorValue, 4> *inputs) override {
     return Status::OK();
   }
 
@@ -51,33 +48,28 @@ class DeviceQueueDatasetParams : public DatasetParams {
 
 class DeviceQueueDatasetOpTest : public DatasetOpsTestBaseV2<DeviceQueueDatasetParams> {
  public:
-  Status Initialize(DeviceQueueDatasetParams* params) override {
+  Status Initialize(DeviceQueueDatasetParams *params) override {
     TF_RETURN_IF_ERROR(InitThreadPool(thread_num_));
     TF_RETURN_IF_ERROR(InitializeForDataset(params));
 
-    TF_RETURN_IF_ERROR(
-        MakeDatasetOpKernel(*params, &dataset_kernel_));
+    TF_RETURN_IF_ERROR(MakeDatasetOpKernel(*params, &dataset_kernel_));
     gtl::InlinedVector<TensorValue, 4> input_list;
-    TF_RETURN_IF_ERROR(
-        CreateDatasetContext(dataset_kernel_.get(), &input_list, &dataset_ctx_));
-    TF_RETURN_IF_ERROR(
-        CreateDataset(dataset_kernel_.get(), dataset_ctx_.get(), &dataset_));
-    TF_RETURN_IF_ERROR(
-        CreateIteratorContext(dataset_ctx_.get(), &iterator_ctx_));
-    TF_RETURN_IF_ERROR(dataset_->MakeIterator(
-        iterator_ctx_.get(), params->iterator_prefix, &iterator_));
+    TF_RETURN_IF_ERROR(CreateDatasetContext(dataset_kernel_.get(), &input_list, &dataset_ctx_));
+    TF_RETURN_IF_ERROR(CreateDataset(dataset_kernel_.get(), dataset_ctx_.get(), &dataset_));
+    TF_RETURN_IF_ERROR(CreateIteratorContext(dataset_ctx_.get(), &iterator_ctx_));
+    TF_RETURN_IF_ERROR(dataset_->MakeIterator(iterator_ctx_.get(), params->iterator_prefix, &iterator_));
     return Status::OK();
   }
 
  protected:
   // Creates a new MapDataset op kernel.
-  Status MakeDatasetOpKernel(const DeviceQueueDatasetParams& dataset_params,
-                             std::unique_ptr<OpKernel>* kernel) override {
+  Status MakeDatasetOpKernel(const DeviceQueueDatasetParams &dataset_params,
+                             std::unique_ptr<OpKernel> *kernel) override {
     TF_RETURN_IF_ERROR(CreateOpKernel(dataset_params.dataset_node_def, kernel));
     return Status::OK();
   }
 
-  Status InitializeForDataset(DeviceQueueDatasetParams* dataset_params) {
+  Status InitializeForDataset(DeviceQueueDatasetParams *dataset_params) {
     DT_ALLOW_LEAKS_GUARD(InitializeForDataset);
     InitFunctionLibraryRuntime({}, cpu_num_);
     return Status::OK();
@@ -85,8 +77,8 @@ class DeviceQueueDatasetOpTest : public DatasetOpsTestBaseV2<DeviceQueueDatasetP
 };
 DeviceQueueDatasetParams DeviceQueueDatasetParams1() {
   return DeviceQueueDatasetParams(/*output_dtypes=*/{DT_INT64},
-                             /*output_shapes=*/{PartialTensorShape({})},
-                             /*node_name=*/kNodeName);
+                                  /*output_shapes=*/{PartialTensorShape({})},
+                                  /*node_name=*/kNodeName);
 }
 #if 1
 TEST_F(DeviceQueueDatasetOpTest, DatasetParam1) {

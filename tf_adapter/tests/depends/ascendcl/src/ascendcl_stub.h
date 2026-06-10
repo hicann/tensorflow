@@ -49,10 +49,8 @@ extern bool g_createTensorDescStatus;
 void SetCreateTensorDesc(const bool isSuccess);
 
 struct acltdtDataItem {
-  acltdtDataItem(acltdtTensorType tdtType,
-    const int64_t *dims, size_t dimNum, const std::string &dimsStr,
-    aclDataType type, const std::string &typeStr,
-    std::shared_ptr<void> tensorData, size_t size) {
+  acltdtDataItem(acltdtTensorType tdtType, const int64_t *dims, size_t dimNum, const std::string &dimsStr,
+                 aclDataType type, const std::string &typeStr, std::shared_ptr<void> tensorData, size_t size) {
     this->tdtType = tdtType;
     for (size_t i = 0; i < dimNum; ++i) {
       this->dims.push_back(dims[i]);
@@ -79,7 +77,7 @@ struct aclprofConfig {
 };
 
 struct acltdtDataset {
-  acltdtDataset()  : freeSelf(false) {};
+  acltdtDataset() : freeSelf(false){};
   ~acltdtDataset() {
     if (freeSelf) {
       for (auto iter = blobs.begin(); iter != blobs.end(); ++iter) {
@@ -110,20 +108,18 @@ struct acltdtChannelHandle {
 };
 
 namespace acl {
-  struct AclModelTensor{
-    AclModelTensor(aclDataBuffer *const dataBufIn,
-      aclTensorDesc *const tensorDescIn) : dataBuf(dataBufIn), tensorDesc(tensorDescIn) {}
+struct AclModelTensor {
+  AclModelTensor(aclDataBuffer *const dataBufIn, aclTensorDesc *const tensorDescIn)
+      : dataBuf(dataBufIn), tensorDesc(tensorDescIn) {}
 
-    ~AclModelTensor() = default;
-    aclDataBuffer *dataBuf;
-    aclTensorDesc *tensorDesc;
-  };
-} //namespace acl
+  ~AclModelTensor() = default;
+  aclDataBuffer *dataBuf;
+  aclTensorDesc *tensorDesc;
+};
+}  // namespace acl
 
 struct aclmdlDataset {
-  aclmdlDataset()
-    : seq(0U),
-      modelId(0U) {}
+  aclmdlDataset() : seq(0U), modelId(0U) {}
 
   ~aclmdlDataset() = default;
   uint32_t seq;
@@ -132,7 +128,7 @@ struct aclmdlDataset {
 };
 
 using AclStreamStubHook = std::function<aclError(const aclmdlDataset *input_data, aclmdlDataset *output_data)>;
-struct AclStreamStub{
+struct AclStreamStub {
   aclmdlDataset *input_data;
   aclmdlDataset *output_data;
   AclStreamStubHook hook;
@@ -143,7 +139,7 @@ typedef AclStreamStub AclEventStub;
 
 struct aclmdlTensorDesc {
   aclmdlTensorDesc() : name(""), size(0U), format(ACL_FORMAT_UNDEFINED), dataType(ACL_DT_UNDEFINED) {}
-  ~aclmdlTensorDesc()  = default;
+  ~aclmdlTensorDesc() = default;
 
   std::string name;
   size_t size;
@@ -161,7 +157,7 @@ struct aclmdlDesc {
 };
 
 struct aclDataBuffer {
-  aclDataBuffer(void* const dataIn, const uint64_t len) : data(dataIn), length(len) {}
+  aclDataBuffer(void *const dataIn, const uint64_t len) : data(dataIn), length(len) {}
   ~aclDataBuffer() = default;
 
   void *data;
@@ -184,13 +180,14 @@ void SetOutputNeedNull(const bool feed_null);
 using ACLMdlGetDescStub = std::function<aclError(aclmdlDesc *)>;
 void RegACLMdlGetDescStub(ACLMdlGetDescStub stub);
 
-using AclRunGraphWithStreamAsyncStub = std::function<aclError(uint32_t, const aclmdlDataset*, aclmdlDataset*, void*)>;
+using AclRunGraphWithStreamAsyncStub =
+    std::function<aclError(uint32_t, const aclmdlDataset *, aclmdlDataset *, void *)>;
 void RegAclRunGraphWithStreamAsyncStub(AclRunGraphWithStreamAsyncStub stub);
 
-using AclRunGraphStub = std::function<aclError(uint32_t, const aclmdlDataset*, aclmdlDataset*)>;
+using AclRunGraphStub = std::function<aclError(uint32_t, const aclmdlDataset *, aclmdlDataset *)>;
 void RegAclRunGraphStub(AclRunGraphStub stub);
 
 void SetAclmdlAddDatasetBufferRet(const bool isSuccess);
 void SetAclmdlSetDatasetTensorDescRet(const bool isSuccess);
 
-#endif //ACL_TENSOR_DATA_TRANSFER_H
+#endif  // ACL_TENSOR_DATA_TRANSFER_H

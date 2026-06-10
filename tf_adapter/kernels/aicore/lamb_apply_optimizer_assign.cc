@@ -19,7 +19,9 @@ class LambApplyOptimizerAssignOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "LambApplyOptimizerAssignOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LambApplyOptimizerAssign").Device(DEVICE_CPU), LambApplyOptimizerAssignOp);

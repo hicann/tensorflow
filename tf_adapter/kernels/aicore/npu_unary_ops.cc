@@ -19,7 +19,7 @@
 #include "tf_adapter/common/common.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class GeluOp : public tensorflow::OpKernel {
  public:
   explicit GeluOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
@@ -58,7 +58,7 @@ REGISTER_KERNEL_BUILDER(Name("Gelu").Device(tensorflow::DEVICE_CPU).TypeConstrai
 REGISTER_KERNEL_BUILDER(Name("Gelu").Device(tensorflow::DEVICE_CPU).TypeConstraint<Eigen::half>("T"),
                         GeluOp<Eigen::half>);
 
-template<typename T>
+template <typename T>
 class GeluGradOp : public tensorflow::OpKernel {
  public:
   explicit GeluGradOp(tensorflow::OpKernelConstruction *context) : OpKernel(context) {}
@@ -99,7 +99,7 @@ class GeluGradOp : public tensorflow::OpKernel {
 
       auto tanhterm = gelu_x * T(2) - T(1);
       auto dydx =
-        gelu_x + T(0.5) * x * (T(1) - pow(tanhterm, T(2))) * sqrt2overPI * (T(1) + T(3) * T(0.04715) * pow(x, T(2)));
+          gelu_x + T(0.5) * x * (T(1) - pow(tanhterm, T(2))) * sqrt2overPI * (T(1) + T(3) * T(0.04715) * pow(x, T(2)));
       auto dLdx = dLdy * dydx;
 
       grad_output_flat(i) = dLdx;

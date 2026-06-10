@@ -24,7 +24,7 @@
 namespace {
 const uint32_t kDeviceSatModeLimit = 2U;
 std::uint32_t deviceSatMode = 2U;
-}
+}  // namespace
 
 struct aclopAttr {};
 struct aclDataBuffer {};
@@ -67,28 +67,18 @@ struct acltdtChannelHandle {
 extern "C" {
 #endif
 
-aclError aclprofInit(const char *profilerResultPath, size_t length) {
-  return ACL_SUCCESS;
-}
+aclError aclprofInit(const char *profilerResultPath, size_t length) { return ACL_SUCCESS; }
 
-aclError aclprofFinalize() {
-  return ACL_SUCCESS;
-}
+aclError aclprofFinalize() { return ACL_SUCCESS; }
 
-aclError aclprofStart(const aclprofConfig *profilerConfig) {
-  return ACL_SUCCESS;
-}
+aclError aclprofStart(const aclprofConfig *profilerConfig) { return ACL_SUCCESS; }
 
-aclError aclprofDestroyConfig(const aclprofConfig *profilerConfig) {
-  return ACL_SUCCESS;
-}
+aclError aclprofDestroyConfig(const aclprofConfig *profilerConfig) { return ACL_SUCCESS; }
 
-aclError aclprofStop(const aclprofConfig *profilerConfig) {
-  return ACL_SUCCESS;
-}
+aclError aclprofStop(const aclprofConfig *profilerConfig) { return ACL_SUCCESS; }
 aclprofConfig stub_config;
-aclprofConfig *aclprofCreateConfig(uint32_t *deviceIdList, uint32_t deviceNums,
-    aclprofAicoreMetrics aicoreMetrics, const aclprofAicoreEvents *aicoreEvents, uint64_t dataTypeConfig) {
+aclprofConfig *aclprofCreateConfig(uint32_t *deviceIdList, uint32_t deviceNums, aclprofAicoreMetrics aicoreMetrics,
+                                   const aclprofAicoreEvents *aicoreEvents, uint64_t dataTypeConfig) {
   return &stub_config;
 }
 

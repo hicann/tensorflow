@@ -11,9 +11,8 @@
 #include "profiler_interface.h"
 #include "profiler.h"
 
-const std::string ProfilerStart(const std::string &level,
-    const std::string &aic_metrics,
-    const std::string &output_path) {
+const std::string ProfilerStart(const std::string &level, const std::string &aic_metrics,
+                                const std::string &output_path) {
   return tensorflow::Profiler::GetInstance().Enable(level, aic_metrics, output_path).error_message();
 }
 

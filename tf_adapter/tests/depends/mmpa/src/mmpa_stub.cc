@@ -11,10 +11,14 @@
 #include "mmpa/mmpa_api.h"
 
 INT32 mmAccess2(const CHAR *path_name, INT32 mode) {
-  if (path_name == NULL) { return EN_INVALID_PARAM; }
+  if (path_name == NULL) {
+    return EN_INVALID_PARAM;
+  }
 
   INT32 ret = access(path_name, mode);
-  if (ret != EN_OK) { return EN_ERROR; }
+  if (ret != EN_OK) {
+    return EN_ERROR;
+  }
   return EN_OK;
 }
 
@@ -23,21 +27,31 @@ INT32 mmGetPid() {
 }
 
 INT32 mmMkdir(const CHAR *path_name, mmMode_t mode) {
-  if (path_name == NULL) { return EN_INVALID_PARAM; }
+  if (path_name == NULL) {
+    return EN_INVALID_PARAM;
+  }
 
   INT32 ret = mkdir(path_name, mode);
-  if (ret != EN_OK) { return EN_ERROR; }
+  if (ret != EN_OK) {
+    return EN_ERROR;
+  }
   return EN_OK;
 }
 
 INT32 mmIsDir(const CHAR *file_name) {
-  if (file_name == NULL) { return EN_INVALID_PARAM; }
+  if (file_name == NULL) {
+    return EN_INVALID_PARAM;
+  }
   struct stat file_stat;
   (void)memset_s(&file_stat, sizeof(file_stat), 0, sizeof(file_stat));
   INT32 ret = lstat(file_name, &file_stat);
-  if (ret < MMPA_ZERO) { return EN_ERROR; }
+  if (ret < MMPA_ZERO) {
+    return EN_ERROR;
+  }
 
-  if (!S_ISDIR(file_stat.st_mode)) { return EN_ERROR; }
+  if (!S_ISDIR(file_stat.st_mode)) {
+    return EN_ERROR;
+  }
   return EN_OK;
 }
 
@@ -48,12 +62,16 @@ INT32 mmRealPath(const CHAR *path, CHAR *real_path, INT32 real_path_len) {
   }
 
   CHAR *ptr = realpath(path, real_path);
-  if (ptr == NULL) { ret = EN_ERROR; }
+  if (ptr == NULL) {
+    ret = EN_ERROR;
+  }
   return ret;
 }
 
 VOID *mmDlopen(const CHAR *file_name, INT32 mode) {
-  if ((file_name == NULL) || (mode < MMPA_ZERO)) { return NULL; }
+  if ((file_name == NULL) || (mode < MMPA_ZERO)) {
+    return NULL;
+  }
   return dlopen(file_name, mode);
 }
 
@@ -62,15 +80,21 @@ CHAR *mmDlerror(void) {
 }
 
 VOID *mmDlsym(VOID *handle, const CHAR *func_name) {
-  if ((handle == NULL) || (func_name == NULL)) { return NULL; }
+  if ((handle == NULL) || (func_name == NULL)) {
+    return NULL;
+  }
   return dlsym(handle, func_name);
 }
 
 INT32 mmDlclose(VOID *handle) {
-  if (handle == NULL) { return EN_INVALID_PARAM; }
+  if (handle == NULL) {
+    return EN_INVALID_PARAM;
+  }
 
   INT32 ret = dlclose(handle);
-  if (ret != EN_OK) { return EN_ERROR; }
+  if (ret != EN_OK) {
+    return EN_ERROR;
+  }
   return EN_OK;
 }
 

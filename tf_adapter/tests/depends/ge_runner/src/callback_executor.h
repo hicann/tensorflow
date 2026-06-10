@@ -34,6 +34,7 @@ class CallbackExecutor {
   void PushTask(const CallbackPack &closure);
   void StopThreadPool();
   int32_t GetRunNum();
+
  private:
   void CallbackHandler();
   std::mutex queue_lock_;
@@ -44,5 +45,5 @@ class CallbackExecutor {
   uint32_t thread_num_ = 1U;
   int32_t run_num_ = 0;
 };
-}
-#endif // TESTS_DEPENDS_GE_RUNNER_SRC_HOST_THREAD_POOL_H_
+}  // namespace tensorflow
+#endif  // TESTS_DEPENDS_GE_RUNNER_SRC_HOST_THREAD_POOL_H_

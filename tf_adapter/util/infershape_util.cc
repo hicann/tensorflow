@@ -176,7 +176,7 @@ void InferShapeUtil::setShapeOfEnterOP(const ShapeRefiner &shapeRef, const Node 
   }
   std::vector<tensorflow::shape_inference::ShapeHandle> inputShapes(iInputNums);
 
-  (void) getInputShapesOfNode(shapeRef, pNode, inputShapes);
+  (void)getInputShapesOfNode(shapeRef, pNode, inputShapes);
 
   pCxt->set_output(0, inputShapes.at(0));  // Enter op can't be unknown shape.
 }
@@ -285,7 +285,7 @@ Status InferShapeUtil::addShapeToAttr(ShapeRefiner &shapeRef, Node *pNode) {
 
 Status InferShapeUtil::InferShape(const std::vector<Tensor> &vecTensor, const FunctionLibraryDefinition *flib_def,
                                   const FunctionDef *func_def, Graph *graph) {
-  (void) flib_def;
+  (void)flib_def;
   REQUIRES_NOT_NULL(graph);
   REQUIRES_NOT_NULL(func_def);
   ADP_LOG(INFO) << "InferShapeUtil::InferShape.";

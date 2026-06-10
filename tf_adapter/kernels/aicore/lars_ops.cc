@@ -15,10 +15,12 @@
 #include "tf_adapter/common/adapter_logger.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class LarsOp : public OpKernel {
  public:
-  explicit LarsOp(OpKernelConstruction *context) : OpKernel(context) { ADP_LOG(INFO) << "new LarsOp"; }
+  explicit LarsOp(OpKernelConstruction *context) : OpKernel(context) {
+    ADP_LOG(INFO) << "new LarsOp";
+  }
   ~LarsOp() override = default;
 
   void Compute(OpKernelContext *context) override {
@@ -69,7 +71,9 @@ class LarsOp : public OpKernel {
 
     ADP_LOG(INFO) << "in LarsOp";
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LARS").Device(DEVICE_CPU).TypeConstraint<float>("T"), LarsOp<float>);

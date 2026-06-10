@@ -19,8 +19,7 @@ tensorflow::Status TransResourceInput2Node(TFE_Context *context, tensorflow::Gra
                                            std::map<int, tensorflow::Node *> arg_substitutes,
                                            bool is_while_body_graph = false);
 
-tensorflow::Status TransFunctionDef(TFE_Context *context, const std::string &func_name,
-                                    std::string &new_func_name,
+tensorflow::Status TransFunctionDef(TFE_Context *context, const std::string &func_name, std::string &new_func_name,
                                     std::map<int, tensorflow::Node *> &node_substitutes,
                                     bool is_while_body_graph = false) {
   npu::OptimizeStageGraphDumper dumper("Function." + func_name);
@@ -78,8 +77,8 @@ tensorflow::Status TransWhileNode(TFE_Context *context, tensorflow::Graph *graph
     }
   }
 
-  tensorflow::NameAttrList* pcond = const_cast<tensorflow::AttrValue*>(node->attrs().Find("cond"))->mutable_func();
-  tensorflow::NameAttrList* pbody = const_cast<tensorflow::AttrValue*>(node->attrs().Find("body"))->mutable_func();
+  tensorflow::NameAttrList *pcond = const_cast<tensorflow::AttrValue *>(node->attrs().Find("cond"))->mutable_func();
+  tensorflow::NameAttrList *pbody = const_cast<tensorflow::AttrValue *>(node->attrs().Find("body"))->mutable_func();
 
   DLOG() << "Trans cond function " << pcond->name() << " of node " << node->name();
   std::string new_func_name;
@@ -169,17 +168,17 @@ tensorflow::Status TransHasSubgraphNode(TFE_Context *context, tensorflow::Graph 
     substitutes[i - kFunctionArgIndex] = edge->src();
   }
 
-  std::vector<tensorflow::NameAttrList*> functions;
+  std::vector<tensorflow::NameAttrList *> functions;
   if (node->IsIfNode()) {
-    functions.emplace_back(const_cast<tensorflow::AttrValue*>(node->attrs().Find("then_branch"))->mutable_func());
-    functions.emplace_back(const_cast<tensorflow::AttrValue*>(node->attrs().Find("else_branch"))->mutable_func());
+    functions.emplace_back(const_cast<tensorflow::AttrValue *>(node->attrs().Find("then_branch"))->mutable_func());
+    functions.emplace_back(const_cast<tensorflow::AttrValue *>(node->attrs().Find("else_branch"))->mutable_func());
   } else if (node->IsCaseNode()) {
     for (auto &f :
          *const_cast<tensorflow::AttrValue *>(node->attrs().Find("branches"))->mutable_list()->mutable_func()) {
       functions.emplace_back(&f);
     }
   } else {
-    functions.emplace_back(const_cast<tensorflow::AttrValue*>(node->attrs().Find("f"))->mutable_func());
+    functions.emplace_back(const_cast<tensorflow::AttrValue *>(node->attrs().Find("f"))->mutable_func());
   }
 
   for (auto &fn : functions) {

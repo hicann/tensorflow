@@ -25,7 +25,9 @@ void DpMakeIteratorOp::Compute(OpKernelContext *ctx) {
   OP_REQUIRES_OK(ctx, LookupResource(ctx, HandleFromInput(ctx, 1), &iterator_resource));
   Status s = iterator_resource->SetIteratorFromDataset(ctx, dataset);
   iterator_resource->Unref();
-  if (!s.ok()) { ctx->SetStatus(s); }
+  if (!s.ok()) {
+    ctx->SetStatus(s);
+  }
   ADP_LOG(INFO) << "===End Computer MakeIterator===";
 }
 

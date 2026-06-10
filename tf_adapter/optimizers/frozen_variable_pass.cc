@@ -26,12 +26,18 @@
 namespace tensorflow {
 class DummyDevice : public ThreadPoolDevice {
  public:
-  explicit DummyDevice(const std::string &name, ResourceMgr *rmgr) :
-    ThreadPoolDevice({}, name, Bytes(INT64_MAX), DeviceLocality(), cpu_allocator()),
-    wrapped_rmgr_(rmgr) {}
-  ~DummyDevice() override { wrapped_rmgr_ = nullptr; };
-  Status Sync() override { return Status::OK(); }
-  ResourceMgr *resource_manager() override { return wrapped_rmgr_; }
+  explicit DummyDevice(const std::string &name, ResourceMgr *rmgr)
+      : ThreadPoolDevice({}, name, Bytes(INT64_MAX), DeviceLocality(), cpu_allocator()), wrapped_rmgr_(rmgr) {}
+  ~DummyDevice() override {
+    wrapped_rmgr_ = nullptr;
+  };
+  Status Sync() override {
+    return Status::OK();
+  }
+  ResourceMgr *resource_manager() override {
+    return wrapped_rmgr_;
+  }
+
  private:
   ResourceMgr *wrapped_rmgr_;
 };
@@ -41,22 +47,27 @@ class FrozenVariablePass : public GraphOptimizationPass {
   FrozenVariablePass() = default;
   ~FrozenVariablePass() override = default;
   Status Run(const GraphOptimizationPassOptions &options) override;
+
  private:
-  bool IsAllOutputsIdentity(const Node * const node) const;
-  bool IsAllOutputsReadOp(const Node * const node) const;
-  bool IsNeedBuildPartitionedCall(const Node * const node) const;
+  bool IsAllOutputsIdentity(const Node *const node) const;
+  bool IsAllOutputsReadOp(const Node *const node) const;
+  bool IsNeedBuildPartitionedCall(const Node *const node) const;
   std::map<std::string, std::string> GetGraphConfigs(const Graph &graph) const;
-  void RemoveDeadNodes(Graph* g) const;
+  void RemoveDeadNodes(Graph *g) const;
   Status DoConstantFolding(const GraphOptimizationPassOptions &options, const uint64_t index) const;
 };
 
 struct StableNodeCompartor {
-  bool operator() (const tensorflow::Node *a, const tensorflow::Node *b) const { return a->id() < b->id(); }
+  bool operator()(const tensorflow::Node *a, const tensorflow::Node *b) const {
+    return a->id() < b->id();
+  }
 };
 
-DataType EdgeDataType(const tensorflow::Edge &edge) { return edge.src()->output_type(edge.src_output()); }
+DataType EdgeDataType(const tensorflow::Edge &edge) {
+  return edge.src()->output_type(edge.src_output());
+}
 
-bool FrozenVariablePass::IsAllOutputsIdentity(const Node * const node) const {
+bool FrozenVariablePass::IsAllOutputsIdentity(const Node *const node) const {
   for (auto out : node->out_nodes()) {
     if (!out->IsIdentity()) {
       return false;
@@ -65,7 +76,7 @@ bool FrozenVariablePass::IsAllOutputsIdentity(const Node * const node) const {
   return true;
 }
 
-bool FrozenVariablePass::IsAllOutputsReadOp(const Node * const node) const {
+bool FrozenVariablePass::IsAllOutputsReadOp(const Node *const node) const {
   for (auto out : node->out_nodes()) {
     if (out->type_string() != "ReadVariableOp") {
       return false;
@@ -74,7 +85,7 @@ bool FrozenVariablePass::IsAllOutputsReadOp(const Node * const node) const {
   return true;
 }
 
-bool FrozenVariablePass::IsNeedBuildPartitionedCall(const Node * const node) const {
+bool FrozenVariablePass::IsNeedBuildPartitionedCall(const Node *const node) const {
   return ((node->type_string() == "Variable" || node->type_string() == "VariableV2") && IsAllOutputsIdentity(node)) ||
          (node->type_string() == "VarHandleOp" && IsAllOutputsReadOp(node));
 }
@@ -88,8 +99,8 @@ std::map<std::string, std::string> FrozenVariablePass::GetGraphConfigs(const Gra
   return {};
 }
 
-void FrozenVariablePass::RemoveDeadNodes(Graph* g) const {
-  std::unordered_set<const Node*> nodes;
+void FrozenVariablePass::RemoveDeadNodes(Graph *g) const {
+  std::unordered_set<const Node *> nodes;
   for (auto n : g->nodes()) {
     ADP_LOG(DEBUG) << "Remove dead node, node type: " << n->type_string();
     if (n->IsControlFlow() || n->op_def().is_stateful()) {
@@ -99,14 +110,13 @@ void FrozenVariablePass::RemoveDeadNodes(Graph* g) const {
   (void)PruneForReverseReachability(g, std::move(nodes));
 }
 
-Status FrozenVariablePass::DoConstantFolding(const GraphOptimizationPassOptions &options,
-        const uint64_t index) const {
+Status FrozenVariablePass::DoConstantFolding(const GraphOptimizationPassOptions &options, const uint64_t index) const {
   ADP_LOG(INFO) << "Before do const folding " << options.session_options->config.DebugString();
   if (options.device_set == nullptr) {
     return errors::Internal("Failed to get device set to run constant folding");
   }
   const std::string device_name = "/job:localhost/replica:0/task:0/device:CPU:0";
-  Device* device = options.device_set->FindDeviceByName(device_name);
+  Device *device = options.device_set->FindDeviceByName(device_name);
   if (device == nullptr) {
     return errors::Internal("Failed to get device to run constant folding");
   }
@@ -116,15 +126,13 @@ Status FrozenVariablePass::DoConstantFolding(const GraphOptimizationPassOptions 
   opts.set_do_constant_folding(true);
   opts.set_max_folded_constant_in_bytes(INT64_MAX);
 #ifdef TF_VERSION_TF2
-  std::unique_ptr<DeviceMgr> device_mgr =
-          absl::make_unique<StaticDeviceMgr>(std::move(dummy_device));
+  std::unique_ptr<DeviceMgr> device_mgr = absl::make_unique<StaticDeviceMgr>(std::move(dummy_device));
   std::unique_ptr<ProcessFunctionLibraryRuntime> pflr = absl::make_unique<ProcessFunctionLibraryRuntime>(
-          device_mgr.get(), options.session_options->env, nullptr, 0, options.flib_def, opts);
+      device_mgr.get(), options.session_options->env, nullptr, 0, options.flib_def, opts);
 #else
-  std::unique_ptr<DeviceMgr> device_mgr =
-          absl::make_unique<DeviceMgr>(std::move(dummy_device));
+  std::unique_ptr<DeviceMgr> device_mgr = absl::make_unique<DeviceMgr>(std::move(dummy_device));
   std::unique_ptr<ProcessFunctionLibraryRuntime> pflr = absl::make_unique<ProcessFunctionLibraryRuntime>(
-          device_mgr.get(), options.session_options->env, 0, options.flib_def, opts);
+      device_mgr.get(), options.session_options->env, 0, options.flib_def, opts);
 #endif
   FunctionLibraryRuntime *flr = pflr->GetFLR("/job:localhost/replica:0/task:0/device:CPU:0");
   if (flr == nullptr) {
@@ -166,7 +174,7 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
     const std::string pbtxt_path = GetDumpPath() + "TF_BeforeFrozenVariable_" + std::to_string(index) + ".pbtxt";
     tensorflow::GraphDef def;
     graph_in->ToGraphDef(&def);
-    (void) WriteTextProto(Env::Default(), pbtxt_path, def);
+    (void)WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
   std::vector<tensorflow::Node *> remove_nodes;
@@ -202,11 +210,11 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
               inputs.emplace_back(edge->src());
               input_types.emplace_back(EdgeDataType(*edge));
             }
-          } else { // 给子图里的节点之间连边, _SOURCE节点不在这里连边
+          } else {  // 给子图里的节点之间连边, _SOURCE节点不在这里连边
             ADP_LOG(INFO) << "cluster_node : " << cluster_node->DebugString();
             ADP_LOG(INFO) << "Edge src : " << edge->src()->DebugString();
-            auto e = cluster_graph->AddEdge(node_map[edge->src()], edge->src_output(),
-                                            node_map[cluster_node], edge->dst_input());
+            auto e = cluster_graph->AddEdge(node_map[edge->src()], edge->src_output(), node_map[cluster_node],
+                                            edge->dst_input());
             REQUIRES_NOT_NULL(e);
             ADP_LOG(INFO) << "Add inner edge : " << e->DebugString();
           }
@@ -217,11 +225,11 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
         tensorflow::Node *ret;
         const string ret_val_name = cluster_out_nodes[i]->name() + "_out_" + std::to_string(i);
         TF_RETURN_IF_ERROR(NodeBuilder(ret_val_name, "_Retval")
-                            .Device(node->def().device())
-                            .Input(node_map[cluster_out_nodes[i]])
-                            .Attr("index", int32_t(i))
-                            .Attr("T", cluster_out_nodes[i]->output_type(0))
-                            .Finalize(cluster_graph.get(), &ret));
+                               .Device(node->def().device())
+                               .Input(node_map[cluster_out_nodes[i]])
+                               .Attr("index", int32_t(i))
+                               .Attr("T", cluster_out_nodes[i]->output_type(0))
+                               .Finalize(cluster_graph.get(), &ret));
         output_types.emplace_back(cluster_out_nodes[i]->output_type(0));
       }
 
@@ -231,16 +239,16 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
       Node *npu_node = nullptr;
       const string new_name = "npu_partitioned_call" + node->name();
       TF_RETURN_IF_ERROR(NodeBuilder(new_name, "PartitionedCall")
-                          .AssignedDevice(node->assigned_device_name())
-                          .ControlInputs(std::vector<Node *>(control_inputs.begin(), control_inputs.end()))
-                          .Input(inputs)
-                          .Attr("Tin", input_types)
-                          .Attr("Tout", output_types)
-                          .Attr("f", func)
-                          .Finalize(graph_in, &npu_node));
-      for (auto cluster_out_node: cluster_out_nodes) {
+                             .AssignedDevice(node->assigned_device_name())
+                             .ControlInputs(std::vector<Node *>(control_inputs.begin(), control_inputs.end()))
+                             .Input(inputs)
+                             .Attr("Tin", input_types)
+                             .Attr("Tout", output_types)
+                             .Attr("f", func)
+                             .Finalize(graph_in, &npu_node));
+      for (auto cluster_out_node : cluster_out_nodes) {
         for (const Edge *e : cluster_out_node->out_edges()) {
-          (void) graph_in->AddEdge(npu_node, e->src_output(), e->dst(), e->dst_input());
+          (void)graph_in->AddEdge(npu_node, e->src_output(), e->dst(), e->dst_input());
         }
       }
       (void)tensorflow::FixupSourceAndSinkEdges(cluster_graph.get());
@@ -260,7 +268,7 @@ Status FrozenVariablePass::Run(const GraphOptimizationPassOptions &options) {
     const std::string pbtxt_path = GetDumpPath() + "TF_AfterReplacePartitionedCall_" + std::to_string(index) + ".pbtxt";
     tensorflow::GraphDef def;
     graph_in->ToGraphDef(&def);
-    (void) WriteTextProto(Env::Default(), pbtxt_path, def);
+    (void)WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
   if (generate_partitioned_call) {

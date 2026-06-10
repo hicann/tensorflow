@@ -86,8 +86,7 @@ Status ModelParser::ParseProtoWithSubgraph(const ge::AscendString &serialized_pr
 
 Status ModelParser::ParseProtoWithSubgraph(const std::vector<ge::AscendString> &partitioned_serialized,
                                            const std::map<ge::AscendString, ge::AscendString> &const_value_map,
-                                           GetGraphCallbackV3 callback,
-                                           ge::ComputeGraphPtr &graph) {
+                                           GetGraphCallbackV3 callback, ge::ComputeGraphPtr &graph) {
   std::string graph_def_str = std::string(partitioned_serialized[0].GetString(), partitioned_serialized[0].GetLength());
   tensorflow::GraphDef graph_def;
   graph_def.ParseFromString(graph_def_str);
@@ -135,8 +134,7 @@ extern "C" {
 
 ge::Status GeApiWrapper_ParseProtoWithSubgraph(const std::vector<ge::AscendString> &partitioned_serialized,
                                                const std::map<ge::AscendString, ge::AscendString> &const_value_map,
-                                               domi::GetGraphCallbackV3 callback,
-                                               ge::ComputeGraphPtr &graph) {
+                                               domi::GetGraphCallbackV3 callback, ge::ComputeGraphPtr &graph) {
   std::shared_ptr<domi::ModelParser> model_parser =
     domi::ModelParserFactory::Instance()->CreateModelParser(domi::FrameworkType::TENSORFLOW);
   if (!model_parser) {
@@ -158,11 +156,9 @@ ge::Status GeApiWrapper_GetGeDataTypeByTFType(const uint32_t type, ge::DataType 
   return ge::SUCCESS;
 }
 
-ge::Status GeApiWrapper_ParserFinalize() {
-  return ge::ParserFinalize();
-}
+ge::Status GeApiWrapper_ParserFinalize() { return ge::ParserFinalize(); }
 
-ge::Status GeApiWrapper_ParserInitialize(const std::map<ge::AscendString, ge::AscendString>& options) {
+ge::Status GeApiWrapper_ParserInitialize(const std::map<ge::AscendString, ge::AscendString> &options) {
   return ge::ParserInitialize(options);
 }
 

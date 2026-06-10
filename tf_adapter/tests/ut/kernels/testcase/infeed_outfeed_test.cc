@@ -17,32 +17,34 @@
 #include <stdlib.h>
 #include "gtest/gtest.h"
 
-
 namespace tensorflow {
 namespace {
 
-#define TF_ASSERT_OK(statement) \
-  ASSERT_EQ(::tensorflow::Status::OK(), (statement))
+#define TF_ASSERT_OK(statement) ASSERT_EQ(::tensorflow::Status::OK(), (statement))
 
-#define TF_EXPECT_OK(statement) \
-  EXPECT_EQ(::tensorflow::Status::OK(), (statement))
+#define TF_EXPECT_OK(statement) EXPECT_EQ(::tensorflow::Status::OK(), (statement))
 
 class DummyDevice : public DeviceBase {
  public:
-  DummyDevice(Env* env, bool save) : DeviceBase(env), save_(save) {}
-  bool RequiresRecordingAccessedTensors() const override { return save_; }
-  Allocator* GetAllocator(AllocatorAttributes /*attr*/) override { return cpu_allocator(); }
+  DummyDevice(Env *env, bool save) : DeviceBase(env), save_(save) {}
+  bool RequiresRecordingAccessedTensors() const override {
+    return save_;
+  }
+  Allocator *GetAllocator(AllocatorAttributes /*attr*/) override {
+    return cpu_allocator();
+  }
+
  private:
   bool save_;
 };
-}
+}  // namespace
 class InfeedOutfeedTest : public testing::Test {
  protected:
   virtual void SetUp() {}
   virtual void TearDown() {}
 };
 
-TEST_F(InfeedOutfeedTest, LogSummaryTest)  {
+TEST_F(InfeedOutfeedTest, LogSummaryTest) {
   NpuAttrs::SetNewDataTransferFlag(true);
   std::initializer_list<int64> dims = {};
   TensorShapeProto shape_proto;
@@ -66,13 +68,12 @@ TEST_F(InfeedOutfeedTest, LogSummaryTest)  {
                    .Finalize(&outfeed_node));
 
   DeviceType device_type = DEVICE_CPU;
-  Env* env = Env::Default();
+  Env *env = Env::Default();
   auto device = absl::make_unique<DummyDevice>(env, false);
 
   Status status;
-  std::unique_ptr<OpKernel> op(CreateOpKernel(device_type, device.get(),
-                                              cpu_allocator(), outfeed_node,
-                                              TF_GRAPH_DEF_VERSION, &status));
+  std::unique_ptr<OpKernel> op(
+      CreateOpKernel(device_type, device.get(), cpu_allocator(), outfeed_node, TF_GRAPH_DEF_VERSION, &status));
   TF_ASSERT_OK(status);
 
   OpKernelContext::Params params;
@@ -86,4 +87,4 @@ TEST_F(InfeedOutfeedTest, LogSummaryTest)  {
   TF_EXPECT_OK(ctx.status());
   NpuAttrs::SetNewDataTransferFlag(false);
 }
-} //end tensorflow
+}  // namespace tensorflow

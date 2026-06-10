@@ -37,15 +37,13 @@ class HostQueueDatasetOpTest : public DatasetOpsTestBase {
     return Status::OK();
   }
 
-  Status CreateHostQueueDatasetKernel(
-      const DataTypeVector &output_types,
-      const std::vector<PartialTensorShape> &output_shapes,
-      std::unique_ptr<OpKernel> *op_kernel, std::string _local_rank_id) {
+  Status CreateHostQueueDatasetKernel(const DataTypeVector &output_types,
+                                      const std::vector<PartialTensorShape> &output_shapes,
+                                      std::unique_ptr<OpKernel> *op_kernel, std::string _local_rank_id) {
     name_utils::OpNameParams params;
 
     NodeDef node_def =
-        test::function::NDef(kNodeName, name_utils::OpName("HostQueue", params),
-                             {"geop_dataset", "input_dataset"},
+        test::function::NDef(kNodeName, name_utils::OpName("HostQueue", params), {"geop_dataset", "input_dataset"},
                              {{"channel_name", "channel_001"},
                               {"output_types", output_types},
                               {"_local_rank_id", _local_rank_id},
@@ -56,9 +54,8 @@ class HostQueueDatasetOpTest : public DatasetOpsTestBase {
   }
 
   // Create a new `HostQueueDataset` op kernel context.
-  Status CreateHostQueueDatasetContext(
-      OpKernel *op_kernel, gtl::InlinedVector<TensorValue, 4> *const inputs,
-      std::unique_ptr<OpKernelContext> *context) {
+  Status CreateHostQueueDatasetContext(OpKernel *op_kernel, gtl::InlinedVector<TensorValue, 4> *const inputs,
+                                       std::unique_ptr<OpKernelContext> *context) {
     TF_RETURN_IF_ERROR(CheckOpKernelInput(*op_kernel, *inputs));
     TF_RETURN_IF_ERROR(CreateOpKernelContext(op_kernel, inputs, context));
     return Status::OK();
@@ -126,25 +123,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -160,17 +151,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext02) {
@@ -182,25 +170,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext02) {
   const TestCase &test_case = NormalizeTestCaseBig();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -216,17 +198,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext02) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext03) {
@@ -238,25 +217,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext03) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -272,17 +245,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext03) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext_tdt) {
@@ -294,25 +264,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext_tdt) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -328,17 +292,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext_tdt) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext05_tdt) {
@@ -350,25 +311,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext05_tdt) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -384,17 +339,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext05_tdt) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext_host_queue) {
@@ -406,25 +358,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext_host_queue) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -440,17 +386,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext_host_queue) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
   *const_cast<bool *>(&kIsHeterogeneous) = false;
 }
 
@@ -463,25 +406,19 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext05_host_queue) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -497,17 +434,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext05_host_queue) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
   *const_cast<bool *>(&kIsHeterogeneous) = false;
 }
 
@@ -520,25 +454,19 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans1) {
   const TestCase &test_case = NormalizeTestStringCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -554,18 +482,15 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans1) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(5);
   SetMbufChannelSize(2);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
   RestoreMbufDefaultSize();
 }
 
@@ -578,25 +503,19 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans2) {
   const TestCase &test_case = NormalizeTestStringCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -612,18 +531,15 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans2) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
 
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
   sleep(5);
   SetMbufChannelSize(3);
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
   RestoreMbufDefaultSize();
 }
 
@@ -636,25 +552,19 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans3) {
   const TestCase &test_case = NormalizeTestStringCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -670,18 +580,15 @@ TEST_F(HostQueueDatasetOpTest, isholddatatrans3) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
   SetMbufChannelSize(80);
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
-  sleep(2); // sleep two seconds
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
+  sleep(2);  // sleep two seconds
   RestoreMbufDefaultSize();
   bool end_of_sequence = false;
   std::vector<Tensor> out_tensors;
-  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors,
-                                 &end_of_sequence));
+  TF_EXPECT_OK(iterator->GetNext(iterator_context.get(), &out_tensors, &end_of_sequence));
 }
 
 TEST_F(HostQueueDatasetOpTest, rtsetdevice_failure) {
@@ -694,25 +601,19 @@ TEST_F(HostQueueDatasetOpTest, rtsetdevice_failure) {
   const TestCase &test_case = NormalizeTestStringCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   EXPECT_EQ(host_queue_dataset->node_name(), kNodeName);
@@ -728,11 +629,9 @@ TEST_F(HostQueueDatasetOpTest, rtsetdevice_failure) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
   sleep(2);
   setMockStub(true);
 }
@@ -747,25 +646,19 @@ TEST_F(HostQueueDatasetOpTest, senddata_driver_error) {
   const TestCase &test_case = NormalizeTestCase();
   Tensor tensor_slice_dataset_tensor(DT_VARIANT, TensorShape({}));
   std::vector<Tensor> inputs_for_tensor_slice_dataset = test_case.input_tensors;
-  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset,
-                                              &tensor_slice_dataset_tensor));
+  TF_ASSERT_OK(CreateTensorSliceDatasetTensorForQueue(&inputs_for_tensor_slice_dataset, &tensor_slice_dataset_tensor));
 
   gtl::InlinedVector<TensorValue, 4> inputs_for_host_queue_dataset(
-      {TensorValue(&tensor_slice_dataset_tensor),
-       TensorValue(&tensor_slice_dataset_tensor)});
+      {TensorValue(&tensor_slice_dataset_tensor), TensorValue(&tensor_slice_dataset_tensor)});
 
   std::unique_ptr<OpKernel> host_queue_dataset_kernel;
-  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes,
-                                            test_case.expected_output_shapes,
+  TF_ASSERT_OK(CreateHostQueueDatasetKernel(test_case.expected_output_dtypes, test_case.expected_output_shapes,
                                             &host_queue_dataset_kernel, "-1"));
   std::unique_ptr<OpKernelContext> host_queue_dataset_context;
-  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(),
-                                             &inputs_for_host_queue_dataset,
+  TF_ASSERT_OK(CreateHostQueueDatasetContext(host_queue_dataset_kernel.get(), &inputs_for_host_queue_dataset,
                                              &host_queue_dataset_context));
   DatasetBase *host_queue_dataset;
-  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(),
-                             host_queue_dataset_context.get(),
-                             &host_queue_dataset));
+  TF_ASSERT_OK(CreateDataset(host_queue_dataset_kernel.get(), host_queue_dataset_context.get(), &host_queue_dataset));
   core::ScopedUnref scoped_unref(host_queue_dataset);
 
   SerializationContext context(SerializationContext::Params{});
@@ -775,11 +668,9 @@ TEST_F(HostQueueDatasetOpTest, senddata_driver_error) {
   host_queue_dataset->AsGraphDefInternal(&context, &db, &output);
 
   std::unique_ptr<IteratorContext> iterator_context;
-  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(),
-                                     &iterator_context));
+  TF_ASSERT_OK(CreateIteratorContext(host_queue_dataset_context.get(), &iterator_context));
   std::unique_ptr<IteratorBase> iterator;
-  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(),
-                                                "Iterator", &iterator));
+  TF_ASSERT_OK(host_queue_dataset->MakeIterator(iterator_context.get(), "Iterator", &iterator));
   sleep(2);
   setAclTdtSendTensorMockStub(false);
 }

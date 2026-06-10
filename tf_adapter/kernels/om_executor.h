@@ -20,14 +20,9 @@
 
 namespace tensorflow {
 class ModelProcess {
-enum class DynamicGearType {
-  DYNAMIC_UNDEFINED = -1,
-  DYNAMIC_BATCH,
-  DYNAMIC_HW,
-  DYNAMIC_DIMS
-};
+  enum class DynamicGearType { DYNAMIC_UNDEFINED = -1, DYNAMIC_BATCH, DYNAMIC_HW, DYNAMIC_DIMS };
 
-public:
+ public:
   explicit ModelProcess(const std::string &model_data);
 
   ~ModelProcess();
@@ -38,7 +33,7 @@ public:
 
   Status GetThreadRet();
 
-private:
+ private:
   void StartWorkThread();
 
   Status PrepareProcess();
@@ -62,10 +57,10 @@ private:
   Status ProcessOutput(std::vector<Tensor> &outputs);
 
   Status ProcessStaticOutput(const size_t index, const tensorflow::DataType tf_type, const aclDataBuffer *data_buf,
-    std::vector<Tensor> &outputs) const;
+                             std::vector<Tensor> &outputs) const;
 
   Status ProcessDynamicOutput(const size_t index, const tensorflow::DataType tf_type, aclDataBuffer *data_buf,
-    std::vector<Tensor> &outputs) const;
+                              std::vector<Tensor> &outputs) const;
 
   void WorkThread();
 
@@ -81,7 +76,7 @@ private:
 
   void DestroyResource();
 
-private:
+ private:
   std::string model_data_;
   uint32_t model_id_ = UINT32_MAX;
   uint32_t device_id_ = 0;
@@ -93,13 +88,13 @@ private:
   std::vector<bool> is_input_dynamic_;
   std::vector<bool> is_output_dynamic_;
 
-  std::atomic_bool run_flag_ {false};
+  std::atomic_bool run_flag_{false};
   std::thread work_thread_;
   std::mutex mu_request_;
-  std::atomic_bool request_flag_ {false};
+  std::atomic_bool request_flag_{false};
   std::condition_variable cond_request_;
   std::mutex mu_reply_;
-  std::atomic_bool reply_flag_ {false};
+  std::atomic_bool reply_flag_{false};
   std::condition_variable cond_reply_;
 
   Status thread_ret_;
@@ -116,7 +111,7 @@ private:
 };
 
 class OmExecutor {
-public:
+ public:
   /// \param model_data file of the om file
   /// \param executor Created om executor
   /// \return Status::OK() or error status if any error occurs
@@ -127,7 +122,7 @@ public:
   /// \return Status::OK() or error status if any error occurs
   Status Execute(const std::vector<Tensor> &inputs, std::vector<Tensor> &outputs);
 
-private:
+ private:
   OmExecutor() = default;
   std::unique_ptr<ModelProcess> model_process_;
 };

@@ -19,7 +19,9 @@ class BasicLSTMCellOp : public OpKernel {
   void Compute(OpKernelContext *context) override {
     ADP_LOG(INFO) << "BasicLSTMCellOp Compute, num_inputs: " << context->num_inputs();
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("BasicLSTMCell").Device(DEVICE_CPU), BasicLSTMCellOp);

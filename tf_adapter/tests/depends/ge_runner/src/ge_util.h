@@ -13,8 +13,8 @@
 
 #include "graph/ge_error_codes.h"
 namespace ge {
-template<typename T, typename... Args>
-static inline std::shared_ptr<T> ComGraphMakeShared(Args &&...args) {
+template <typename T, typename... Args>
+static inline std::shared_ptr<T> ComGraphMakeShared(Args &&... args) {
   using T_nc = typename std::remove_const<T>::type;
   std::shared_ptr<T> ret = nullptr;
   try {
@@ -36,7 +36,7 @@ struct ComGraphMakeUniq<T[]> {
 
 template <typename T, size_t B>
 struct ComGraphMakeUniq<T[B]> {
-  struct invalid_type { };
+  struct invalid_type {};
 };
 
 template <typename T, typename... Args>

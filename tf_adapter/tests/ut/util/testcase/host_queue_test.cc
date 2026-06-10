@@ -54,5 +54,5 @@ TEST_F(HostQueueTest, HostQueueEndOfSequence) {
   ASSERT_TRUE(s.ok());
   HostQueueDestroy(queue_id);
 }
-}
-} // end tensorflow
+}  // namespace
+}  // namespace tensorflow

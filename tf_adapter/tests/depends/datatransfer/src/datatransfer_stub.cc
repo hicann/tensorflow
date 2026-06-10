@@ -11,19 +11,35 @@
 #include "tdt/tdt_host_interface.h"
 
 namespace tdt {
-int32_t TdtInFeedInit(uint32_t deviceId) { return 0; }
-
-int32_t TdtOutFeedInit(uint32_t deviceId) { return 0; }
-
-int32_t TdtInFeedDestroy(uint32_t deviceId) { return 0; }
-
-int32_t TdtOutFeedDestroy() { return 0; }
-
-int32_t TdtHostPreparePopData() { return 0; }
-
-int32_t TdtHostPopData(const std::string &channelName, std::vector<DataItem> &item) { return 0; }
-
-int32_t TdtHostStop(const std::string &channelName) { return 0; }
-
-int32_t TdtHostPushData(const std::string &channelName, const std::vector<DataItem> &item, uint32_t deviceId) { return 0; }
+int32_t TdtInFeedInit(uint32_t deviceId) {
+  return 0;
 }
+
+int32_t TdtOutFeedInit(uint32_t deviceId) {
+  return 0;
+}
+
+int32_t TdtInFeedDestroy(uint32_t deviceId) {
+  return 0;
+}
+
+int32_t TdtOutFeedDestroy() {
+  return 0;
+}
+
+int32_t TdtHostPreparePopData() {
+  return 0;
+}
+
+int32_t TdtHostPopData(const std::string &channelName, std::vector<DataItem> &item) {
+  return 0;
+}
+
+int32_t TdtHostStop(const std::string &channelName) {
+  return 0;
+}
+
+int32_t TdtHostPushData(const std::string &channelName, const std::vector<DataItem> &item, uint32_t deviceId) {
+  return 0;
+}
+}  // namespace tdt

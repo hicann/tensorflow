@@ -18,7 +18,7 @@ namespace tensorflow {
 namespace data {
 namespace {
 class DPGroupDatasetOp : public DatasetOpKernel {
-public:
+ public:
   explicit DPGroupDatasetOp(OpKernelConstruction *ctx) : DatasetOpKernel(ctx) {
     CHECK_NOT_NULL(ctx);
     OP_REQUIRES_OK(ctx, ctx->GetAttr("output_types", &output_types_));
@@ -38,41 +38,53 @@ public:
     OP_REQUIRES(ctx, *output != nullptr, errors::Internal("Failed new dataset of DPGroupDatasetOp"));
   }
 
-private:
+ private:
   class Dataset : public DatasetBase {
-  public:
+   public:
     explicit Dataset(OpKernelContext *ctx, const std::vector<DatasetBase *> &inputs, const DataTypeVector &output_types,
                      const std::vector<PartialTensorShape> &output_shapes)
-      : DatasetBase(DatasetContext(ctx)), inputs_(inputs) {
-      for (const auto &input : inputs_) { input->Ref(); }
+        : DatasetBase(DatasetContext(ctx)), inputs_(inputs) {
+      for (const auto &input : inputs_) {
+        input->Ref();
+      }
       output_types_.insert(output_types_.end(), output_types.begin(), output_types.end());
       output_shapes_.insert(output_shapes_.end(), output_shapes.begin(), output_shapes.end());
     }
 
     ~Dataset() override {
-      for (const auto &input : inputs_) { input->Unref(); }
+      for (const auto &input : inputs_) {
+        input->Unref();
+      }
     }
 
     std::unique_ptr<IteratorBase> MakeIteratorInternal(const string &prefix) const override {
       return absl::make_unique<Iterator>(Iterator::Params({this, prefix + "::GEOP"}));
     }
 
-    const DataTypeVector &output_dtypes() const override { return output_types_; }
+    const DataTypeVector &output_dtypes() const override {
+      return output_types_;
+    }
 
-    const std::vector<PartialTensorShape> &output_shapes() const override { return output_shapes_; }
+    const std::vector<PartialTensorShape> &output_shapes() const override {
+      return output_shapes_;
+    }
 
-    string DebugString() const override { return "DPGroupDatasetOp::Dataset"; }
+    string DebugString() const override {
+      return "DPGroupDatasetOp::Dataset";
+    }
 
 #ifdef TF_VERSION_TF2
-    Status InputDatasets(std::vector<const DatasetBase*>* inputs) const override {
-      for (const auto &input : inputs_) { inputs->push_back(input); }
+    Status InputDatasets(std::vector<const DatasetBase *> *inputs) const override {
+      for (const auto &input : inputs_) {
+        inputs->push_back(input);
+      }
       return Status::OK();
     }
 #endif
 
     STATUS_FUNCTION_ONLY_TF2(CheckExternalState() const override);
 
-  protected:
+   protected:
     Status AsGraphDefInternal(SerializationContext *ctx, DatasetGraphDefBuilder *b, Node **output) const override {
 #ifdef TF_VERSION_TF2
       return errors::Unimplemented(DebugString(), " does not support serialization");
@@ -81,9 +93,9 @@ private:
 #endif
     }
 
-  private:
+   private:
     class Iterator : public DatasetIterator<Dataset> {
-    public:
+     public:
       explicit Iterator(const Params &para) : DatasetIterator<Dataset>(para) {}
       ~Iterator() override = default;
       Status Initialize(IteratorContext *ctx) override {
@@ -92,16 +104,16 @@ private:
         mutex_lock l(mu_);
         try {
           input_impls_.resize(dataset()->inputs_.size());
-        } catch (...) { return errors::InvalidArgument("input impls resize failed."); }
+        } catch (...) {
+          return errors::InvalidArgument("input impls resize failed.");
+        }
         for (size_t i = 0; i < input_impls_.size(); ++i) {
 #ifdef TF_VERSION_TF2
-          TF_RETURN_IF_ERROR(
-            dataset()->inputs_[i]->MakeIterator(ctx, this, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
-          );
+          TF_RETURN_IF_ERROR(dataset()->inputs_[i]->MakeIterator(ctx, this, prefix() + "[" + std::to_string(i) + "]",
+                                                                 &input_impls_[i]));
 #else
           TF_RETURN_IF_ERROR(
-            dataset()->inputs_[i]->MakeIterator(ctx, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i])
-          );
+              dataset()->inputs_[i]->MakeIterator(ctx, prefix() + "[" + std::to_string(i) + "]", &input_impls_[i]));
 #endif
         }
         return Status::OK();
@@ -112,13 +124,15 @@ private:
         return Status::OK();
       }
 
-    protected:
+     protected:
       STATUS_FUNCTION_ONLY_TF2(SaveInternal(SerializationContext *ctx, IteratorStateWriter *writer) override);
       STATUS_FUNCTION_ONLY_TF1(SaveInternal(IteratorStateWriter *writer) override);
 
-      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override { return Status::OK(); }
+      Status RestoreInternal(IteratorContext *ctx, IteratorStateReader *reader) override {
+        return Status::OK();
+      }
 
-    private:
+     private:
       mutex mu_;
       std::vector<std::unique_ptr<IteratorBase>> input_impls_ GUARDED_BY(mu_);
     };

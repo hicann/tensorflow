@@ -40,7 +40,7 @@ class MarkStartNodePassTest : public testing::Test {
   }
 
   void InitGraph(const string &graph_def_path) {
-    char trusted_path[MMPA_MAX_PATH] = { "\0" };
+    char trusted_path[MMPA_MAX_PATH] = {"\0"};
     if (mmRealPath(graph_def_path.c_str(), trusted_path, MMPA_MAX_PATH) != EN_OK) {
       LOG(ERROR) << "Get real path failed.";
       return;
@@ -50,9 +50,11 @@ class MarkStartNodePassTest : public testing::Test {
     original_ = CanonicalGraphString(graph_.get());
   }
 
-  static bool IncludeNode(const Node *n) { return n->IsOp(); }
+  static bool IncludeNode(const Node *n) {
+    return n->IsOp();
+  }
 
-  static string EdgeId(const Node* n, int index) {
+  static string EdgeId(const Node *n, int index) {
     if (index == 0) {
       return n->type_string();
     } else if (index == Graph::kControlSlot) {
@@ -62,8 +64,8 @@ class MarkStartNodePassTest : public testing::Test {
     }
   }
 
-  string CanonicalGraphString(Graph* g) {
-    for (Node* n : g->nodes()) {
+  string CanonicalGraphString(Graph *g) {
+    for (Node *n : g->nodes()) {
       if (IncludeNode(n)) {
         if (n->type_string() == "Add" && n->assigned_device_name().empty()) {
           n->set_assigned_device_name("/job:ps/replica:0/task:0/device:CPU:0");
@@ -76,10 +78,9 @@ class MarkStartNodePassTest : public testing::Test {
     }
 
     std::vector<string> edges;
-    for (const Edge* e : g->edges()) {
+    for (const Edge *e : g->edges()) {
       if (IncludeNode(e->src()) && IncludeNode(e->dst())) {
-        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->",
-                                        EdgeId(e->dst(), e->dst_input())));
+        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->", EdgeId(e->dst(), e->dst_input())));
       }
     }
     // Canonicalize
@@ -93,10 +94,9 @@ class MarkStartNodePassTest : public testing::Test {
     std::unique_ptr<Graph> *ug = &graph_;
     GraphOptimizationPassOptions options;
     SessionOptions session_options;
-    session_options.config.mutable_graph_options()
-      ->mutable_optimizer_options()
-      ->set_do_function_inlining(true);
-    auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+    session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+    auto *custom_config =
+        session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
     custom_config->set_name("NpuOptimizer");
     AttrValue job = AttrValue();
     job.set_s("chief");
@@ -112,12 +112,17 @@ class MarkStartNodePassTest : public testing::Test {
     return result;
   }
 
-  const string &OriginalGraph() const { return original_; }
+  const string &OriginalGraph() const {
+    return original_;
+  }
 
   std::unique_ptr<Graph> graph_;
   string original_;
+
  protected:
-  virtual void SetUp() { *const_cast<bool *>(&kDumpGraph) = true; }
+  virtual void SetUp() {
+    *const_cast<bool *>(&kDumpGraph) = true;
+  }
   virtual void TearDown() {}
 };
 
@@ -127,5 +132,5 @@ TEST_F(MarkStartNodePassTest, FuncTest) {
   std::string target_graph = "VariableV2->Identity;Const->Add;Identity->Add:1;Add->_Retval";
   EXPECT_EQ(DoRunMarkStartNodePassTest(), target_graph);
 }
-} // end namespace
-} // end tensorflow
+}  // end namespace
+}  // namespace tensorflow

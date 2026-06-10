@@ -503,8 +503,7 @@ void NpuCustomizedOptimizeGraph(tensorflow::FunctionLibraryRuntime &lib, std::un
   tensorflow::OptimizeGraph(&lib, g, options);
 }
 
-tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
-                                    std::vector<ge::AscendString> &partition_graph,
+tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def, std::vector<ge::AscendString> &partition_graph,
                                     std::map<ge::AscendString, ge::AscendString> &const_value_map) {
   std::string def_str = def->SerializeAsString();
   if (!def_str.empty()) {
@@ -524,7 +523,7 @@ tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
       tensorflow::TensorProto *tensor = iter->second.mutable_tensor();
       std::string tensor_str = tensor->SerializeAsString();
       const_value_map.insert({ge::AscendString(node_name.c_str(), node_name.length()),
-          ge::AscendString(tensor_str.c_str(), tensor_str.length())});
+                              ge::AscendString(tensor_str.c_str(), tensor_str.length())});
       node.mutable_attr()->erase(iter);
     }
   }
@@ -535,7 +534,7 @@ tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def,
 
 tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_t src_size) {
   NPU_REQUIRES((dst_size >= src_size),
-      tensorflow::errors::Internal("Loop memory copy failed. dst_size:", dst_size, ", src_size:", src_size));
+               tensorflow::errors::Internal("Loop memory copy failed. dst_size:", dst_size, ", src_size:", src_size));
 
   size_t copy_size = 0UL;
   size_t org_src_size = src_size;
@@ -554,12 +553,12 @@ tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_
 }
 
 std::map<ge::AscendString, ge::AscendString> StringToAscendString(
-    const std::map<std::string, std::string> &string_map) {
+  const std::map<std::string, std::string> &string_map) {
   std::map<ge::AscendString, ge::AscendString> ascend_string_map;
   for (const auto &string_pair : string_map) {
     ascend_string_map.emplace(
-        std::make_pair(ge::AscendString(string_pair.first.c_str(), string_pair.first.length()),
-        ge::AscendString(string_pair.second.c_str(), string_pair.second.length())));
+      std::make_pair(ge::AscendString(string_pair.first.c_str(), string_pair.first.length()),
+                     ge::AscendString(string_pair.second.c_str(), string_pair.second.length())));
   }
   return ascend_string_map;
 }
@@ -603,7 +602,7 @@ std::vector<std::string, std::allocator<std::string>> StringUtils::Split(const s
   std::vector<std::string, std::allocator<std::string>> elems;
 
   if (str.empty()) {
-    (void) elems.emplace_back("");
+    (void)elems.emplace_back("");
     return elems;
   }
 
@@ -611,12 +610,12 @@ std::vector<std::string, std::allocator<std::string>> StringUtils::Split(const s
   std::string item;
 
   while (getline(ss, item, delim)) {
-    (void) elems.push_back(item);
+    (void)elems.push_back(item);
   }
 
   const auto str_size = str.size();
   if ((str_size > 0U) && (str[str_size - 1U] == delim)) {
-    (void) elems.emplace_back("");
+    (void)elems.emplace_back("");
   }
 
   return elems;

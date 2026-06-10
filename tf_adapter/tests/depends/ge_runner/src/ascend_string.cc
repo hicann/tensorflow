@@ -11,9 +11,9 @@
 #include "graph/ascend_string.h"
 
 namespace ge {
-AscendString::AscendString(const char* name) {
+AscendString::AscendString(const char *name) {
   if (name != nullptr) {
-    name_ = std::shared_ptr<std::string>(new (std::nothrow) std::string(name)); //lint !e1524
+    name_ = std::shared_ptr<std::string>(new (std::nothrow) std::string(name));  // lint !e1524
     if (name_ == nullptr) {
       fprintf(stderr, "[New][String]AscendString[%s] make shared failed.", name);
     }
@@ -21,14 +21,14 @@ AscendString::AscendString(const char* name) {
 }
 AscendString::AscendString(const char_t *const name, size_t length) {
   if (name != nullptr) {
-    name_ = std::shared_ptr<std::string>(new (std::nothrow) std::string(name, length)); //lint !e1524
+    name_ = std::shared_ptr<std::string>(new (std::nothrow) std::string(name, length));  // lint !e1524
     if (name_ == nullptr) {
       fprintf(stderr, "[New][String]AscendString[%s] make shared failed.", name);
     }
   }
 }
 
-const char* AscendString::GetString() const {
+const char *AscendString::GetString() const {
   if (name_ == nullptr) {
     return nullptr;
   }
@@ -36,7 +36,7 @@ const char* AscendString::GetString() const {
   return (*name_).c_str();
 }
 
-bool AscendString::operator<(const AscendString& d) const {
+bool AscendString::operator<(const AscendString &d) const {
   if (name_ == nullptr && d.name_ == nullptr) {
     return false;
   } else if (name_ == nullptr) {
@@ -47,7 +47,7 @@ bool AscendString::operator<(const AscendString& d) const {
   return (*name_ < *(d.name_));
 }
 
-bool AscendString::operator>(const AscendString& d) const {
+bool AscendString::operator>(const AscendString &d) const {
   if (name_ == nullptr && d.name_ == nullptr) {
     return false;
   } else if (name_ == nullptr) {
@@ -55,10 +55,10 @@ bool AscendString::operator>(const AscendString& d) const {
   } else if (d.name_ == nullptr) {
     return true;
   }
-  return(*name_ > *(d.name_));
+  return (*name_ > *(d.name_));
 }
 
-bool AscendString::operator==(const AscendString& d) const {
+bool AscendString::operator==(const AscendString &d) const {
   if (name_ == nullptr && d.name_ == nullptr) {
     return true;
   } else if (name_ == nullptr) {
@@ -69,7 +69,7 @@ bool AscendString::operator==(const AscendString& d) const {
   return (*name_ == *(d.name_));
 }
 
-bool AscendString::operator<=(const AscendString& d) const {
+bool AscendString::operator<=(const AscendString &d) const {
   if (name_ == nullptr) {
     return true;
   } else if (d.name_ == nullptr) {
@@ -78,7 +78,7 @@ bool AscendString::operator<=(const AscendString& d) const {
   return (*name_ <= *(d.name_));
 }
 
-bool AscendString::operator>=(const AscendString& d) const {
+bool AscendString::operator>=(const AscendString &d) const {
   if (d.name_ == nullptr) {
     return true;
   } else if (name_ == nullptr) {
@@ -87,7 +87,7 @@ bool AscendString::operator>=(const AscendString& d) const {
   return (*name_ >= *(d.name_));
 }
 
-bool AscendString::operator!=(const AscendString& d) const {
+bool AscendString::operator!=(const AscendString &d) const {
   if (name_ == nullptr && d.name_ == nullptr) {
     return false;
   } else if (name_ == nullptr) {

@@ -64,10 +64,10 @@ TEST_F(NpuAttrTest, GetEnvAscendDeviceIdFailTest) {
   EXPECT_EQ(s.ok(), false);
 }
 TEST_F(NpuAttrTest, GetEnvAscendDeviceIdNotIntFailTest) {
-uint32_t device_id = 0;
-setenv("ASCEND_DEVICE_ID", "1.1", true);
-Status s = GetEnvDeviceID(device_id);
-EXPECT_EQ(s.ok(), false);
+  uint32_t device_id = 0;
+  setenv("ASCEND_DEVICE_ID", "1.1", true);
+  Status s = GetEnvDeviceID(device_id);
+  EXPECT_EQ(s.ok(), false);
 }
 TEST_F(NpuAttrTest, SplitTest) {
   std::string s = "a,b,c";
@@ -300,10 +300,9 @@ TEST_F(NpuAttrTest, GetCollectionPath) {
 TEST_F(NpuAttrTest, SetNpuOptimizerAttrInvalidEnableOnlineInference) {
   GraphOptimizationPassOptions options;
   SessionOptions session_options;
-  session_options.config.mutable_graph_options()
-      ->mutable_optimizer_options()
-      ->set_do_function_inlining(true);
-  auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+  session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+  auto *custom_config =
+      session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
   custom_config->set_name("NpuOptimizer");
   options.session_options = &session_options;
   Status s = NpuAttrs::SetNpuOptimizerAttr(options, nullptr);
@@ -660,5 +659,5 @@ TEST_F(NpuAttrTest, SetNpuOptimizerAttr_optimization_switch) {
   EXPECT_NE(all_options.find("ge.optimizationSwitch"), all_options.cend());
 }
 
-}
-} // end tensorflow
+}  // namespace
+}  // namespace tensorflow

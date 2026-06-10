@@ -43,16 +43,21 @@ class DeviceQueueDatasetOp : public DatasetOpKernel {
    public:
     explicit Dataset(OpKernelContext *ctx, const DataTypeVector &outputTypes,
                      const std::vector<PartialTensorShape> &outputShapes)
-      : DatasetBase(DatasetContext(ctx)), outputTypes_(outputTypes),
-        outputShapes_(outputShapes) {}
+        : DatasetBase(DatasetContext(ctx)), outputTypes_(outputTypes), outputShapes_(outputShapes) {}
 
     ~Dataset() override = default;
 
-    const DataTypeVector &output_dtypes() const override { return outputTypes_; }
+    const DataTypeVector &output_dtypes() const override {
+      return outputTypes_;
+    }
 
-    const std::vector<PartialTensorShape> &output_shapes() const override { return outputShapes_; }
+    const std::vector<PartialTensorShape> &output_shapes() const override {
+      return outputShapes_;
+    }
 
-    string DebugString() const override { return "DeviceQueueDatasetOp::Dataset"; }
+    string DebugString() const override {
+      return "DeviceQueueDatasetOp::Dataset";
+    }
 
     STATUS_FUNCTION_ONLY_TF2(CheckExternalState() const override);
 

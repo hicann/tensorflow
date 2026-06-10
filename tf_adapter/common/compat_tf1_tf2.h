@@ -24,32 +24,32 @@ using string = tensorflow::string;
 }  // namespace npu
 
 #if defined(TF_VERSION_TF2)
-#define STATUS_FUNCTION_ONLY_TF2(F)                                                                                    \
-  tensorflow::Status F {                                                                                               \
-    return tensorflow::Status::OK();                                                                                   \
+#define STATUS_FUNCTION_ONLY_TF2(F)  \
+  tensorflow::Status F {             \
+    return tensorflow::Status::OK(); \
   }
 #else
 #define STATUS_FUNCTION_ONLY_TF2(F)
 #endif
 
 #if !defined(TF_VERSION_TF2)
-#define STATUS_FUNCTION_ONLY_TF1(F)                                                                                    \
-  tensorflow::Status F {                                                                                               \
-    return tensorflow::Status::OK();                                                                                   \
+#define STATUS_FUNCTION_ONLY_TF1(F)  \
+  tensorflow::Status F {             \
+    return tensorflow::Status::OK(); \
   }
 #else
 #define STATUS_FUNCTION_ONLY_TF1(F)
 #endif
 
 #if defined(TF_VERSION_TF2)
-#define VOID_FUNCTION_ONLY_TF2(F)                                                                                      \
+#define VOID_FUNCTION_ONLY_TF2(F) \
   void F {}
 #else
 #define VOID_FUNCTION_ONLY_TF2(F)
 #endif
 
 #if !defined(TF_VERSION_TF2)
-#define VOID_FUNCTION_ONLY_TF1(F)                                                                                      \
+#define VOID_FUNCTION_ONLY_TF1(F) \
   void F {}
 #else
 #define VOID_FUNCTION_ONLY_TF1(F)

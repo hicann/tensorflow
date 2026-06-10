@@ -31,7 +31,8 @@ Status Session::AddGraph(uint32_t graphId, const Graph &graph) {
   return SUCCESS;
 }
 
-Status Session::AddGraph(uint32_t graphId, const Graph &graph, const std::map<ge::AscendString, ge::AscendString> &options) {
+Status Session::AddGraph(uint32_t graphId, const Graph &graph,
+                         const std::map<ge::AscendString, ge::AscendString> &options) {
   graphs_[graphId] = graph.graph;
   graph_need_rebuild_[graphId] = false;
   return SUCCESS;
@@ -183,6 +184,4 @@ ge::ComputeGraphPtr GeApiWrapper_MakeComputeGraphPtr(const char *graph_name) {
   return std::make_shared<ge::ComputeGraph>(graph_name);
 }
 
-size_t GeApiWrapper_GetAllNodesSize(const ge::ComputeGraphPtr &graph_ptr) {
-  return graph_ptr->GetAllNodesSize();
-}
+size_t GeApiWrapper_GetAllNodesSize(const ge::ComputeGraphPtr &graph_ptr) { return graph_ptr->GetAllNodesSize(); }

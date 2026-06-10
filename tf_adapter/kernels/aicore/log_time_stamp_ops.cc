@@ -18,10 +18,16 @@
 namespace tensorflow {
 class LogTimeStampOP : public OpKernel {
  public:
-  explicit LogTimeStampOP(OpKernelConstruction *ctx) : OpKernel(ctx) { ADP_LOG(INFO) << "new LogTimeStampOP"; }
+  explicit LogTimeStampOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
+    ADP_LOG(INFO) << "new LogTimeStampOP";
+  }
   ~LogTimeStampOP() override = default;
-  void Compute(OpKernelContext *ctx) override { ADP_LOG(INFO) << "in LogTimeStampOP"; }
-  bool IsExpensive() override { return false; }
+  void Compute(OpKernelContext *ctx) override {
+    ADP_LOG(INFO) << "in LogTimeStampOP";
+  }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("LogTimeStamp").Device(DEVICE_CPU), LogTimeStampOP);

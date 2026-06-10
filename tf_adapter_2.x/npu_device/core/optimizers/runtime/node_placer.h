@@ -57,7 +57,7 @@ struct NodeOrCluster {
 };
 
 struct StableNodeCompartor {
-  bool operator() (const tensorflow::Node *a, const tensorflow::Node *b) const { return a->id() < b->id(); }
+  bool operator()(const tensorflow::Node *a, const tensorflow::Node *b) const { return a->id() < b->id(); }
 };
 
 class NodePlacer {

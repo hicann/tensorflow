@@ -29,7 +29,7 @@
 namespace tensorflow {
 template <typename T, typename TIndex>
 class UniqueParallelOp : public OpKernel {
-public:
+ public:
   explicit UniqueParallelOp(OpKernelConstruction *context) : OpKernel(context) {}
   ~UniqueParallelOp() override = default;
   void Compute(OpKernelContext *context) override {
@@ -44,7 +44,7 @@ public:
                                         DataTypeString(input_tensor.dtype())));
     auto input_vec = input_tensor.vec<T>();
     int64 total = static_cast<int64>(input_vec.size());
-    Tensor* index_tensor = nullptr;
+    Tensor *index_tensor = nullptr;
     OP_REQUIRES_OK(context, context->allocate_output(1, TensorShape({input_vec.size()}), &index_tensor));
     auto index_vec = index_tensor->vec<TIndex>();
 
@@ -71,13 +71,13 @@ public:
     };
     ParallelFor(thread_work, total, CPU_NUMS, shards);
     Tensor *output_tensor = nullptr;
-    OP_REQUIRES_OK(context,
-                   context->allocate_output(0, TensorShape({count_num}), &output_tensor));
+    OP_REQUIRES_OK(context, context->allocate_output(0, TensorShape({count_num}), &output_tensor));
     *output_tensor = temp_output.Slice(0, count_num);
   }
-private:
-  void ParallelFor(tensorflow::thread::ThreadPool& thread_work,
-    int64 total, const int cpu_nums, std::function<void(int64, int)>& fn) {
+
+ private:
+  void ParallelFor(tensorflow::thread::ThreadPool &thread_work, int64 total, const int cpu_nums,
+                   std::function<void(int64, int)> &fn) {
     CHECK_GE(total, 0);
     CHECK_EQ(total, static_cast<int64>(static_cast<Eigen::Index>(total)));
     if (total <= 1 || cpu_nums == 1) {
@@ -98,20 +98,14 @@ private:
 };
 
 /*lint -e665*/
-#define REGISTER_UNIQUE_PARALLEL(type)                           \
-  REGISTER_KERNEL_BUILDER(Name("Unique")                         \
-                              .Device(DEVICE_CPU)                \
-                              .TypeConstraint<type>("T")         \
-                              .TypeConstraint<int32>("out_idx")  \
-                              .Label("parallel"),                \
-                              UniqueParallelOp<type, int32>);    \
-  REGISTER_KERNEL_BUILDER(Name("Unique")                         \
-                              .Device(DEVICE_CPU)                \
-                              .TypeConstraint<type>("T")         \
-                              .TypeConstraint<int64>("out_idx")  \
-                              .Label("parallel"),                \
-                              UniqueParallelOp<type, int64>);
+#define REGISTER_UNIQUE_PARALLEL(type)                                                                                \
+  REGISTER_KERNEL_BUILDER(                                                                                            \
+      Name("Unique").Device(DEVICE_CPU).TypeConstraint<type>("T").TypeConstraint<int32>("out_idx").Label("parallel"), \
+      UniqueParallelOp<type, int32>);                                                                                 \
+  REGISTER_KERNEL_BUILDER(                                                                                            \
+      Name("Unique").Device(DEVICE_CPU).TypeConstraint<type>("T").TypeConstraint<int64>("out_idx").Label("parallel"), \
+      UniqueParallelOp<type, int64>);
 TF_CALL_INTEGRAL_TYPES(REGISTER_UNIQUE_PARALLEL);
 #undef REGISTER_UNIQUE_PARALLEL
 /*lint +e665*/
-}
+}  // namespace tensorflow

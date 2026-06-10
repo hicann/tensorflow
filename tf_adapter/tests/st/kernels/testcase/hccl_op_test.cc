@@ -25,17 +25,16 @@ PartialTensorShape S(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef& op_def, int in_index, const NodeDef& node_def,
-              NodeDefBuilder* builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
-    string in_node =  string(&c, 1);
+    string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
     return Status::OK();
   };
 }
 
 TEST(HcclOpTest, TestHcomAllGatherShapeInference) {
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("HcomAllGather", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
@@ -54,7 +53,7 @@ TEST(HcclOpTest, TestHcomAllGatherShapeInference) {
 }
 
 TEST(HcclOpTest, TestHcomAllGatherShapeInferenceInvaildRankSize) {
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("HcomAllGather", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
@@ -73,7 +72,7 @@ TEST(HcclOpTest, TestHcomAllGatherShapeInferenceInvaildRankSize) {
 }
 
 TEST(HcclOpTest, TestHcomReduceScatterShapeInference) {
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("HcomReduceScatter", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
@@ -93,7 +92,7 @@ TEST(HcclOpTest, TestHcomReduceScatterShapeInference) {
 }
 
 TEST(HcclOpTest, TestHcomReduceScatterShapeInferenceInvaildRankSize) {
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("HcomReduceScatter", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
@@ -113,7 +112,7 @@ TEST(HcclOpTest, TestHcomReduceScatterShapeInferenceInvaildRankSize) {
 }
 
 TEST(HcclOpTest, TestHcomAllToAllVCShapeInference) {
-  const OpRegistrationData* reg;
+  const OpRegistrationData *reg;
   TF_CHECK_OK(OpRegistry::Global()->LookUp("HcomAllToAllVC", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
@@ -124,7 +123,7 @@ TEST(HcclOpTest, TestHcomAllToAllVCShapeInference) {
                   .Input(FakeInputStub(DT_INT64))
                   .Input(FakeInputStub(DT_INT64))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def, {S({3, 4}),S({4, 4})}, {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def, {S({3, 4}), S({4, 4})}, {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 

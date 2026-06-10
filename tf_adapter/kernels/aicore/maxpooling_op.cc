@@ -20,12 +20,14 @@ class MaxPoolingGradGradWithArgmaxOp : public OpKernel {
     ADP_LOG(INFO) << "MaxPoolingGradGradWithArgmaxOp built";
   }
   ~MaxPoolingGradGradWithArgmaxOp() override = default;
-  void Compute(OpKernelContext* ctx) override {
-    (void) ctx;
+  void Compute(OpKernelContext *ctx) override {
+    (void)ctx;
     ADP_LOG(INFO) << "[ATTENTION] MaxPoolingGradGradWithArgmaxOp can not run on cpu, \
                   only running on npu, please open use_off_line ";
   }
-  bool IsExpensive() override { return false; }
+  bool IsExpensive() override {
+    return false;
+  }
 };
 
 REGISTER_KERNEL_BUILDER(Name("MaxPoolGradGradWithArgmax").Device(DEVICE_CPU), MaxPoolingGradGradWithArgmaxOp);

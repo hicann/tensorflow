@@ -27,8 +27,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -46,9 +45,9 @@ TEST(DynamicAUGRUOpTest, TestDynamicAUGRU) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   DynamicAUGRUOP<int> dynamic_augru(context);
   OpKernelContext *ctx = nullptr;
   dynamic_augru.Compute(ctx);
@@ -76,11 +75,10 @@ TEST(DynamicAUGRUOpTest, TestDynamicAUGRUShapeInference01) {
                   .Input(FakeInputStub(DT_INT32))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def,
-      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
-       TShape({16, 16}), TShape({16, 16}), TShape({48}), TShape({16, 16})},
-      {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def,
+                                      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
+                                       TShape({16, 16}), TShape({16, 16}), TShape({48}), TShape({16, 16})},
+                                      {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 
@@ -102,13 +100,12 @@ TEST(DynamicAUGRUOpTest, TestDynamicAUGRUShapeInference02) {
                   .Input(FakeInputStub(DT_INT32))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(
-      0, &def, op_def,
-      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
-       TShape({16, 16}), TShape({16, 16}), TShape({48}), TShape({16, 16})},
-      {}, {}, {});
+  shape_inference::InferenceContext c(0, &def, op_def,
+                                      {TShape({1, 16, 16}), TShape({16, 48}), TShape({16, 48}), TShape({1, 16}),
+                                       TShape({16, 16}), TShape({16, 16}), TShape({48}), TShape({16, 16})},
+                                      {}, {}, {});
   ASSERT_TRUE(reg->shape_inference_fn(&c).ok());
 }
 
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

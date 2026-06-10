@@ -34,16 +34,16 @@ struct MemoryBlock {
 class MemoryPool {
  public:
   MemoryPool();
-  Status MallocMemory(void *&buffer,
-                      uint64_t args_size);
+  Status MallocMemory(void *&buffer, uint64_t args_size);
   void ReleaseMemory();
   Status FreeAllMemory();
   ~MemoryPool();
+
  private:
   bool FreeMemoryList(std::list<MemoryBlock> &memory_list) const;
   std::mutex memory_pool_lock_;
   std::list<MemoryBlock> used_memory_list_;
   std::list<MemoryBlock> free_memory_list_;
 };
-}
+}  // namespace tensorflow
 #endif

@@ -22,8 +22,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -41,9 +40,9 @@ TEST(ProdVirialSeAOpTest, TestProdVirialSeA) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   ProdVirialSeAOp<int> prod_virial_se_a(context);
   OpKernelContext *ctx = nullptr;
   prod_virial_se_a.Compute(ctx);
@@ -69,12 +68,14 @@ TEST(ProdVirialSeAOpTest, TestProdVirialSeAShapeInference) {
                   .Input(FakeInputStub(DT_INT32))
                   .Input(FakeInputStub(DT_INT32))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def, {TShape({1, 6782976}), TShape({1, 20348928}),
-                                      TShape({1, 5087232}), TShape({1, 1695744}), TShape({4})}, {}, {}, {});
+  shape_inference::InferenceContext c(
+      0, &def, op_def,
+      {TShape({1, 6782976}), TShape({1, 20348928}), TShape({1, 5087232}), TShape({1, 1695744}), TShape({4})}, {}, {},
+      {});
   std::vector<shape_inference::ShapeHandle> input_shapes;
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[1,9]", c.DebugString(c.output(0)));
   ASSERT_EQ("[1,254952]", c.DebugString(c.output(1)));
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

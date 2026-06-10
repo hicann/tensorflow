@@ -74,10 +74,10 @@ class NpuManagedBuffer {
   ge::Format format_{};                // 在NPU上的存储格式
   std::vector<int64_t> shape_;         // 对应NPU上的存储格式的维度值
 
-  size_t size_{};                                  // NPU上占用的内存大小
-  void *data_{};                                   // NPU地址指针
-  void (*deallocator_)(void *, size_t, const void *) {};  // NP内存的释放函数，内存可能会来自于内存池或者rtMalloc
-  void *deallocator_arg_{};                        // 地址释放时传给释放函数的参数
+  size_t size_{};                                        // NPU上占用的内存大小
+  void *data_{};                                         // NPU地址指针
+  void (*deallocator_)(void *, size_t, const void *){};  // NP内存的释放函数，内存可能会来自于内存池或者rtMalloc
+  void *deallocator_arg_{};                              // 地址释放时传给释放函数的参数
 };
 
 // NpuManagedBuffer是Host的对象，是CPU Tensor管理的对象，是NPU内存的Host句柄，应当在析构函数中释放NPU内存

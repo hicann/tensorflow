@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class ProdVirialSeAOp : public OpKernel {
  public:
   explicit ProdVirialSeAOp(OpKernelConstruction *context) : OpKernel(context) {
@@ -20,7 +20,7 @@ class ProdVirialSeAOp : public OpKernel {
   }
   ~ProdVirialSeAOp() override = default;
   void Compute(OpKernelContext *context) override {
-    (void) context;
+    (void)context;
     LOG(INFO) << "ProdVirialSeAOp Compute";
   }
   bool IsExpensive() override {

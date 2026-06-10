@@ -33,7 +33,7 @@ class SessionManager {
   void DestroyGeSession(const std::string &tf_session);
 
   // Whether a ge session exist.
-  bool IsGeSessionExist() const ;
+  bool IsGeSessionExist() const;
 
  private:
   // Create a ge session to run the compute graph divided by tf session.

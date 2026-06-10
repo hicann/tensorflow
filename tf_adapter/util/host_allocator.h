@@ -16,17 +16,17 @@
 #include "tensorflow/core/lib/core/refcount.h"
 
 namespace tensorflow {
-  class HostAllocator : public Allocator, public tensorflow::core::RefCounted {
-  public:
-    explicit HostAllocator(void *addr);
-    ~HostAllocator() override;
-    std::string Name() override;
-    void *AllocateRaw(size_t alignment, size_t num_bytes) override;
-    void *AllocateRaw(size_t alignment, size_t num_bytes,
-                      const AllocationAttributes &allocation_attr) override;
-    void DeallocateRaw(void *ptr) override;
-  private:
-    void *addr_;
-  };
-}
+class HostAllocator : public Allocator, public tensorflow::core::RefCounted {
+ public:
+  explicit HostAllocator(void *addr);
+  ~HostAllocator() override;
+  std::string Name() override;
+  void *AllocateRaw(size_t alignment, size_t num_bytes) override;
+  void *AllocateRaw(size_t alignment, size_t num_bytes, const AllocationAttributes &allocation_attr) override;
+  void DeallocateRaw(void *ptr) override;
+
+ private:
+  void *addr_;
+};
+}  // namespace tensorflow
 #endif

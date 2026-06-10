@@ -16,8 +16,7 @@
 using namespace tensorflow;
 
 template <typename T>
-int AscendWeightQuantInternelCpu(struct WeightQuantInputParam<T> input_param)
-{
+int AscendWeightQuantInternelCpu(struct WeightQuantInputParam<T> input_param) {
   if (input_param.channel_wise) {
     if (input_param.transpose) {
       for (int i = 0; i < input_param.size; i++) {
@@ -41,7 +40,7 @@ int AscendWeightQuantInternelCpu(struct WeightQuantInputParam<T> input_param)
 template <typename T>
 class AscendWeightQuantOp : public OpKernel {
  public:
-  explicit AscendWeightQuantOp(OpKernelConstruction* context) : OpKernel(context) {
+  explicit AscendWeightQuantOp(OpKernelConstruction *context) : OpKernel(context) {
     OP_REQUIRES_OK(context, context->GetAttr("dst_type", &(dst_type)));
     input_param.size = 0;
     input_param.weight = NULL;
@@ -52,17 +51,17 @@ class AscendWeightQuantOp : public OpKernel {
     input_param.transpose = false;
   }
 
-  ~AscendWeightQuantOp(){}
+  ~AscendWeightQuantOp() {}
 
-  void Compute(OpKernelContext* context) override {
+  void Compute(OpKernelContext *context) override {
     // Grab the input tensor
-    const Tensor& input_tensor = context->input(0);
+    const Tensor &input_tensor = context->input(0);
     TensorShape input_tensor_shape = input_tensor.shape();
-    const Tensor& offset_tensor = context->input(1);
+    const Tensor &offset_tensor = context->input(1);
     TensorShape offset_tensor_shape = offset_tensor.shape();
 
     // Create an output tensor
-    Tensor* output_tensor = NULL;
+    Tensor *output_tensor = NULL;
     OP_REQUIRES_OK(context, context->allocate_output(0, input_tensor.shape(), &output_tensor));
 
     // Do the computation.
@@ -116,6 +115,5 @@ class AscendWeightQuantOp : public OpKernel {
   std::string dst_type;
 };
 
-REGISTER_KERNEL_BUILDER(
-  Name("AscendWeightQuant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
-  AscendWeightQuantOp<float>);
+REGISTER_KERNEL_BUILDER(Name("AscendWeightQuant").Device(tensorflow::DEVICE_CPU).TypeConstraint<float>("T"),
+                        AscendWeightQuantOp<float>);

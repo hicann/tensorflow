@@ -23,7 +23,7 @@ AdapterLogger::~AdapterLogger() {
   }
   if (severity_ == ADP_FATAL) {
     DlogSub(modeule, ADP_MODULE_NAME, ADP_ERROR, "%s", str().c_str());
-    (void) DlogReportFinalize();
+    (void)DlogReportFinalize();
   } else {
     DlogSub(modeule, ADP_MODULE_NAME, log_level, "%s", str().c_str());
   }

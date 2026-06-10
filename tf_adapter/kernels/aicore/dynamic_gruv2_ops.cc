@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class DynamicGruV2OP : public OpKernel {
  public:
   explicit DynamicGruV2OP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class DynamicGruV2OP : public OpKernel {
   }
   ~DynamicGruV2OP() = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "in DynamicGruV2OP";
   }
   bool IsExpensive() override {

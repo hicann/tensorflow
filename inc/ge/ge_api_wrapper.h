@@ -19,13 +19,13 @@
 
 namespace domi {
 using GetGraphCallbackV3 = std::function<ge::AscendString(const ge::AscendString &subgraph_name)>;
-} // namespace domi
+}  // namespace domi
 
 namespace ge {
 class Graph;
 class ComputeGraph;
 using ComputeGraphPtr = std::shared_ptr<ComputeGraph>;
-} // namespace ge
+}  // namespace ge
 
 ge::Graph GeApiWrapper_CreateGraphFromComputeGraph(const ge::ComputeGraphPtr &compute_graph);
 
@@ -46,26 +46,24 @@ void GeApiWrapper_RenameAllNodes(void *graph_ptr, const char *prefix);
 
 void GeApiWrapper_SetDomiContextTrainFlag(bool train_flag);
 
-ge::Status GeApiWrapper_ModelSaveToString(const ge::Graph &graph,
-                                          const std::string &node_name,
-                                          std::string &model_str);
+ge::Status GeApiWrapper_ModelSaveToString(const ge::Graph &graph, const std::string &node_name, std::string &model_str);
 
 ge::Status GeApiWrapper_ParseProtoWithSubgraph(const std::vector<ge::AscendString> &partitioned_serialized,
                                                const std::map<ge::AscendString, ge::AscendString> &const_value_map,
-                                               domi::GetGraphCallbackV3 callback,
-                                               ge::ComputeGraphPtr &graph);
+                                               domi::GetGraphCallbackV3 callback, ge::ComputeGraphPtr &graph);
 
 ge::Status GeApiWrapper_GetGeDataTypeByTFType(const uint32_t type, ge::DataType &data_type);
 
 ge::Status GeApiWrapper_ParserFinalize();
 
-ge::Status GeApiWrapper_ParserInitialize(const std::map<ge::AscendString, ge::AscendString>& options);
+ge::Status GeApiWrapper_ParserInitialize(const std::map<ge::AscendString, ge::AscendString> &options);
 
 void GeApiWrapper_SetDomiFormatFromParserContext();
 
 ge::Status GeApiWrapper_InitRdmaPool(size_t size, rtMemType_t mem_type);
 
-ge::Status GeApiWrapper_RdmaRemoteRegister(const std::vector<std::pair<uint64_t, uint64_t>> &var_info, rtMemType_t mem_type);
+ge::Status GeApiWrapper_RdmaRemoteRegister(const std::vector<std::pair<uint64_t, uint64_t>> &var_info,
+                                           rtMemType_t mem_type);
 
 ge::Status GeApiWrapper_GetVarBaseAddrAndSize(const char *var_name, uint64_t &base_addr, uint64_t &var_size);
 
@@ -76,4 +74,4 @@ ge::Status GeApiWrapper_MallocSharedMemory(const std::string &var_name, const st
 }
 #endif
 
-#endif // TENSORFLOW_ADP_INC_GE_API_WRAPPER_H_
+#endif  // TENSORFLOW_ADP_INC_GE_API_WRAPPER_H_

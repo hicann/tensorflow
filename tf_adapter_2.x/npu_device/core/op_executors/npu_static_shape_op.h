@@ -33,8 +33,10 @@ class NpuStaticShapeOp : public OpExecutor {
                            TF_Status *status);
 
   TensorShapes OutputShapes() const { return output_shapes_; }
+
  protected:
   std::string AttachedDebugString() const override;
+
  private:
   TensorShapes output_shapes_;
 };

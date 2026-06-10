@@ -34,8 +34,9 @@ std::string kGraphSliceModeAuto = "auto";
 std::string kGraphSliceModeManual = "manual";
 int64_t kSessionDeviceID = -1L;
 }  // namespace
-const string profiling_default_options = "{\"output\":\"./\",\"training_trace\":\"on\",\"task_time\":\"on\","\
-"\"hccl\":\"on\",\"aicpu\":\"on\",\"aic_metrics\":\"PipeUtilization\",\"msproftx\":\"off\"}";
+const string profiling_default_options =
+    "{\"output\":\"./\",\"training_trace\":\"on\",\"task_time\":\"on\","
+    "\"hccl\":\"on\",\"aicpu\":\"on\",\"aic_metrics\":\"PipeUtilization\",\"msproftx\":\"off\"}";
 std::map<int32_t, bool> NpuAttrs::turn_on_tdt_info_;
 std::map<std::string, bool> NpuAttrs::use_adp_info_;
 std::map<std::string, bool> NpuAttrs::dataset_execute_info_;
@@ -44,8 +45,9 @@ std::mutex NpuAttrs::mutex_;
 const static int32_t kRuntimeTypeHeterogeneous = 1;
 const std::string kNumerics = "0123456789";
 const std::string kErrMsgInvalidStepSets = "dump_step only support dump <= 100 sets of data";
-const std::string kErrMsgReverseStepNum = "in range steps, the first step is >= "\
-                                          "second step, correct example:'0|5|10-20'";
+const std::string kErrMsgReverseStepNum =
+    "in range steps, the first step is >= "
+    "second step, correct example:'0|5|10-20'";
 const std::string kErrMsgInvalidStepFormat = "dump_step string style is error, correct example:'0|5|10|50-100'";
 
 bool NpuAttrs::CheckIsNewDataTransfer() {
@@ -60,12 +62,12 @@ bool NpuAttrs::CheckIsNewDataTransfer() {
   }
   acltdtChannelHandle *check_queue_handle = acltdtCreateChannelWithCapacity(device_id, "check_is_queue", 3UL);
   if (check_queue_handle != nullptr) {
-    (void) acltdtDestroyChannel(check_queue_handle);
+    (void)acltdtDestroyChannel(check_queue_handle);
     return true;
   }
   check_queue_handle = acltdtCreateChannel(device_id, "check_is_queue");
   if (check_queue_handle != nullptr) {
-    (void) acltdtDestroyChannel(check_queue_handle);
+    (void)acltdtDestroyChannel(check_queue_handle);
     return false;
   } else {
     ADP_LOG(ERROR) << "Create channel failed by acltdtCreateChannelWithCapacity and acltdtCreateChannel";
@@ -91,13 +93,13 @@ void NpuAttrs::SetNewDataTransferFlag(bool flag) {
 
 extern const bool kDumpGraph = []() -> bool {
   bool print_model = false;
-  (void) tensorflow::ReadBoolFromEnvVar("PRINT_MODEL", false, &print_model);
+  (void)tensorflow::ReadBoolFromEnvVar("PRINT_MODEL", false, &print_model);
   return print_model;
 }();
 
 extern const bool kIsHeterogeneous = []() -> bool {
   int32_t is_heterogeneous = 0;
-  (void) rtGetIsHeterogenous(&is_heterogeneous);
+  (void)rtGetIsHeterogenous(&is_heterogeneous);
   return is_heterogeneous == kRuntimeTypeHeterogeneous;
 }();
 
@@ -107,22 +109,22 @@ std::map<ge::AscendString, ge::AscendString> ChangeStringToAscendString(
   for (const auto &string_pair : string_map) {
     ascend_string_map.emplace(
         std::make_pair(ge::AscendString(string_pair.first.c_str(), string_pair.first.length()),
-        ge::AscendString(string_pair.second.c_str(), string_pair.second.length())));
+                       ge::AscendString(string_pair.second.c_str(), string_pair.second.length())));
   }
   return ascend_string_map;
 }
 
 std::string GetDumpPath() {
   std::string npu_collect_path;
-  (void) ReadStringFromEnvVar("NPU_COLLECT_PATH", "", &npu_collect_path);
+  (void)ReadStringFromEnvVar("NPU_COLLECT_PATH", "", &npu_collect_path);
   if (!npu_collect_path.empty()) {
     std::string collect_path_str(npu_collect_path);
-    (void) collect_path_str.erase(0, collect_path_str.find_first_not_of(" "));
-    (void) collect_path_str.erase(collect_path_str.find_last_not_of(" ") + 1);
+    (void)collect_path_str.erase(0, collect_path_str.find_first_not_of(" "));
+    (void)collect_path_str.erase(collect_path_str.find_last_not_of(" ") + 1);
     std::string base_path_str = collect_path_str.empty() ? "./" : collect_path_str + "/";
 
     uint32_t device_id = 0;
-    (void) GetEnvDeviceID(device_id);
+    (void)GetEnvDeviceID(device_id);
     base_path_str += "/extra-info/graph/" + std::to_string(mmGetPid()) + "_" + std::to_string(device_id) + "/";
     if (mmAccess2(base_path_str.c_str(), M_F_OK) != EN_OK) {
       int32_t ret = mmMkdir(base_path_str.c_str(), M_IRUSR | M_IWUSR | M_IXUSR);
@@ -135,9 +137,9 @@ std::string GetDumpPath() {
   }
 
   std::string dump_graph_path;
-  (void) ReadStringFromEnvVar("DUMP_GRAPH_PATH", "./", &dump_graph_path);
-  (void) dump_graph_path.erase(0, dump_graph_path.find_first_not_of(" "));
-  (void) dump_graph_path.erase(dump_graph_path.find_last_not_of(" ") + 1);
+  (void)ReadStringFromEnvVar("DUMP_GRAPH_PATH", "./", &dump_graph_path);
+  (void)dump_graph_path.erase(0, dump_graph_path.find_first_not_of(" "));
+  (void)dump_graph_path.erase(dump_graph_path.find_last_not_of(" ") + 1);
 
   std::string base_path = dump_graph_path.empty() ? "./" : dump_graph_path + "/";
   if (mmAccess2(base_path.c_str(), M_F_OK) != EN_OK) {
@@ -153,9 +155,9 @@ Status GetEnvDeviceID(uint32_t &device_id) {
   int64 phy_device_id = -1;
   int64 logic_device_id = -1;
   std::string env_ascend_device_id;
-  (void) ReadStringFromEnvVar("ASCEND_DEVICE_ID", "", &env_ascend_device_id);
+  (void)ReadStringFromEnvVar("ASCEND_DEVICE_ID", "", &env_ascend_device_id);
   std::string env_device_id;
-  (void) ReadStringFromEnvVar("DEVICE_ID", "", &env_device_id);
+  (void)ReadStringFromEnvVar("DEVICE_ID", "", &env_device_id);
   if (env_ascend_device_id.empty() && env_device_id.empty()) {
     ADP_LOG(WARNING) << "[GePlugin] DEVICE_ID and ASCEND_DEVICE_ID is none, use default device id : 0, if set "
                         "session_device_id, session_device_id has a higher priority.";
@@ -194,7 +196,7 @@ Status GetDeviceID(uint32_t &device_id) {
 
 Status GetStepFromEnv(const std::string &env_name, uint32_t &step) {
   std::string step_string;
-  (void) ReadStringFromEnvVar(env_name, "", &step_string);
+  (void)ReadStringFromEnvVar(env_name, "", &step_string);
   std::stringstream ss;
   if (step_string.empty()) {
     ss << env_name << " is not set, which is needed when accelarate by step";
@@ -210,7 +212,7 @@ Status GetStepFromEnv(const std::string &env_name, uint32_t &step) {
 
 Status GetLossFromEnv(const std::string &env_name, float &loss) {
   std::string loss_string;
-  (void) ReadStringFromEnvVar(env_name, "", &loss_string);
+  (void)ReadStringFromEnvVar(env_name, "", &loss_string);
   std::stringstream ss;
   if (loss_string.empty()) {
     ss << env_name << " is not set, which is needed when accelarate by loss";
@@ -242,7 +244,7 @@ std::vector<std::string, std::allocator<std::string>> StringUtils::Split(const s
   std::vector<std::string, std::allocator<std::string>> elems;
 
   if (str.empty()) {
-    (void) elems.emplace_back("");
+    (void)elems.emplace_back("");
     return elems;
   }
 
@@ -250,12 +252,12 @@ std::vector<std::string, std::allocator<std::string>> StringUtils::Split(const s
   std::string item;
 
   while (getline(ss, item, delim)) {
-    (void) elems.push_back(item);
+    (void)elems.push_back(item);
   }
 
   const auto str_size = str.size();
   if ((str_size > 0U) && (str[str_size - 1U] == delim)) {
-    (void) elems.emplace_back("");
+    (void)elems.emplace_back("");
   }
 
   return elems;
@@ -268,9 +270,7 @@ inline Status checkDumpStep(const std::string &dump_step) {
   if (match_vecs.size() > 100U) {
     return errors::InvalidArgument(kErrMsgInvalidStepSets);
   }
-  const auto is_str_num = [] (const std::string &s) -> bool {
-    return s.find_first_not_of(kNumerics) == string::npos;
-  };
+  const auto is_str_num = [](const std::string &s) -> bool { return s.find_first_not_of(kNumerics) == string::npos; };
   for (const auto &match_vec : match_vecs) {
     std::vector<string> tmp_vecs;
     Split(match_vec, tmp_vecs, "-");
@@ -332,8 +332,9 @@ Status CheckOpImplMode(const std::string &op_select_implmode) {
   if (op_impl_mode_list.find(op_select_implmode) != op_impl_mode_list.end()) {
     return Status::OK();
   } else {
-    return errors::InvalidArgument("op select impl mode should be one of the list:[high_precision, "
-                                   "high_performance, high_precision_for_all, high_performance_for_all]");
+    return errors::InvalidArgument(
+        "op select impl mode should be one of the list:[high_precision, "
+        "high_performance, high_precision_for_all, high_performance_for_all]");
   }
 }
 
@@ -466,10 +467,10 @@ std::map<std::string, std::string> NpuAttrs::GetGraphOptions(const OpKernelConst
   std::string dynamic_dims;
   std::string dynamic_node_type;
   std::string compile_hybrid_mode;
-  (void) ctx->GetAttr("_input_shape", &input_shape);
-  (void) ctx->GetAttr("_dynamic_dims", &dynamic_dims);
-  (void) ctx->GetAttr("_dynamic_node_type", &dynamic_node_type);
-  (void) ctx->GetAttr("_compile_hybrid_mode", &compile_hybrid_mode);
+  (void)ctx->GetAttr("_input_shape", &input_shape);
+  (void)ctx->GetAttr("_dynamic_dims", &dynamic_dims);
+  (void)ctx->GetAttr("_dynamic_node_type", &dynamic_node_type);
+  (void)ctx->GetAttr("_compile_hybrid_mode", &compile_hybrid_mode);
   graph_options["ge.inputShape"] = input_shape;
   graph_options["ge.dynamicDims"] = dynamic_dims;
   graph_options["ge.dynamicNodeType"] = dynamic_node_type;
@@ -537,16 +538,16 @@ std::map<std::string, std::string> NpuAttrs::GetSessOptions(const OpKernelConstr
   std::string optimization_switch;
   const bool is_npu_optimizer_valid = (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK());
   if (is_npu_optimizer_valid) {
-    (void) ctx->GetAttr("_variable_format_optimize", &variable_format_optimize);
-    (void) ctx->GetAttr("_hcom_parallel", &hcom_parallel);
-    (void) ctx->GetAttr("_graph_memory_max_size", &graph_memory_max_size);
-    (void) ctx->GetAttr("_variable_memory_max_size", &variable_memory_max_size);
-    (void) ctx->GetAttr("_enable_dump", &enable_dump);
-    (void) ctx->GetAttr("_enable_dump_debug", &enable_dump_debug);
-    (void) ctx->GetAttr("_input_fusion_size", &input_fusion_size);
+    (void)ctx->GetAttr("_variable_format_optimize", &variable_format_optimize);
+    (void)ctx->GetAttr("_hcom_parallel", &hcom_parallel);
+    (void)ctx->GetAttr("_graph_memory_max_size", &graph_memory_max_size);
+    (void)ctx->GetAttr("_variable_memory_max_size", &variable_memory_max_size);
+    (void)ctx->GetAttr("_enable_dump", &enable_dump);
+    (void)ctx->GetAttr("_enable_dump_debug", &enable_dump_debug);
+    (void)ctx->GetAttr("_input_fusion_size", &input_fusion_size);
     const bool need_dump_path = enable_dump != "0" || enable_dump_debug != "0";
     if (need_dump_path) {
-      (void) ctx->GetAttr("_dump_path", &dump_path);
+      (void)ctx->GetAttr("_dump_path", &dump_path);
     }
     if (enable_dump != "0") {
       const bool is_valid_dump_step = ctx->GetAttr("_dump_step", &dump_step) == Status::OK() && !dump_step.empty();
@@ -573,49 +574,49 @@ std::map<std::string, std::string> NpuAttrs::GetSessOptions(const OpKernelConstr
         }
       }
     }
-    (void) ctx->GetAttr("_stream_max_parallel_num", &stream_max_parallel_num);
-    (void) ctx->GetAttr("_ac_parallel_enable", &ac_parallel_enable);
-    (void) ctx->GetAttr("_quant_dumpable", &quant_dumpable);
-    (void) ctx->GetAttr("_is_tailing_optimization", &is_tailing_optimization);
-    (void) ctx->GetAttr("_op_select_implmode", &op_select_implmode);
-    (void) ctx->GetAttr("_optypelist_for_implmode", &optypelist_for_implmode);
-    (void) ctx->GetAttr("_buffer_optimize", &buffer_optimize);
-    (void) ctx->GetAttr("_enable_small_channel", &enable_small_channel);
-    (void) ctx->GetAttr("_fusion_switch_file", &fusion_switch_file);
-    (void) ctx->GetAttr("_enable_compress_weight", &enable_compress_weight);
-    (void) ctx->GetAttr("_compress_weight_conf", &compress_weight_conf);
-    (void) ctx->GetAttr("_session_device_id", &session_device_id);
-    (void) ctx->GetAttr("_modify_mixlist", &modify_mixlist);
-    (void) ctx->GetAttr("_op_precision_mode", &op_precision_mode);
-    (void) ctx->GetAttr("_graph_run_mode", &graph_run_mode);
-    (void) ctx->GetAttr("_hccl_timeout", &hccl_timeout);
-    (void) ctx->GetAttr("_HCCL_algorithm", &HCCL_algorithm);
-    (void) ctx->GetAttr("_atomic_clean_policy", &atomic_clean_policy);
-    (void) ctx->GetAttr("_memory_optimization_policy", &memory_optimization_policy);
-    (void) ctx->GetAttr("_static_memory_policy", &static_memory_policy);
-    (void) ctx->GetAttr("_variable_use_1g_huge_page", &variable_use_1g_huge_page);
-    (void) ctx->GetAttr("_topo_sorting_mode", &topo_sorting_mode);
-    (void) ctx->GetAttr("_insert_op_file", &insert_op_file);
-    (void) ctx->GetAttr("_resource_config_path", &resource_config_path);
-    (void) ctx->GetAttr("_dump_layer", &dump_layer);
-    (void) ctx->GetAttr("_external_weight", &external_weight);
-    (void) ctx->GetAttr("_graph_parallel_option_path", &graph_parallel_option_path);
-    (void) ctx->GetAttr("_enable_graph_parallel", &enable_graph_parallel);
-    (void) ctx->GetAttr("_graph_slice", &graph_slice_mode);
-    (void) ctx->GetAttr("_compile_dynamic_mode", &compile_dynamic_mode);
-    (void) ctx->GetAttr("_shape_generalization_mode", &shape_generalization_mode);
-    (void) ctx->GetAttr("_graph_max_parallel_model_num", &graph_max_parallel_model_num);
+    (void)ctx->GetAttr("_stream_max_parallel_num", &stream_max_parallel_num);
+    (void)ctx->GetAttr("_ac_parallel_enable", &ac_parallel_enable);
+    (void)ctx->GetAttr("_quant_dumpable", &quant_dumpable);
+    (void)ctx->GetAttr("_is_tailing_optimization", &is_tailing_optimization);
+    (void)ctx->GetAttr("_op_select_implmode", &op_select_implmode);
+    (void)ctx->GetAttr("_optypelist_for_implmode", &optypelist_for_implmode);
+    (void)ctx->GetAttr("_buffer_optimize", &buffer_optimize);
+    (void)ctx->GetAttr("_enable_small_channel", &enable_small_channel);
+    (void)ctx->GetAttr("_fusion_switch_file", &fusion_switch_file);
+    (void)ctx->GetAttr("_enable_compress_weight", &enable_compress_weight);
+    (void)ctx->GetAttr("_compress_weight_conf", &compress_weight_conf);
+    (void)ctx->GetAttr("_session_device_id", &session_device_id);
+    (void)ctx->GetAttr("_modify_mixlist", &modify_mixlist);
+    (void)ctx->GetAttr("_op_precision_mode", &op_precision_mode);
+    (void)ctx->GetAttr("_graph_run_mode", &graph_run_mode);
+    (void)ctx->GetAttr("_hccl_timeout", &hccl_timeout);
+    (void)ctx->GetAttr("_HCCL_algorithm", &HCCL_algorithm);
+    (void)ctx->GetAttr("_atomic_clean_policy", &atomic_clean_policy);
+    (void)ctx->GetAttr("_memory_optimization_policy", &memory_optimization_policy);
+    (void)ctx->GetAttr("_static_memory_policy", &static_memory_policy);
+    (void)ctx->GetAttr("_variable_use_1g_huge_page", &variable_use_1g_huge_page);
+    (void)ctx->GetAttr("_topo_sorting_mode", &topo_sorting_mode);
+    (void)ctx->GetAttr("_insert_op_file", &insert_op_file);
+    (void)ctx->GetAttr("_resource_config_path", &resource_config_path);
+    (void)ctx->GetAttr("_dump_layer", &dump_layer);
+    (void)ctx->GetAttr("_external_weight", &external_weight);
+    (void)ctx->GetAttr("_graph_parallel_option_path", &graph_parallel_option_path);
+    (void)ctx->GetAttr("_enable_graph_parallel", &enable_graph_parallel);
+    (void)ctx->GetAttr("_graph_slice", &graph_slice_mode);
+    (void)ctx->GetAttr("_compile_dynamic_mode", &compile_dynamic_mode);
+    (void)ctx->GetAttr("_shape_generalization_mode", &shape_generalization_mode);
+    (void)ctx->GetAttr("_graph_max_parallel_model_num", &graph_max_parallel_model_num);
     if (ctx->GetAttr("_jit_compile", &jit_compile).ok()) {
       sess_options["jit_compile"] = jit_compile;
       sess_options["ge.jit_compile"] = jit_compile;
     }
-    (void) ctx->GetAttr("_graph_compiler_cache_dir", &graph_compiler_cache_dir);
-    (void) ctx->GetAttr("_input_batch_cpy", &input_batch_cpy);
-    (void) ctx->GetAttr("_aicore_num", &aicore_num);
-    (void) ctx->GetAttr("_all_tensor_not_empty", &all_tensor_not_empty);
-    (void) ctx->GetAttr("_auto_multistream_parallel_mode", &auto_multistream_parallel_mode);
-    (void) ctx->GetAttr("_oo_level", &oo_level);
-    (void) ctx->GetAttr("_optimization_switch", &optimization_switch);
+    (void)ctx->GetAttr("_graph_compiler_cache_dir", &graph_compiler_cache_dir);
+    (void)ctx->GetAttr("_input_batch_cpy", &input_batch_cpy);
+    (void)ctx->GetAttr("_aicore_num", &aicore_num);
+    (void)ctx->GetAttr("_all_tensor_not_empty", &all_tensor_not_empty);
+    (void)ctx->GetAttr("_auto_multistream_parallel_mode", &auto_multistream_parallel_mode);
+    (void)ctx->GetAttr("_oo_level", &oo_level);
+    (void)ctx->GetAttr("_optimization_switch", &optimization_switch);
   }
 
   // session options
@@ -764,50 +765,50 @@ std::map<std::string, std::string> NpuAttrs::GetInitOptions(const OpKernelConstr
   std::string optimization_switch;
 
   if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK()) {
-    (void) ctx->GetAttr("_precision_mode", &precision_mode);
-    (void) ctx->GetAttr("_precision_mode_v2", &precision_mode_v2);
-    (void) ctx->GetAttr("_auto_tune_mode", &auto_tune_mode);
-    (void) ctx->GetAttr("_graph_run_mode", &graph_run_mode);
-    (void) ctx->GetAttr("_op_debug_level", &op_debug_level);
-    (void) ctx->GetAttr("_enable_scope_fusion_passes", &enable_scope_fusion_passes);
-    (void) ctx->GetAttr("_enable_exception_dump", &enable_exception_dump);
-    (void) ctx->GetAttr("_aoe_mode", &aoe_mode);
-    (void) ctx->GetAttr("_work_path", &work_path);
-    (void) ctx->GetAttr("_op_compiler_cache_mode", &op_compiler_cache_mode);
-    (void) ctx->GetAttr("_op_compiler_cache_dir", &op_compiler_cache_dir);
-    (void) ctx->GetAttr("_debug_dir", &debug_dir);
-    (void) ctx->GetAttr("_hcom_multi_mode", &hcom_multi_mode);
-    (void) ctx->GetAttr("_distribute_config", &distribute_config);
-    (void) ctx->GetAttr("_modify_mixlist", &modify_mixlist);
-    (void) ctx->GetAttr("_fusion_switch_file", &fusion_switch_file);
-    (void) ctx->GetAttr("_op_precision_mode", &op_precision_mode);
-    (void) ctx->GetAttr("_op_select_implmode", &op_select_implmode);
-    (void) ctx->GetAttr("_optypelist_for_implmode", &optypelist_for_implmode);
-    (void) ctx->GetAttr("_device_type", &device_type);
-    (void) ctx->GetAttr("_soc_config", &soc_config);
-    (void) ctx->GetAttr("_hccl_timeout", &hccl_timeout);
-    (void) ctx->GetAttr("_op_wait_timeout", &op_wait_timeout);
-    (void) ctx->GetAttr("_op_execute_timeout", &op_execute_timeout);
-    (void) ctx->GetAttr("_HCCL_algorithm", &HCCL_algorithm);
-    (void) ctx->GetAttr("_customize_dtypes", &customize_dtypes);
-    (void) ctx->GetAttr("_op_debug_config", &op_debug_config);
-    (void) ctx->GetAttr("_graph_exec_timeout", &graph_exec_timeout);
-    (void) ctx->GetAttr("_static_memory_policy", &static_memory_policy);
-    (void) ctx->GetAttr("_variable_use_1g_huge_page", &variable_use_1g_huge_page);
-    (void) ctx->GetAttr("_logical_device_cluster_deploy_mode", &logical_device_cluster_deploy_mode);
-    (void) ctx->GetAttr("_logical_device_id", &logical_device_id);
-    (void) ctx->GetAttr("_model_deploy_mode", &model_deploy_mode);
-    (void) ctx->GetAttr("_model_deploy_devicelist", &model_deploy_devicelist);
-    (void) ctx->GetAttr("_dump_data", &dump_data);
-    (void) ctx->GetAttr("_aoe_config_file", &aoe_config_file);
-    (void) ctx->GetAttr("_stream_sync_timeout", &stream_sync_timeout);
-    (void) ctx->GetAttr("_event_sync_timeout", &event_sync_timeout);
-    (void) ctx->GetAttr("_export_compile_stat", &export_compile_stat);
-    (void) ctx->GetAttr("_aicore_num", &aicore_num);
-    (void) ctx->GetAttr("_oo_constant_folding", &oo_constant_folding);
-    (void) ctx->GetAttr("_input_batch_cpy", &input_batch_cpy);
-    (void) ctx->GetAttr("_oo_level", &oo_level);
-    (void) ctx->GetAttr("_optimization_switch", &optimization_switch);
+    (void)ctx->GetAttr("_precision_mode", &precision_mode);
+    (void)ctx->GetAttr("_precision_mode_v2", &precision_mode_v2);
+    (void)ctx->GetAttr("_auto_tune_mode", &auto_tune_mode);
+    (void)ctx->GetAttr("_graph_run_mode", &graph_run_mode);
+    (void)ctx->GetAttr("_op_debug_level", &op_debug_level);
+    (void)ctx->GetAttr("_enable_scope_fusion_passes", &enable_scope_fusion_passes);
+    (void)ctx->GetAttr("_enable_exception_dump", &enable_exception_dump);
+    (void)ctx->GetAttr("_aoe_mode", &aoe_mode);
+    (void)ctx->GetAttr("_work_path", &work_path);
+    (void)ctx->GetAttr("_op_compiler_cache_mode", &op_compiler_cache_mode);
+    (void)ctx->GetAttr("_op_compiler_cache_dir", &op_compiler_cache_dir);
+    (void)ctx->GetAttr("_debug_dir", &debug_dir);
+    (void)ctx->GetAttr("_hcom_multi_mode", &hcom_multi_mode);
+    (void)ctx->GetAttr("_distribute_config", &distribute_config);
+    (void)ctx->GetAttr("_modify_mixlist", &modify_mixlist);
+    (void)ctx->GetAttr("_fusion_switch_file", &fusion_switch_file);
+    (void)ctx->GetAttr("_op_precision_mode", &op_precision_mode);
+    (void)ctx->GetAttr("_op_select_implmode", &op_select_implmode);
+    (void)ctx->GetAttr("_optypelist_for_implmode", &optypelist_for_implmode);
+    (void)ctx->GetAttr("_device_type", &device_type);
+    (void)ctx->GetAttr("_soc_config", &soc_config);
+    (void)ctx->GetAttr("_hccl_timeout", &hccl_timeout);
+    (void)ctx->GetAttr("_op_wait_timeout", &op_wait_timeout);
+    (void)ctx->GetAttr("_op_execute_timeout", &op_execute_timeout);
+    (void)ctx->GetAttr("_HCCL_algorithm", &HCCL_algorithm);
+    (void)ctx->GetAttr("_customize_dtypes", &customize_dtypes);
+    (void)ctx->GetAttr("_op_debug_config", &op_debug_config);
+    (void)ctx->GetAttr("_graph_exec_timeout", &graph_exec_timeout);
+    (void)ctx->GetAttr("_static_memory_policy", &static_memory_policy);
+    (void)ctx->GetAttr("_variable_use_1g_huge_page", &variable_use_1g_huge_page);
+    (void)ctx->GetAttr("_logical_device_cluster_deploy_mode", &logical_device_cluster_deploy_mode);
+    (void)ctx->GetAttr("_logical_device_id", &logical_device_id);
+    (void)ctx->GetAttr("_model_deploy_mode", &model_deploy_mode);
+    (void)ctx->GetAttr("_model_deploy_devicelist", &model_deploy_devicelist);
+    (void)ctx->GetAttr("_dump_data", &dump_data);
+    (void)ctx->GetAttr("_aoe_config_file", &aoe_config_file);
+    (void)ctx->GetAttr("_stream_sync_timeout", &stream_sync_timeout);
+    (void)ctx->GetAttr("_event_sync_timeout", &event_sync_timeout);
+    (void)ctx->GetAttr("_export_compile_stat", &export_compile_stat);
+    (void)ctx->GetAttr("_aicore_num", &aicore_num);
+    (void)ctx->GetAttr("_oo_constant_folding", &oo_constant_folding);
+    (void)ctx->GetAttr("_input_batch_cpy", &input_batch_cpy);
+    (void)ctx->GetAttr("_oo_level", &oo_level);
+    (void)ctx->GetAttr("_optimization_switch", &optimization_switch);
   }
 
   std::lock_guard<std::mutex> lock(mutex_);
@@ -1056,28 +1057,28 @@ std::map<std::string, std::string> NpuAttrs::GetPassOptions(const OpKernelConstr
 
   if (ctx != nullptr && ctx->GetAttr("_NpuOptimizer", &npuOptimizer) == Status::OK()) {
     do_npu_optimizer = "1";
-    (void) ctx->GetAttr("_enable_data_pre_proc", &enable_dp);
+    (void)ctx->GetAttr("_enable_data_pre_proc", &enable_dp);
     if (ctx->GetAttr("_use_off_line", &use_off_line) == Status::OK()) {
-      (void) ctx->GetAttr("_mix_compile_mode", &mix_compile_mode);
-      (void) ctx->GetAttr("_iterations_per_loop", &iterations_per_loop);
-      (void) ctx->GetAttr("_lower_functional_ops", &lower_functional_ops);
+      (void)ctx->GetAttr("_mix_compile_mode", &mix_compile_mode);
+      (void)ctx->GetAttr("_iterations_per_loop", &iterations_per_loop);
+      (void)ctx->GetAttr("_lower_functional_ops", &lower_functional_ops);
       if (ctx->GetAttr("_job", &job) != Status::OK()) {
         job = "localhost";
       }
-      (void) ctx->GetAttr("_task_index", &task_index);
-      (void) ctx->GetAttr("_dynamic_input", &dynamic_input);
-      (void) ctx->GetAttr("_dynamic_graph_execute_mode", &dynamic_graph_execute_mode);
-      (void) ctx->GetAttr("_dynamic_inputs_shape_range", &dynamic_inputs_shape_range);
-      (void) ctx->GetAttr("_local_rank_id", &local_rank_id);
-      (void) ctx->GetAttr("_local_device_list", &local_device_list);
+      (void)ctx->GetAttr("_task_index", &task_index);
+      (void)ctx->GetAttr("_dynamic_input", &dynamic_input);
+      (void)ctx->GetAttr("_dynamic_graph_execute_mode", &dynamic_graph_execute_mode);
+      (void)ctx->GetAttr("_dynamic_inputs_shape_range", &dynamic_inputs_shape_range);
+      (void)ctx->GetAttr("_local_rank_id", &local_rank_id);
+      (void)ctx->GetAttr("_local_device_list", &local_device_list);
     }
-    (void) ctx->GetAttr("_in_out_pair_flag", &in_out_pair_flag);
-    (void) ctx->GetAttr("_in_out_pair", &in_out_pair);
-    (void) ctx->GetAttr("_frozen_variable", &frozen_variable);
-    (void) ctx->GetAttr("_variable_location", &variable_location);
-    (void) ctx->GetAttr("_accelerate_train_mode", &accelerate_train_mode);
-    (void) ctx->GetAttr("_graph_max_parallel_model_num", &graph_max_parallel_model_num);
-    (void) ctx->GetAttr("_shape_generalization_mode", &shape_generalization_mode);
+    (void)ctx->GetAttr("_in_out_pair_flag", &in_out_pair_flag);
+    (void)ctx->GetAttr("_in_out_pair", &in_out_pair);
+    (void)ctx->GetAttr("_frozen_variable", &frozen_variable);
+    (void)ctx->GetAttr("_variable_location", &variable_location);
+    (void)ctx->GetAttr("_accelerate_train_mode", &accelerate_train_mode);
+    (void)ctx->GetAttr("_graph_max_parallel_model_num", &graph_max_parallel_model_num);
+    (void)ctx->GetAttr("_shape_generalization_mode", &shape_generalization_mode);
   }
   // pass options
   pass_options["do_npu_optimizer"] = do_npu_optimizer;
@@ -2015,7 +2016,7 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
   std::string variable_location = "Device";
   std::string graph_slice_mode;
   std::string jit_compile;
-  int64_t input_fusion_size = 131072L; // default 128KB
+  int64_t input_fusion_size = 131072L;  // default 128KB
   std::string accelerate_train_mode;
   int32_t export_compile_stat = 1;
   std::string aicore_num;
@@ -2053,14 +2054,14 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       }
       if (params.count("input_fusion_size") > 0) {
         input_fusion_size = params.at("input_fusion_size").i();
-        constexpr int64_t max_input_fusion_size = 32 * 1024 * 1024LL; // 32MB
-        constexpr int64_t min_input_fusion_size = 0LL; // 0MB
+        constexpr int64_t max_input_fusion_size = 32 * 1024 * 1024LL;  // 32MB
+        constexpr int64_t min_input_fusion_size = 0LL;                 // 0MB
         if (input_fusion_size > max_input_fusion_size) {
           ADP_LOG(WARNING) << "input_fusion_size should not larger than: " << max_input_fusion_size << " Byte.";
           input_fusion_size = max_input_fusion_size;
         }
         if (input_fusion_size < min_input_fusion_size) {
-          ADP_LOG(WARNING) << "input_fusion_size should not less than: " << min_input_fusion_size  << " Byte.";
+          ADP_LOG(WARNING) << "input_fusion_size should not less than: " << min_input_fusion_size << " Byte.";
           input_fusion_size = min_input_fusion_size;
         }
       }
@@ -2201,8 +2202,8 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       }
       if (params.count("precision_mode_v2") > 0) {
         precision_mode_v2 = params.at("precision_mode_v2").s();
-        const static std::vector<std::string> kPrecisionModeV2List = {"fp16", "origin", "cube_fp16in_fp32out",
-                                                                      "mixed_float16", "mixed_bfloat16", "cube_hif8", "mixed_hif8"};
+        const static std::vector<std::string> kPrecisionModeV2List = {
+            "fp16", "origin", "cube_fp16in_fp32out", "mixed_float16", "mixed_bfloat16", "cube_hif8", "mixed_hif8"};
         NPU_REQUIRES_OK(CheckValueAllowed<std::string>("precision_mode_v2", precision_mode_v2, kPrecisionModeV2List));
         init_options_["precision_mode_v2"] = precision_mode_v2;
         init_options_["ge.exec.precision_mode_v2"] = precision_mode_v2;
@@ -2229,7 +2230,7 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       if (params.count("graph_max_parallel_model_num") > 0) {
         graph_max_parallel_model_num = params.at("graph_max_parallel_model_num").i();
         NPU_REQUIRES(graph_max_parallel_model_num > 0,
-            errors::Internal("graph_max_parallel_model_num should not be less than 1"));
+                     errors::Internal("graph_max_parallel_model_num should not be less than 1"));
       }
       if (params.count("lower_functional_ops") > 0) {
         lower_functional_ops = params.at("lower_functional_ops").b();
@@ -2294,12 +2295,11 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         enable_exception_dump = params.at("enable_exception_dump").i();
         const int64_t lite_exception_dump = 2L;
         const int64_t exception_dump_close = 0L;
-        if ((enable_exception_dump > lite_exception_dump) ||
-            (enable_exception_dump < exception_dump_close)) {
-          ADP_LOG(ERROR) << "enable_exception_dump should be one of 0, 1 and 2, which be: "
-              << enable_exception_dump << " now.";
-          LOG(ERROR) << "enable_exception_dump should be one of 0, 1 and 2, which be: "
-              << enable_exception_dump << " now.";
+        if ((enable_exception_dump > lite_exception_dump) || (enable_exception_dump < exception_dump_close)) {
+          ADP_LOG(ERROR) << "enable_exception_dump should be one of 0, 1 and 2, which be: " << enable_exception_dump
+                         << " now.";
+          LOG(ERROR) << "enable_exception_dump should be one of 0, 1 and 2, which be: " << enable_exception_dump
+                     << " now.";
           return errors::Internal("enable_exception_dump should be one of 0, 1 and 2.");
         }
       }
@@ -2426,53 +2426,47 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         bool check_precision_mode_v2 = false;
         if (params.count("precision_mode") > 0) {
           const std::string precision_mode = params.at("precision_mode").s();
-          check_precision_mode = ((precision_mode == "allow_mix_precision") ||
-              (precision_mode == "allow_mix_precision_fp16") ||
-              (precision_mode == "allow_mix_precision_bf16"));
+          check_precision_mode =
+              ((precision_mode == "allow_mix_precision") || (precision_mode == "allow_mix_precision_fp16") ||
+               (precision_mode == "allow_mix_precision_bf16"));
         } else if (params.count("precision_mode_v2") > 0) {
           const std::string precision_mode_v2 = params.at("precision_mode_v2").s();
           check_precision_mode_v2 = ((precision_mode_v2 == "mixed_float16") ||
-              (precision_mode_v2 == "mixed_bfloat16") || (precision_mode_v2 == "mixed_hif8"));
+                                     (precision_mode_v2 == "mixed_bfloat16") || (precision_mode_v2 == "mixed_hif8"));
         }
 
         if (check_precision_mode || check_precision_mode_v2) {
           modify_mixlist = params.at("modify_mixlist").s();
         } else if (params.count("precision_mode") > 0) {
-          ADP_LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure that precision_mode is assigned to "
-              << "'allow_mix_precision' or 'allow_mix_precision_fp16' or "
-              << "'allow_mix_precision_bf16'(if available).";
-          LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure that precision_mode is assigned to "
-              << "'allow_mix_precision' or 'allow_mix_precision_fp16' or "
-              << "'allow_mix_precision_bf16'(if available).";
+          ADP_LOG(ERROR) << "modify_mixlist is assigned, please ensure that precision_mode is assigned to "
+                         << "'allow_mix_precision' or 'allow_mix_precision_fp16' or "
+                         << "'allow_mix_precision_bf16'(if available).";
+          LOG(ERROR) << "modify_mixlist is assigned, please ensure that precision_mode is assigned to "
+                     << "'allow_mix_precision' or 'allow_mix_precision_fp16' or "
+                     << "'allow_mix_precision_bf16'(if available).";
           return errors::Internal(
               "modify_mixlist is assigned, please ensure that precision_mode is assigned to "
               "'allow_mix_precision' or 'allow_mix_precision_fp16' or "
               "'allow_mix_precision_bf16'(if available).");
         } else if (params.count("precision_mode_v2") > 0) {
-          ADP_LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure that precision_mode_v2 is assigned to "
-              << "'mixed_float16', 'mixed_hif8' or 'mixed_bfloat16'(if available).";
-          LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure that precision_mode_v2 is assigned to "
-              << "'mixed_float16', 'mixed_hif8' or 'mixed_bfloat16'(if available).";
+          ADP_LOG(ERROR) << "modify_mixlist is assigned, please ensure that precision_mode_v2 is assigned to "
+                         << "'mixed_float16', 'mixed_hif8' or 'mixed_bfloat16'(if available).";
+          LOG(ERROR) << "modify_mixlist is assigned, please ensure that precision_mode_v2 is assigned to "
+                     << "'mixed_float16', 'mixed_hif8' or 'mixed_bfloat16'(if available).";
           return errors::Internal(
               "modify_mixlist is assigned, please ensure that precision_mode_v2 is assigned to "
               "'mixed_float16', 'mixed_hif8' or 'mixed_bfloat16'(if available).");
         } else {
-          ADP_LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure precision_mode only can be assigned "
-              << "to 'allow_mix_precision' or 'allow_mix_precision_fp16' or "
-              << "'allow_mix_precision_bf16'(if available),"
-              << "precision_mode_v2 only can be assigned to 'mixed_float16', 'mixed_hif8' or "
-              << "'mixed_bfloat16'(if available).";
-          LOG(ERROR)
-              << "modify_mixlist is assigned, please ensure precision_mode only can be assigned "
-              << "to 'allow_mix_precision' or 'allow_mix_precision_fp16' or "
-              << "'allow_mix_precision_bf16'(if available),"
-              << "precision_mode_v2 only can be assigned to 'mixed_float16', 'mixed_hif8' or "
-              << "'mixed_bfloat16'(if available).";
+          ADP_LOG(ERROR) << "modify_mixlist is assigned, please ensure precision_mode only can be assigned "
+                         << "to 'allow_mix_precision' or 'allow_mix_precision_fp16' or "
+                         << "'allow_mix_precision_bf16'(if available),"
+                         << "precision_mode_v2 only can be assigned to 'mixed_float16', 'mixed_hif8' or "
+                         << "'mixed_bfloat16'(if available).";
+          LOG(ERROR) << "modify_mixlist is assigned, please ensure precision_mode only can be assigned "
+                     << "to 'allow_mix_precision' or 'allow_mix_precision_fp16' or "
+                     << "'allow_mix_precision_bf16'(if available),"
+                     << "precision_mode_v2 only can be assigned to 'mixed_float16', 'mixed_hif8' or "
+                     << "'mixed_bfloat16'(if available).";
           return errors::Internal(
               "modify_mixlist is assigned, please ensure precision_mode only can be assigned "
               "to 'allow_mix_precision' or 'allow_mix_precision_fp16' or "
@@ -2482,12 +2476,9 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         }
       }
       if ((params.count("precision_mode") > 0) && (params.count("precision_mode_v2") > 0)) {
-          ADP_LOG(ERROR)
-              << "'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.";
-          LOG(ERROR)
-              << "'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.";
-          return errors::Internal(
-              "'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.");
+        ADP_LOG(ERROR) << "'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.";
+        LOG(ERROR) << "'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.";
+        return errors::Internal("'precision_mode' and 'precision_mode_v2' can not be assigned at the same time.");
       }
       if (params.count("op_precision_mode") > 0) {
         op_precision_mode = params.at("op_precision_mode").s();
@@ -2568,10 +2559,8 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       if (params.count("dump_data") > 0) {
         dump_data = params.at("dump_data").s();
         if ((dump_data != "tensor") && (dump_data != "stats")) {
-          ADP_LOG(ERROR) << "dump_data should be 'tensor' or 'stats', which be: "
-              << dump_data << " now.";
-          LOG(ERROR) << "dump_data should be 'tensor' or 'stats', which be: "
-              << dump_data << " now.";
+          ADP_LOG(ERROR) << "dump_data should be 'tensor' or 'stats', which be: " << dump_data << " now.";
+          LOG(ERROR) << "dump_data should be 'tensor' or 'stats', which be: " << dump_data << " now.";
           return errors::Internal("dump_data should be 'tensor' or 'stats'.");
         }
       }
@@ -2600,8 +2589,7 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
           (params.at("export_compile_stat").value_case() == AttrValue::ValueCase::kI)) {
         export_compile_stat = params.at("export_compile_stat").i();
         const static std::vector<int32_t> kExportCompileStatList = {0, 1, 2};
-        NPU_REQUIRES_OK(CheckValueAllowed<int32_t>("export_compile_stat", export_compile_stat,
-                                                   kExportCompileStatList));
+        NPU_REQUIRES_OK(CheckValueAllowed<int32_t>("export_compile_stat", export_compile_stat, kExportCompileStatList));
         init_options_["export_compile_stat"] = std::to_string(export_compile_stat);
         init_options_["ge.exportCompileStat"] = std::to_string(export_compile_stat);
       }
@@ -2643,21 +2631,19 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       }
 
       if (params.count("jit_compile") > 0) {
-        const static std::vector<std::string> kJitCompileList = {"true",
-                                                                 "false",
-                                                                 "auto"};
+        const static std::vector<std::string> kJitCompileList = {"true", "false", "auto"};
         NPU_REQUIRES(params.at("jit_compile").value_case() == params.at("jit_compile").kS,
                      errors::InvalidArgument("The data type of jit_compile is invalid. Expected string type."));
         NPU_REQUIRES_OK(CheckValueAllowed<std::string>("jit_compile", params.at("jit_compile").s(), kJitCompileList));
         jit_compile = ConvertToGeJitValue(params.at("jit_compile").s());
       } else {
-        jit_compile = "2"; // 2 means auto
+        jit_compile = "2";  // 2 means auto
       }
       if (params.count("shape_generalization_mode") > 0) {
         const static std::vector<std::string> kShapeGeneralizationModeList = {"STRICT", "FULL", "ADAPTIVE"};
-        NPU_REQUIRES(params.at("shape_generalization_mode").value_case() == params.at("shape_generalization_mode").kS,
-                     errors::InvalidArgument(
-                         "The data type of shape_generalization_mode is invalid. Expected string type."));
+        NPU_REQUIRES(
+            params.at("shape_generalization_mode").value_case() == params.at("shape_generalization_mode").kS,
+            errors::InvalidArgument("The data type of shape_generalization_mode is invalid. Expected string type."));
         NPU_REQUIRES_OK(CheckValueAllowed<std::string>(
             "shape_generalization_mode", params.at("shape_generalization_mode").s(), kShapeGeneralizationModeList));
         shape_generalization_mode = params.at("shape_generalization_mode").s();

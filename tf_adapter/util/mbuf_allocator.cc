@@ -24,14 +24,11 @@
 
 namespace tensorflow {
 namespace {
-enum class BuffType {
-  kBuffTypeNormal,
-  kBuffTypeMbufData
-};
+enum class BuffType { kBuffTypeNormal, kBuffTypeMbufData };
 struct BuffTypeInfo {
   BuffType type;
 };
-} // namespace
+}  // namespace
 static mutex mtx;
 #ifdef TF_VERSION_TF2
 static bool isMbufInit TF_GUARDED_BY(mtx) = false;
@@ -49,14 +46,14 @@ bool IsMbufAllocatorEnabled() {
 }
 
 Status MemGroupInit(string &group_name) {
-  rtMemGrpConfig_t cfg {};
+  rtMemGrpConfig_t cfg{};
   auto ret = rtMemGrpCreate(group_name.c_str(), &cfg);
   if (ret != RT_ERROR_NONE) {
     return errors::Internal("Call rtMemGrpCreate failed, ret:", ret, ", group_name:", group_name.c_str());
   }
   ADP_LOG(INFO) << "rtMemGrpCreate success.";
 
-  rtMemGrpShareAttr_t attr {};
+  rtMemGrpShareAttr_t attr{};
   memset_s(&attr, sizeof(rtMemGrpShareAttr_t), 0, sizeof(rtMemGrpShareAttr_t));
   attr.admin = 1;
   attr.alloc = 1;
@@ -104,127 +101,126 @@ Status MbufInit() {
 
 namespace {
 class MbufAllocator : public Allocator {
-public:
-    MbufAllocator() = default;
-    ~MbufAllocator() override = default;
-    string Name() override { return "MbufAllocator"; }
+ public:
+  MbufAllocator() = default;
+  ~MbufAllocator() override = default;
+  string Name() override {
+    return "MbufAllocator";
+  }
 
-    void *AllocateRaw(size_t alignment, size_t num_bytes) override {
-      ADP_LOG(INFO) << "MbufAllocator AllocateRaw begin, size:" << num_bytes;
-      void *mbuf_data = nullptr;
-      auto rt_error = rtBuffAlloc(num_bytes + kRuntimeTensorDescSize, &mbuf_data);
-      if (rt_error != RT_ERROR_NONE) {
-        ADP_LOG(ERROR) << "Call rtBuffAlloc with size:" << num_bytes << " failed, ret:" << rt_error;
-        return nullptr;
-      }
-
-      ADP_LOG(INFO) << "MbufAllocator AllocateRaw success, size:" << num_bytes
-                    << ", mbuf_data:" << mbuf_data
-                    << ", return ptr: " << PtrToDataAddr(mbuf_data, kRuntimeTensorDescSize);
-      return PtrToDataAddr(mbuf_data, kRuntimeTensorDescSize);
+  void *AllocateRaw(size_t alignment, size_t num_bytes) override {
+    ADP_LOG(INFO) << "MbufAllocator AllocateRaw begin, size:" << num_bytes;
+    void *mbuf_data = nullptr;
+    auto rt_error = rtBuffAlloc(num_bytes + kRuntimeTensorDescSize, &mbuf_data);
+    if (rt_error != RT_ERROR_NONE) {
+      ADP_LOG(ERROR) << "Call rtBuffAlloc with size:" << num_bytes << " failed, ret:" << rt_error;
+      return nullptr;
     }
 
-    void *AllocateRaw(size_t alignment, size_t num_bytes,
-                      const AllocationAttributes &allocation_attr) override {
-      return AllocateRaw(alignment, num_bytes);
-    }
+    ADP_LOG(INFO) << "MbufAllocator AllocateRaw success, size:" << num_bytes << ", mbuf_data:" << mbuf_data
+                  << ", return ptr: " << PtrToDataAddr(mbuf_data, kRuntimeTensorDescSize);
+    return PtrToDataAddr(mbuf_data, kRuntimeTensorDescSize);
+  }
 
-    void DeallocateRaw(void *ptr) override {
-      if ((ptr == nullptr) || !IsBuffTypeNomal(DataAddrToPtr(ptr, kRuntimeTensorDescSize))) {
-        return;
-      }
-      ADP_LOG(INFO) << "MbufAllocator DeallocateRaw begin, ptr:" << ptr;
-      auto free_ret = rtBuffFree(DataAddrToPtr(ptr, kRuntimeTensorDescSize));
-      if (free_ret != RT_ERROR_NONE) {
-        ADP_LOG(ERROR) << "rtBuffFree failed, ret:" << free_ret << ", ptr:" << ptr;
-        return;
-      }
-      ADP_LOG(INFO) << "MbufAllocator DeallocateRaw success, ptr:" << ptr
-                    << ", ptr-1024:" << DataAddrToPtr(ptr, kRuntimeTensorDescSize);
-    }
+  void *AllocateRaw(size_t alignment, size_t num_bytes, const AllocationAttributes &allocation_attr) override {
+    return AllocateRaw(alignment, num_bytes);
+  }
 
-    static void *PtrToDataAddr(void *ptr, int64_t offset) {
-      return reinterpret_cast<void *>(reinterpret_cast<uint8_t*>(ptr) + offset);
+  void DeallocateRaw(void *ptr) override {
+    if ((ptr == nullptr) || !IsBuffTypeNomal(DataAddrToPtr(ptr, kRuntimeTensorDescSize))) {
+      return;
     }
+    ADP_LOG(INFO) << "MbufAllocator DeallocateRaw begin, ptr:" << ptr;
+    auto free_ret = rtBuffFree(DataAddrToPtr(ptr, kRuntimeTensorDescSize));
+    if (free_ret != RT_ERROR_NONE) {
+      ADP_LOG(ERROR) << "rtBuffFree failed, ret:" << free_ret << ", ptr:" << ptr;
+      return;
+    }
+    ADP_LOG(INFO) << "MbufAllocator DeallocateRaw success, ptr:" << ptr
+                  << ", ptr-1024:" << DataAddrToPtr(ptr, kRuntimeTensorDescSize);
+  }
 
-    static void *DataAddrToPtr(void *ptr, int64_t offset) {
-      return reinterpret_cast<void *>(reinterpret_cast<uint8_t*>(ptr) - offset);
-    }
+  static void *PtrToDataAddr(void *ptr, int64_t offset) {
+    return reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(ptr) + offset);
+  }
 
-private:
-    bool IsBuffTypeNomal(const void *ptr) const {
-      BuffTypeInfo buff_type_info{};
-      uint32_t len = static_cast<uint32_t>(sizeof(BuffTypeInfo));
-      (void) rtBuffGetInfo(RT_BUFF_GET_MBUF_BUILD_INFO, &ptr, sizeof(void *), &buff_type_info, &len);
-      (void) len;
-      return buff_type_info.type == BuffType::kBuffTypeNormal;
-    }
-    TF_DISALLOW_COPY_AND_ASSIGN(MbufAllocator);
+  static void *DataAddrToPtr(void *ptr, int64_t offset) {
+    return reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(ptr) - offset);
+  }
+
+ private:
+  bool IsBuffTypeNomal(const void *ptr) const {
+    BuffTypeInfo buff_type_info{};
+    uint32_t len = static_cast<uint32_t>(sizeof(BuffTypeInfo));
+    (void)rtBuffGetInfo(RT_BUFF_GET_MBUF_BUILD_INFO, &ptr, sizeof(void *), &buff_type_info, &len);
+    (void)len;
+    return buff_type_info.type == BuffType::kBuffTypeNormal;
+  }
+  TF_DISALLOW_COPY_AND_ASSIGN(MbufAllocator);
 };
 
 class MbufAllocatorFactory : public AllocatorFactory {
-public:
-    Allocator *CreateAllocator() override {
-      if (MbufInit() != Status::OK()) {
-        return nullptr;
-      }
-      return new MbufAllocator;
+ public:
+  Allocator *CreateAllocator() override {
+    if (MbufInit() != Status::OK()) {
+      return nullptr;
     }
-    SubAllocator *CreateSubAllocator(int numa_node) override {
-      if (MbufInit() != Status::OK()) {
-        return nullptr;
-      }
-      return new CPUSubAllocator(new MbufAllocator);
+    return new MbufAllocator;
+  }
+  SubAllocator *CreateSubAllocator(int numa_node) override {
+    if (MbufInit() != Status::OK()) {
+      return nullptr;
     }
+    return new CPUSubAllocator(new MbufAllocator);
+  }
 
-private:
-    class CPUSubAllocator : public SubAllocator {
-    public:
-        explicit CPUSubAllocator(MbufAllocator *cpu_allocator)
-            : SubAllocator({}, {}), cpu_allocator_(cpu_allocator) {
-        }
+ private:
+  class CPUSubAllocator : public SubAllocator {
+   public:
+    explicit CPUSubAllocator(MbufAllocator *cpu_allocator) : SubAllocator({}, {}), cpu_allocator_(cpu_allocator) {}
 #ifdef TF_VERSION_TF2
-        void* Alloc(size_t alignment, size_t num_bytes,
-                    size_t* bytes_received) override {
-          *bytes_received = num_bytes;
-          return cpu_allocator_->AllocateRaw(alignment, num_bytes);
-        }
+    void *Alloc(size_t alignment, size_t num_bytes, size_t *bytes_received) override {
+      *bytes_received = num_bytes;
+      return cpu_allocator_->AllocateRaw(alignment, num_bytes);
+    }
 
-        bool SupportsCoalescing() const override { return false; }
+    bool SupportsCoalescing() const override {
+      return false;
+    }
 #else
-        void *Alloc(size_t alignment, size_t num_bytes) override {
-          return cpu_allocator_->AllocateRaw(alignment, num_bytes);
-        }
+    void *Alloc(size_t alignment, size_t num_bytes) override {
+      return cpu_allocator_->AllocateRaw(alignment, num_bytes);
+    }
 #endif
-        void Free(void *ptr, size_t num_bytes) override {
-          cpu_allocator_->DeallocateRaw(ptr);
-        }
+    void Free(void *ptr, size_t num_bytes) override {
+      cpu_allocator_->DeallocateRaw(ptr);
+    }
 
-    private:
-        MbufAllocator *cpu_allocator_;
-    };
+   private:
+    MbufAllocator *cpu_allocator_;
+  };
 };
 
 class MbufAllocatorFactoryRegistration {
-public:
-    MbufAllocatorFactoryRegistration(const char *file, int line, const string &name, int priority) {
-      if (IsMbufAllocatorEnabled()) {
-        AllocatorFactory *factory = new MbufAllocatorFactory;
-        AllocatorFactoryRegistry::singleton()->Register(file, line, name, priority, factory);
-      }
+ public:
+  MbufAllocatorFactoryRegistration(const char *file, int line, const string &name, int priority) {
+    if (IsMbufAllocatorEnabled()) {
+      AllocatorFactory *factory = new MbufAllocatorFactory;
+      AllocatorFactoryRegistry::singleton()->Register(file, line, name, priority, factory);
     }
+  }
 };
 
-#define REGISTER_MEM_MBUF_ALLOCATOR(name, priority)                                                                    \
+#define REGISTER_MEM_MBUF_ALLOCATOR(name, priority) \
   REGISTER_MEM_MBUF_ALLOCATOR_UNIQ_HELPER(__COUNTER__, __FILE__, __LINE__, name, priority)
 
-#define REGISTER_MEM_MBUF_ALLOCATOR_UNIQ_HELPER(ctr, file, line, name, priority)                                       \
+#define REGISTER_MEM_MBUF_ALLOCATOR_UNIQ_HELPER(ctr, file, line, name, priority) \
   REGISTER_MEM_MBUF_ALLOCATOR_UNIQ(ctr, file, line, name, priority)
 
-#define REGISTER_MEM_MBUF_ALLOCATOR_UNIQ(ctr, file, line, name, priority)                                              \
+#define REGISTER_MEM_MBUF_ALLOCATOR_UNIQ(ctr, file, line, name, priority) \
   static MbufAllocatorFactoryRegistration allocator_factory_reg_##ctr(file, line, name, priority)
 
 // if env ENABLE_MBUF_ALLOCATOR is set
 REGISTER_MEM_MBUF_ALLOCATOR("DefaultMBUFAllocator", 110);
 }  // namespace
-} // tensorflow
+}  // namespace tensorflow

@@ -15,7 +15,7 @@
 namespace tensorflow {
 namespace grappler {
 class GradientFusionOptimizerTest : public testing::Test {
-protected:
+ protected:
   void SetUp() {}
   void TearDown() {}
 };
@@ -26,5 +26,5 @@ TEST_F(GradientFusionOptimizerTest, RunOptimizer) {
   const Status status = GradFusionOptimizer().Optimize(nullptr, item, &output);
   EXPECT_EQ(status, Status::OK());
 }
-} // end grappler
-} // end tensorflow
+}  // namespace grappler
+}  // namespace tensorflow

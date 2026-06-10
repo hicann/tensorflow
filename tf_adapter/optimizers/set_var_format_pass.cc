@@ -56,8 +56,8 @@ Status SetVarFormatPass::AssignApplyMomentumInNodesFormat(const Node *node, cons
     REQUIRES_NOT_NULL(in_edge);
     Node *src_node = in_edge->src();
     REQUIRES_NOT_NULL(src_node);
-    bool is_momentum_op = (in_edge->dst_input() == 1) &&
-        ((src_node->type_string() == KEY_VAR_HANDLE_OP_VALUE) || (src_node->type_string() == KEY_VARIABLE_V2_VALUE));
+    bool is_momentum_op = (in_edge->dst_input() == 1) && ((src_node->type_string() == KEY_VAR_HANDLE_OP_VALUE) ||
+                                                          (src_node->type_string() == KEY_VARIABLE_V2_VALUE));
     if (is_momentum_op) {
       AddNodeVarFormat(*src_node, var_format);
 
@@ -78,9 +78,9 @@ Status SetVarFormatPass::GetFormat(const Node *node, string &format) const {
     REQUIRES_NOT_NULL(out);
     Node *dst_node = out->dst();
     REQUIRES_NOT_NULL(dst_node);
-    bool is_fz_node = (out->dst_input() == 1) &&
-        ((dst_node->type_string() == KEY_CONV2D_OP_VALUE) || (dst_node->type_string() == KEY_MATMUL_OP_VALUE) ||
-         (dst_node->type_string() == KEY_CONV2D_BACKPROP_INPUT_VALUE));
+    bool is_fz_node = (out->dst_input() == 1) && ((dst_node->type_string() == KEY_CONV2D_OP_VALUE) ||
+                                                  (dst_node->type_string() == KEY_MATMUL_OP_VALUE) ||
+                                                  (dst_node->type_string() == KEY_CONV2D_BACKPROP_INPUT_VALUE));
     if (is_fz_node) {
       format = KEY_FZ_ATTR_VALUE;
       return Status::OK();
@@ -113,7 +113,7 @@ Status SetVarFormatPass::AssignFormatToVarOutNodes(Node *node) const {
     REQUIRES_NOT_NULL(dst_node);
     AddNodeVarFormat(*dst_node, var_format);
     bool is_apply_momentum_node = dst_node->type_string() == KEY_APPLY_MOMENTUM_OP_VALUE ||
-        dst_node->type_string() == KEY_RESOURCE_APPLY_MOMENTUM_OP_VALUE;
+                                  dst_node->type_string() == KEY_RESOURCE_APPLY_MOMENTUM_OP_VALUE;
     if (is_apply_momentum_node) {
       apply_momentum = dst_node;
     }
@@ -149,7 +149,7 @@ Status SetVarFormatPass::Run(const GraphOptimizationPassOptions &options) {
   for (Node *node : graph_in->op_nodes()) {
     if ((node != nullptr) &&
         ((node->type_string() == KEY_VAR_HANDLE_OP_VALUE) || (node->type_string() == KEY_VARIABLE_V2_VALUE))) {
-      (void) AssignFormatToVarOutNodes(node);
+      (void)AssignFormatToVarOutNodes(node);
     }
   }
   if (kDumpGraph) {

@@ -31,7 +31,7 @@ class SetVarMaxSizePassTest : public testing::Test {
   }
 
   void InitGraph(const string &graph_def_path) {
-    char trusted_path[MMPA_MAX_PATH] = { "\0" };
+    char trusted_path[MMPA_MAX_PATH] = {"\0"};
     if (mmRealPath(graph_def_path.c_str(), trusted_path, MMPA_MAX_PATH) != EN_OK) {
       LOG(ERROR) << "Get real path failed.";
       return;
@@ -41,9 +41,11 @@ class SetVarMaxSizePassTest : public testing::Test {
     original_ = CanonicalGraphString(graph_.get());
   }
 
-  static bool IncludeNode(const Node *n) { return n->IsOp(); }
+  static bool IncludeNode(const Node *n) {
+    return n->IsOp();
+  }
 
-  static string EdgeId(const Node* n, int index) {
+  static string EdgeId(const Node *n, int index) {
     if (index == 0) {
       return n->type_string();
     } else if (index == Graph::kControlSlot) {
@@ -53,8 +55,8 @@ class SetVarMaxSizePassTest : public testing::Test {
     }
   }
 
-  string CanonicalGraphString(Graph* g) {
-    for (Node* n : g->nodes()) {
+  string CanonicalGraphString(Graph *g) {
+    for (Node *n : g->nodes()) {
       if (IncludeNode(n)) {
         if (n->assigned_device_name().empty()) {
           n->set_assigned_device_name("/job:localhost/replica:0/task:0/device:CPU:0");
@@ -64,10 +66,9 @@ class SetVarMaxSizePassTest : public testing::Test {
     }
 
     std::vector<string> edges;
-    for (const Edge* e : g->edges()) {
+    for (const Edge *e : g->edges()) {
       if (IncludeNode(e->src()) && IncludeNode(e->dst())) {
-        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->",
-                                        EdgeId(e->dst(), e->dst_input())));
+        edges.push_back(strings::StrCat(EdgeId(e->src(), e->src_output()), "->", EdgeId(e->dst(), e->dst_input())));
       }
     }
     // Canonicalize
@@ -81,10 +82,9 @@ class SetVarMaxSizePassTest : public testing::Test {
     std::unique_ptr<Graph> *ug = &graph_;
     GraphOptimizationPassOptions options;
     SessionOptions session_options;
-    session_options.config.mutable_graph_options()
-      ->mutable_optimizer_options()
-      ->set_do_function_inlining(true);
-    auto *custom_config = session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
+    session_options.config.mutable_graph_options()->mutable_optimizer_options()->set_do_function_inlining(true);
+    auto *custom_config =
+        session_options.config.mutable_graph_options()->mutable_rewrite_options()->add_custom_optimizers();
     custom_config->set_name("NpuOptimizer");
     AttrValue job = AttrValue();
     job.set_s("localhost");
@@ -103,10 +103,13 @@ class SetVarMaxSizePassTest : public testing::Test {
     return result;
   }
 
-  const string &OriginalGraph() const { return original_; }
+  const string &OriginalGraph() const {
+    return original_;
+  }
 
   std::unique_ptr<Graph> graph_;
   string original_;
+
  protected:
   virtual void SetUp() {}
   virtual void TearDown() {}
@@ -118,5 +121,5 @@ TEST_F(SetVarMaxSizePassTest, MaxSizeTest) {
   std::string target_graph = "Placeholder->DecodeJpeg";
   EXPECT_EQ(DoRunSetVarMaxSizePassTest(), target_graph);
 }
-} // end namespace
-} // end tensorflow
+}  // end namespace
+}  // namespace tensorflow

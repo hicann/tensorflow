@@ -22,8 +22,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -41,9 +40,9 @@ TEST(GetShapeOpTest, TestGetShape) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   GetShapeOP<int> get_shape(context);
   OpKernelContext *ctx = nullptr;
   get_shape.Compute(ctx);
@@ -59,14 +58,11 @@ TEST(GetShapeOpTest, TestGetShapeShapeInference) {
   TF_CHECK_OK(OpRegistry::Global()->LookUp("GetShape", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
-  TF_CHECK_OK(NodeDefBuilder("dummy", &op_def)
-                  .Attr("T", DT_FLOAT)
-                  .Input(FakeInputStub(DT_FLOAT))
-                  .Finalize(&def));
+  TF_CHECK_OK(NodeDefBuilder("dummy", &op_def).Attr("T", DT_FLOAT).Input(FakeInputStub(DT_FLOAT)).Finalize(&def));
   shape_inference::InferenceContext c(0, &def, op_def, {TShape({3, 4})}, {}, {}, {});
   std::vector<shape_inference::ShapeHandle> input_shapes;
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[2]", c.DebugString(c.output(0)));
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

@@ -14,13 +14,13 @@
 namespace tensorflow {
 template <typename T>
 class GetShapeOP : public OpKernel {
-public:
-  explicit GetShapeOP(OpKernelConstruction* ctx) : OpKernel(ctx) {
+ public:
+  explicit GetShapeOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
     LOG(INFO) << "new GetShapeOP";
   }
   ~GetShapeOP() override = default;
-  void Compute(OpKernelContext* ctx) override {
-    (void) ctx;
+  void Compute(OpKernelContext *ctx) override {
+    (void)ctx;
     LOG(INFO) << "compute in GetShapeOP";
   }
   bool IsExpensive() override {

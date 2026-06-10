@@ -55,7 +55,7 @@ Status SetVarMaxSizePass::AssignMaxSizeToVarOutNodes(const Node *node) const {
         ADP_LOG(DEBUG) << "The node : " << dst_node->name().c_str() << " had set max size value!";
         continue;
       }
-      (void) SetMaxSizeListNodes(dst_node);
+      (void)SetMaxSizeListNodes(dst_node);
     }
   }
   return Status::OK();
@@ -119,8 +119,8 @@ Status SetVarMaxSizePass::Run(const GraphOptimizationPassOptions &options) {
 
   for (Node *node : graph_in->op_nodes()) {
     if ((node != nullptr) && (node->type_string() == "Placeholder")) {
-      (void) AssignMaxSizeToVarOutNodes(node);
-      (void) AssignConstToVarOutNodes(node, const_input_names);
+      (void)AssignMaxSizeToVarOutNodes(node);
+      (void)AssignConstToVarOutNodes(node, const_input_names);
     }
   }
   return Status::OK();

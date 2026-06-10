@@ -12,7 +12,7 @@
 #include "tensorflow/core/framework/register_types.h"
 
 namespace tensorflow {
-template<typename T>
+template <typename T>
 class ProdForceSeAOP : public OpKernel {
  public:
   explicit ProdForceSeAOP(OpKernelConstruction *ctx) : OpKernel(ctx) {
@@ -20,7 +20,7 @@ class ProdForceSeAOP : public OpKernel {
   }
   ~ProdForceSeAOP() override = default;
   void Compute(OpKernelContext *ctx) override {
-    (void) ctx;
+    (void)ctx;
     LOG(INFO) << "in ProdForceSeAOP";
   }
   bool IsExpensive() override {

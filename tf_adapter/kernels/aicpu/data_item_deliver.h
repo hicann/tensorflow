@@ -50,8 +50,7 @@ constexpr int32_t k50000us = 50000;
 
 class DataItemDeliver {
  public:
-  DataItemDeliver(int local_rank_id, int device_id,
-                  const std::vector<uint32_t> &local_device_list,
+  DataItemDeliver(int local_rank_id, int device_id, const std::vector<uint32_t> &local_device_list,
                   const std::string &channel_name);
   Status ParallelInitSocketClient();
   void ParallelSendDataVec(std::vector<tdt::DataItem> &data_items);
@@ -62,8 +61,7 @@ class DataItemDeliver {
  private:
   Status InitSocketClient(int device_id);
   Status SendDataVec(std::vector<tdt::DataItem> &data_items, int fd) const;
-  Status CreateSockAddr(struct sockaddr_un &sock_addr, const char *path,
-                        int device_id) const;
+  Status CreateSockAddr(struct sockaddr_un &sock_addr, const char *path, int device_id) const;
   uint64_t Recv(uint8_t *buffer, size_t data_len) const;
   template <typename T>
   Status GetDataLen(T &value, size_t size) const;
@@ -84,13 +82,12 @@ class DataItemDeliver {
   std::string channel_name_;
 };
 
-DataItemDeliver::DataItemDeliver(int local_rank_id, int device_id,
-                                 const std::vector<uint32_t> &local_device_list,
+DataItemDeliver::DataItemDeliver(int local_rank_id, int device_id, const std::vector<uint32_t> &local_device_list,
                                  const std::string &channel_name)
-  : local_rank_id_(local_rank_id),
-    device_id_(device_id),
-    local_device_list_(local_device_list),
-    channel_name_(channel_name) {
+    : local_rank_id_(local_rank_id),
+      device_id_(device_id),
+      local_device_list_(local_device_list),
+      channel_name_(channel_name) {
   if (device_id_ > 0) {
     // slave has no parallel operation
     return;
@@ -113,8 +110,7 @@ DataItemDeliver::~DataItemDeliver() {
 Status DataItemDeliver::ParallelInitSocketClient() {
   std::vector<std::future<Status>> init_status;
   for (size_t i = 1; i < local_device_list_.size(); i++) {
-    init_status.emplace_back(
-      pools_->Enqueue(&DataItemDeliver::InitSocketClient, this, i));
+    init_status.emplace_back(pools_->Enqueue(&DataItemDeliver::InitSocketClient, this, i));
   }
   for (auto &&result : init_status) {
     if (result.get() != Status::OK()) {
@@ -134,8 +130,7 @@ Status DataItemDeliver::InitSocketClient(int device_id) {
     return errors::Internal("Failed to open unix domain socket.");
   }
   struct sockaddr_un peer_addr = {};
-  if (CreateSockAddr(peer_addr, SOCKET_SERVER_PATH, device_id) !=
-      Status::OK()) {
+  if (CreateSockAddr(peer_addr, SOCKET_SERVER_PATH, device_id) != Status::OK()) {
     ADP_LOG(ERROR) << "Failed to create socket.";
     LOG(ERROR) << "Failed to create socket.";
     close(fd);
@@ -144,8 +139,7 @@ Status DataItemDeliver::InitSocketClient(int device_id) {
   int try_times = 0;
   int ret = 0;
   while (true) {
-    ret = connect(fd, reinterpret_cast<struct sockaddr *>(&peer_addr),
-                  sizeof(peer_addr));
+    ret = connect(fd, reinterpret_cast<struct sockaddr *>(&peer_addr), sizeof(peer_addr));
     if (ret >= 0) {
       break;
     }
@@ -173,8 +167,7 @@ Status DataItemDeliver::InitSocketServer() {
     LOG(ERROR) << "Failed to open unix domain socket.";
     return errors::Internal("Failed to open unix domain socket.");
   }
-  if (CreateSockAddr(local_addr_, SOCKET_SERVER_PATH, static_cast<int>(device_id_)) !=
-      Status::OK()) {
+  if (CreateSockAddr(local_addr_, SOCKET_SERVER_PATH, static_cast<int>(device_id_)) != Status::OK()) {
     ADP_LOG(ERROR) << "Failed to create socket.";
     LOG(ERROR) << "Failed to create socket.";
     close(fd);
@@ -182,27 +175,21 @@ Status DataItemDeliver::InitSocketServer() {
   }
   unlink(local_addr_.sun_path);
   socklen_t addr_size = sizeof(local_addr_);
-  if (bind(fd, reinterpret_cast<struct sockaddr *>(&local_addr_),
-           addr_size) < 0) {
-    ADP_LOG(ERROR) << "Bind fd failed:" << strerror(errno) << "(errno:" << errno
-                   << ")";
-    LOG(ERROR) << "Bind fd failed:" << strerror(errno) << "(errno:" << errno
-               << ")";
+  if (bind(fd, reinterpret_cast<struct sockaddr *>(&local_addr_), addr_size) < 0) {
+    ADP_LOG(ERROR) << "Bind fd failed:" << strerror(errno) << "(errno:" << errno << ")";
+    LOG(ERROR) << "Bind fd failed:" << strerror(errno) << "(errno:" << errno << ")";
     close(fd);
     return errors::Internal("Bind fd failed.");
   }
   if (listen(fd, QLEN) < 0) {
-    ADP_LOG(ERROR) << "Listen fd failed:" << strerror(errno)
-                   << "(errno:" << errno << ")";
-    LOG(ERROR) << "Listen fd failed:" << strerror(errno) << "(errno:" << errno
-               << ")";
+    ADP_LOG(ERROR) << "Listen fd failed:" << strerror(errno) << "(errno:" << errno << ")";
+    LOG(ERROR) << "Listen fd failed:" << strerror(errno) << "(errno:" << errno << ")";
     close(fd);
     return errors::Internal("Listen fd failed.");
   }
   int try_times = 0;
   while (true) {
-    server_fd_ = accept(fd, reinterpret_cast<struct sockaddr *>(&local_addr_),
-                        &addr_size);
+    server_fd_ = accept(fd, reinterpret_cast<struct sockaddr *>(&local_addr_), &addr_size);
     if (server_fd_ != -1) {
       break;
     }
@@ -215,8 +202,7 @@ Status DataItemDeliver::InitSocketServer() {
       return errors::Internal("Failed to accept server.");
     }
   }
-  ADP_LOG(INFO) << "Socket server connect success, path:"
-                << local_addr_.sun_path;
+  ADP_LOG(INFO) << "Socket server connect success, path:" << local_addr_.sun_path;
   close(fd);
   return Status::OK();
 }
@@ -296,16 +282,14 @@ uint64_t DataItemDeliver::Recv(uint8_t *buffer, size_t data_len) const {
     if (ret == 0) {
       // if master first reach max step ,socket will be close. correspond to
       // SocketSend WARNING
-      ADP_LOG(WARNING) << "Client connect closed, server_fd:" << server_fd_
-                       << ", channel_name:" << channel_name_;
-      LOG(WARNING) << "Client connect closed, server_fd:" << server_fd_
-                   << ", channel_name:" << channel_name_;
+      ADP_LOG(WARNING) << "Client connect closed, server_fd:" << server_fd_ << ", channel_name:" << channel_name_;
+      LOG(WARNING) << "Client connect closed, server_fd:" << server_fd_ << ", channel_name:" << channel_name_;
       return 0;
     } else if (ret < 0) {
-      ADP_LOG(ERROR) << "Recv data failed,error:" << strerror(errno)
-                     << ", (errno:" << errno << "), server_fd:" << server_fd_;
-      LOG(ERROR) << "Recv data failed,error:" << strerror(errno)
-                 << ", (errno:" << errno << "), server_fd:" << server_fd_;
+      ADP_LOG(ERROR) << "Recv data failed,error:" << strerror(errno) << ", (errno:" << errno
+                     << "), server_fd:" << server_fd_;
+      LOG(ERROR) << "Recv data failed,error:" << strerror(errno) << ", (errno:" << errno
+                 << "), server_fd:" << server_fd_;
       return 0;
     }
     buf_pos += static_cast<uint64_t>(ret);
@@ -331,16 +315,13 @@ Status DataItemDeliver::GetTensorType(tdt::TdtDataType &data_type) {
   return Status::OK();
 }
 
-Status DataItemDeliver::GetTensorData(uint64_t &data_len,
-                                      std::shared_ptr<void> &data_ptr) {
+Status DataItemDeliver::GetTensorData(uint64_t &data_len, std::shared_ptr<void> &data_ptr) {
   TF_RETURN_IF_ERROR(GetDataLen(data_len, UINT64_SIZE));
   void *buff = malloc(data_len);
   if (buff == nullptr) {
-    ADP_LOG(ERROR) << "Malloc data failed, size:" << data_len
-                   << ", device_id:" << device_id_
+    ADP_LOG(ERROR) << "Malloc data failed, size:" << data_len << ", device_id:" << device_id_
                    << ", channel_name:" << channel_name_;
-    LOG(ERROR) << "Malloc data failed, size:" << data_len
-               << ", device_id:" << device_id_
+    LOG(ERROR) << "Malloc data failed, size:" << data_len << ", device_id:" << device_id_
                << ", channel_name:" << channel_name_;
     return errors::Internal("Malloc data failed.");
   }
@@ -366,11 +347,9 @@ Status DataItemDeliver::GetTensorString(std::string &str) {
   TF_RETURN_IF_ERROR(GetDataLen(size, UINT32_SIZE));
   void *buff = malloc(size);
   if (buff == nullptr) {
-    ADP_LOG(ERROR) << "Malloc string failed, size:" << size
-                   << ", device_id:" << device_id_
+    ADP_LOG(ERROR) << "Malloc string failed, size:" << size << ", device_id:" << device_id_
                    << ", channel_name:" << channel_name_;
-    LOG(ERROR) << "Malloc string failed, size:" << size
-               << ", device_id:" << device_id_
+    LOG(ERROR) << "Malloc string failed, size:" << size << ", device_id:" << device_id_
                << ", channel_name:" << channel_name_;
     return errors::Internal("Malloc string failed.");
   }
@@ -392,24 +371,21 @@ Status DataItemDeliver::GetTensorString(std::string &str) {
   return Status::OK();
 }
 
-void DataItemDeliver::ParallelSendDataVec(
-  std::vector<tdt::DataItem> &data_items) {
+void DataItemDeliver::ParallelSendDataVec(std::vector<tdt::DataItem> &data_items) {
   // only master need send
   if (local_rank_id_ != 0) {
     return;
   }
   std::vector<std::future<Status>> init_status;
   for (int fd : client_fd_list_) {
-    init_status.emplace_back(
-      pools_->Enqueue(&DataItemDeliver::SendDataVec, this, data_items, fd));
+    init_status.emplace_back(pools_->Enqueue(&DataItemDeliver::SendDataVec, this, data_items, fd));
   }
   for (auto &&result : init_status) {
     result.get();
   }
 }
 
-Status DataItemDeliver::SendDataVec(std::vector<tdt::DataItem> &data_items,
-                                    int fd) const {
+Status DataItemDeliver::SendDataVec(std::vector<tdt::DataItem> &data_items, int fd) const {
   uint32_t vector_size = data_items.size();
   // message in buffer:    [head][item][item]...[head][item][item]...
   // send head info
@@ -461,12 +437,10 @@ Status DataItemDeliver::SendDataVec(std::vector<tdt::DataItem> &data_items,
   }
   return Status::OK();
 }
-Status DataItemDeliver::CreateSockAddr(struct sockaddr_un &sock_addr,
-  const char *path, int device_id) const {
+Status DataItemDeliver::CreateSockAddr(struct sockaddr_un &sock_addr, const char *path, int device_id) const {
   sock_addr.sun_family = AF_UNIX;
   int len = 0;
-  if ((len = snprintf_s(sock_addr.sun_path, sizeof(sock_addr.sun_path),
-                        sizeof(sock_addr.sun_path) - 1, "%s%s%d", path,
+  if ((len = snprintf_s(sock_addr.sun_path, sizeof(sock_addr.sun_path), sizeof(sock_addr.sun_path) - 1, "%s%s%d", path,
                         channel_name_.c_str(), device_id)) == -1) {
     ADP_LOG(ERROR) << "Set sun_path failed.";
     LOG(ERROR) << "Set sun_path failed.";
@@ -474,17 +448,14 @@ Status DataItemDeliver::CreateSockAddr(struct sockaddr_un &sock_addr,
   }
   return Status::OK();
 }
-void DataItemDeliver::SocketSend(struct iovec temp_items[], int vector_size,
-                                 int fd) const {
+void DataItemDeliver::SocketSend(struct iovec temp_items[], int vector_size, int fd) const {
   int sendn = writev(fd, temp_items, vector_size);
   // if salve first reach max step, socket will be closed, correspond to
   // Recv WARNING
   if (sendn < 0) {
-    ADP_LOG(WARNING) << "Writev socket failed:" << strerror(errno)
-                     << "(errno:" << errno << "), return value:" << sendn
+    ADP_LOG(WARNING) << "Writev socket failed:" << strerror(errno) << "(errno:" << errno << "), return value:" << sendn
                      << ", fd:" << fd << ", channel_name:" << channel_name_;
-    LOG(WARNING) << "Writev socket failed:" << strerror(errno)
-                 << "(errno:" << errno << "), return value:" << sendn
+    LOG(WARNING) << "Writev socket failed:" << strerror(errno) << "(errno:" << errno << "), return value:" << sendn
                  << ", fd:" << fd << ", channel_name:" << channel_name_;
   }
 }

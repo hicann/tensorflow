@@ -79,7 +79,7 @@ Status OmNodePreparePass::ProcessGraph(std::unique_ptr<Graph> &graph, FunctionLi
     const std::string pbtxt_path = GetDumpPath() + "TF_BeforeOmPrepare_" + std::to_string(index) + ".pbtxt";
     tensorflow::GraphDef def;
     graph->ToGraphDef(&def);
-    (void) WriteTextProto(Env::Default(), pbtxt_path, def);
+    (void)WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
   ADP_LOG(INFO) << "Prepare for om graph as " << om_nodes.size() << " om nodes found";
@@ -116,7 +116,7 @@ Status OmNodePreparePass::ProcessGraph(std::unique_ptr<Graph> &graph, FunctionLi
     const std::string pbtxt_path = GetDumpPath() + "TF_AfterOmPrepare_" + std::to_string(index) + ".pbtxt";
     tensorflow::GraphDef def;
     graph->ToGraphDef(&def);
-    (void) WriteTextProto(Env::Default(), pbtxt_path, def);
+    (void)WriteTextProto(Env::Default(), pbtxt_path, def);
   }
 
   return Status::OK();

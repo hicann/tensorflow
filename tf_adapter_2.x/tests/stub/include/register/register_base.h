@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-  const char *aclGetCustomOpLibPath();
+const char* aclGetCustomOpLibPath();
 
 #ifdef __cplusplus
 }
@@ -26,5 +26,5 @@ extern "C" {
 namespace ge {
 void SetIsNeedTruePath(bool isNeed);
 const char* GetCustomPathStub();
-}
-#endif //TENSORFLOW_ADAPTER_REGISTER_BASE_H
+}  // namespace ge
+#endif  // TENSORFLOW_ADAPTER_REGISTER_BASE_H

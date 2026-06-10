@@ -17,22 +17,22 @@
 
 namespace ge {
 class AscendString {
-public:
-    AscendString() = default;
-    ~AscendString() = default;
-    inline explicit AscendString(const char *name);
-    inline explicit AscendString(const char *name, size_t length);
-    inline const char *GetString() const;
-    inline size_t GetLength() const;
-    inline bool operator<(const AscendString &d) const;
-    inline bool operator>(const AscendString &d) const;
-    inline bool operator<=(const AscendString &d) const;
-    inline bool operator>=(const AscendString &d) const;
-    inline bool operator==(const AscendString &d) const;
-    inline bool operator!=(const AscendString &d) const;
+ public:
+  AscendString() = default;
+  ~AscendString() = default;
+  inline explicit AscendString(const char *name);
+  inline explicit AscendString(const char *name, size_t length);
+  inline const char *GetString() const;
+  inline size_t GetLength() const;
+  inline bool operator<(const AscendString &d) const;
+  inline bool operator>(const AscendString &d) const;
+  inline bool operator<=(const AscendString &d) const;
+  inline bool operator>=(const AscendString &d) const;
+  inline bool operator==(const AscendString &d) const;
+  inline bool operator!=(const AscendString &d) const;
 
-private:
-    std::shared_ptr<std::string> name_;
+ private:
+  std::shared_ptr<std::string> name_;
 };
 
 inline AscendString::AscendString(const char *name) {
@@ -130,5 +130,5 @@ inline bool AscendString::operator!=(const AscendString &d) const {
   }
   return (*name_ != *(d.name_));
 }
-}
+}  // namespace ge
 #endif  // INC_EXTERNAL_GRAPH_ASCEND_STRING_H_

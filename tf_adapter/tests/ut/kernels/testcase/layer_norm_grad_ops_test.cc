@@ -22,8 +22,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -41,9 +40,9 @@ TEST(LayerNormGradOpTest, TestLayerNormGrad) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   LayerNormGradOp layer_norm_grad(context);
   OpKernelContext *ctx = nullptr;
   layer_norm_grad.Compute(ctx);
@@ -67,15 +66,14 @@ TEST(LayerNormGradOpTest, TestLayerNormGradShapeInference) {
                   .Input(FakeInputStub(DT_FLOAT))
                   .Input(FakeInputStub(DT_FLOAT))
                   .Finalize(&def));
-  shape_inference::InferenceContext c(0, &def, op_def,
-                                      {TShape({16, 32}), TShape({16, 32}), TShape({16, 1}),
-                                       TShape({16, 1}), TShape({32})},
-                                      {}, {}, {});
+  shape_inference::InferenceContext c(
+      0, &def, op_def, {TShape({16, 32}), TShape({16, 32}), TShape({16, 1}), TShape({16, 1}), TShape({32})}, {}, {},
+      {});
   std::vector<shape_inference::ShapeHandle> input_shapes;
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[16,32]", c.DebugString(c.output(0)));
   ASSERT_EQ("[32]", c.DebugString(c.output(1)));
   ASSERT_EQ("[32]", c.DebugString(c.output(2)));
 }
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

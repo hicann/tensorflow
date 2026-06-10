@@ -28,8 +28,7 @@ PartialTensorShape TShape(std::initializer_list<int64> dims) {
 }
 
 FakeInputFunctor FakeInputStub(DataType dt) {
-  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def,
-              NodeDefBuilder *builder) {
+  return [dt](const OpDef &op_def, int in_index, const NodeDef &node_def, NodeDefBuilder *builder) {
     char c = 'a' + (in_index % 26);
     string in_node = string(&c, 1);
     builder->Input(in_node, 0, dt);
@@ -47,9 +46,9 @@ TEST(NPUGetFloatStatusV2OpTest, TestNPUGetFloatStatusV2) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   NpuGetFloatStatusV2Op npugetfloatstatusv2(context);
   OpKernelContext *ctx = nullptr;
   npugetfloatstatusv2.Compute(ctx);
@@ -70,9 +69,9 @@ TEST(NPUClearFloatStatusV2OpTest, TestNPUClearFloatStatusV2) {
   DeviceBase *device = new DeviceBase(Env::Default());
   NodeDef *node_def = new NodeDef();
   OpDef *op_def = new OpDef();
-  OpKernelConstruction *context = new OpKernelConstruction(
-      DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types,
-      input_memory_types, output_types, output_memory_types, 1, nullptr);
+  OpKernelConstruction *context =
+      new OpKernelConstruction(DEVICE_CPU, device, nullptr, node_def, op_def, nullptr, input_types, input_memory_types,
+                               output_types, output_memory_types, 1, nullptr);
   NpuClearFloatStatusV2Op npuclearfloatstatusv2(context);
   OpKernelContext *ctx = nullptr;
   npuclearfloatstatusv2.Compute(ctx);
@@ -88,12 +87,11 @@ TEST(NPUGetFloatStatusV2OpTest, TestNPUGetFloatStatusV2OShapeInference) {
   TF_CHECK_OK(OpRegistry::Global()->LookUp("NpuGetFloatStatusV2", &reg));
   OpDef op_def = reg->op_def;
   NodeDef def;
-  TF_CHECK_OK(NodeDefBuilder("dummy", &op_def)
-                  .Finalize(&def));
+  TF_CHECK_OK(NodeDefBuilder("dummy", &op_def).Finalize(&def));
   shape_inference::InferenceContext c(0, &def, op_def, {TShape({0})}, {}, {}, {});
   TF_CHECK_OK(reg->shape_inference_fn(&c));
   ASSERT_EQ("[8]", c.DebugString(c.output(0)));
 }
 
-} // namespace
-} // namespace tensorflow
+}  // namespace
+}  // namespace tensorflow

@@ -65,18 +65,18 @@
     }                                        \
   } while (0)
 
-#define NPU_CTX_REQUIRES_GE_OK(CTX, PREFIX, ...)                           \
-  do {                                                                     \
-    ge::Status _status = (__VA_ARGS__);                                    \
-    if (TF_PREDICT_FALSE(_status != ge::SUCCESS)) {                        \
-      std::string err_msg(ge::GEGetErrorMsgV2().GetString());              \
-      if (err_msg.empty()) {                                               \
-        err_msg = "<unknown error> code:" + std::to_string(_status);       \
-      }                                                                    \
-      CTX->status = tensorflow::errors::Internal(PREFIX, ":\n", err_msg);  \
-      LOG(ERROR) << CTX->status.ToString();                                \
-      return;                                                              \
-    }                                                                      \
+#define NPU_CTX_REQUIRES_GE_OK(CTX, PREFIX, ...)                          \
+  do {                                                                    \
+    ge::Status _status = (__VA_ARGS__);                                   \
+    if (TF_PREDICT_FALSE(_status != ge::SUCCESS)) {                       \
+      std::string err_msg(ge::GEGetErrorMsgV2().GetString());             \
+      if (err_msg.empty()) {                                              \
+        err_msg = "<unknown error> code:" + std::to_string(_status);      \
+      }                                                                   \
+      CTX->status = tensorflow::errors::Internal(PREFIX, ":\n", err_msg); \
+      LOG(ERROR) << CTX->status.ToString();                               \
+      return;                                                             \
+    }                                                                     \
   } while (0)
 
 #define NPU_CTX_REQUIRES_GE_OK_RETURN(CTX, PREFIX, EXP, RET)                \

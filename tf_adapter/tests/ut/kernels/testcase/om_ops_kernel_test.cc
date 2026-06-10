@@ -78,11 +78,11 @@ class LoadAndExecuteOmTest : public testing::Test {
     NodeDefBuilder::NodeOut input2("input1", 1, DT_FLOAT);
     NodeDefBuilder::NodeOut var_input("model_data", 2, DT_STRING);
     auto status = tensorflow::NodeDefBuilder("om", "LoadAndExecuteOm")
-                          .Input(gtl::ArraySlice<NodeDefBuilder::NodeOut>{input1, input2})
-                          .Input(var_input)
-                          .Attr("Tin", DataTypeVector{DT_FLOAT, DT_FLOAT})
-                          .Attr("output_dtypes", DataTypeVector{DT_FLOAT})
-                          .Finalize(&def);
+                      .Input(gtl::ArraySlice<NodeDefBuilder::NodeOut>{input1, input2})
+                      .Input(var_input)
+                      .Attr("Tin", DataTypeVector{DT_FLOAT, DT_FLOAT})
+                      .Attr("output_dtypes", DataTypeVector{DT_FLOAT})
+                      .Finalize(&def);
     if (!status.ok()) {
       return status;
     }

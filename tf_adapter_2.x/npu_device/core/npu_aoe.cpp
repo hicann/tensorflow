@@ -39,8 +39,8 @@ tensorflow::Status NpuAoe::RunAoeTuning(NpuDevice &device, TFE_Context *context,
     ge_graph.SetNeedIteration(false);
     ge_graph_[graph_id] = ge_graph;
   } else {
-   ge_graph = iter->second;
-   DLOG() << "Get ge graph cache of graph id: " << graph_id;
+    ge_graph = iter->second;
+    DLOG() << "Get ge graph cache of graph id: " << graph_id;
   }
 
   // set tuning graph
@@ -84,8 +84,7 @@ tensorflow::Status NpuAoe::AoeTuningInitialize(const std::string &work_path, con
 
   std::map<ge::AscendString, ge::AscendString> global_options;
   (void)global_options.emplace(ge::AscendString("work_path"), ge::AscendString(work_path.c_str()));
-  (void)global_options.emplace(ge::AscendString("job_type"),
-                               ge::AscendString(job_type.c_str()));
+  (void)global_options.emplace(ge::AscendString("job_type"), ge::AscendString(job_type.c_str()));
   auto ret = aoe_func_.aoe_initialize(global_options);
   NPU_REQUIRES(ret == Aoe::AOE_SUCCESS, tensorflow::errors::Internal("exec aoe initialize func failed"));
 

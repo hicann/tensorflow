@@ -12,7 +12,8 @@
 #define TENSORFLOW_UTILS_PROFILER_INTERFACE_H_
 #include <string>
 
-const std::string ProfilerStart(const std::string &level, const std::string &aic_metrics, const std::string &output_path);
+const std::string ProfilerStart(const std::string &level, const std::string &aic_metrics,
+                                const std::string &output_path);
 
 const std::string ProfilerStop();
 
