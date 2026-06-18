@@ -1797,17 +1797,18 @@ Status GeOp::BuildGraphDef(FunctionLibraryDefinition &flib_def, const std::vecto
     return ret;
   }
 
+  std::vector<Node *> dynamic_shape_nodes;
   bool is_set_dynamic_config = IsDynamicConfig();
   if (is_set_dynamic_config) {
     jit_compile_ = "1";
-    BuildShapeNodeAndCacheArgNodes(graph);
+    BuildShapeNodeAndCacheArgNodes(graph, dynamic_shape_nodes);
   }
 
   NPU_REQUIRES_OK(ProcessForDiffNodeTypes(graph, is_initialize, is_allreduce));
 
   // set input_shape to dynamic nodes shape desc
   if (is_set_dynamic_config) {
-    ret = ChangeInputsShapeDesc();
+    ret = ChangeInputsShapeDesc(dynamic_shape_nodes);
     if (!ret.ok()) {
       ADP_LOG(ERROR) << "[GEOP] ChangeInputsShapeDesc failed, " << ret.error_message();
       LOG(ERROR) << "[GEOP] ChangeInputsShapeDesc failed, " << ret.error_message();
@@ -1905,7 +1906,7 @@ Status GeOp::ParseOnnxGraphOpAttr(Node *&node) const {
   return Status::OK();
 }
 
-void GeOp::BuildShapeNodeAndCacheArgNodes(Graph &graph) {
+void GeOp::BuildShapeNodeAndCacheArgNodes(Graph &graph, std::vector<Node *> &dynamic_shape_nodes) {
   if (kIsHeterogeneous) {
     ADP_LOG(INFO) << "Is heterogeneous, no need to build shape node and cache arg nodes.";
     return;
@@ -1914,7 +1915,7 @@ void GeOp::BuildShapeNodeAndCacheArgNodes(Graph &graph) {
   for (Node *node : graph.nodes()) {
     // add shape node to get getnext node real shape
     if (dynamic_node_type == "0" && node->type_string() == "IteratorGetNext") {
-      dynamic_shape_nodes_.emplace_back(node);
+      dynamic_shape_nodes.emplace_back(node);
       ADP_LOG(INFO) << "push in dynamic shape nodes, node: " << node->name() << ", type: " << node->type_string();
       std::set<int32_t> out_index;
       for (auto out_edge : node->out_edges()) {
@@ -1944,22 +1945,22 @@ void GeOp::BuildShapeNodeAndCacheArgNodes(Graph &graph) {
     if (node->type_string() == "_Arg") {
       if (node->name().find("IteratorGetNext_") != std::string::npos) {
         if (dynamic_node_type == "0") {
-          dynamic_shape_nodes_.emplace_back(node);
+          dynamic_shape_nodes.emplace_back(node);
           ADP_LOG(INFO) << "push in dynamic shape nodes, node : " << node->name() << ", type : " << node->type_string();
         }
       } else {
         if (dynamic_node_type == "1") {
-          dynamic_shape_nodes_.emplace_back(node);
+          dynamic_shape_nodes.emplace_back(node);
           ADP_LOG(INFO) << "push in dynamic shape nodes, node: " << node->name() << ", type: " << node->type_string();
         }
       }
     }
   }
   // sort dynamic nodes to match input_shapes
-  std::sort(dynamic_shape_nodes_.begin(), dynamic_shape_nodes_.end(), CmpVecValue);
+  std::sort(dynamic_shape_nodes.begin(), dynamic_shape_nodes.end(), CmpVecValue);
 }
 
-Status GeOp::ChangeInputsShapeDesc() {
+Status GeOp::ChangeInputsShapeDesc(std::vector<Node *> &dynamic_shape_nodes) {
   if (kIsHeterogeneous) {
     ADP_LOG(INFO) << "Is heterogeneous, no need to change inputs shape desc.";
     return Status::OK();
@@ -1968,28 +1969,28 @@ Status GeOp::ChangeInputsShapeDesc() {
   std::string input_shapes = graph_options_["ge.inputShape"];
   Split(input_shapes, result, ";");  // e.g. result:["data:2,3", "data1:3,4"]
 
-  if (dynamic_shape_nodes_.size() == 1U && dynamic_shape_nodes_[0]->type_string() == "IteratorGetNext") {
-    ADP_LOG(INFO) << "[GEOP] Change " << dynamic_shape_nodes_[0]->name() << " shape desc.";
-    if (dynamic_shape_nodes_[0]->num_outputs() != static_cast<int32>(result.size())) {
+  if (dynamic_shape_nodes.size() == 1U && dynamic_shape_nodes[0]->type_string() == "IteratorGetNext") {
+    ADP_LOG(INFO) << "[GEOP] Change " << dynamic_shape_nodes[0]->name() << " shape desc.";
+    if (dynamic_shape_nodes[0]->num_outputs() != static_cast<int32>(result.size())) {
       return errors::InvalidArgument("input_shape is not match inputs num in graph");
     }
-    NodeDef &node_def = const_cast<NodeDef &>(dynamic_shape_nodes_[0]->def());
+    NodeDef &node_def = const_cast<NodeDef &>(dynamic_shape_nodes[0]->def());
     AttrValue &output_tensor_descs = (*node_def.mutable_attr())[OUTPUT_DESC];
-    for (int32 i = 0; i < dynamic_shape_nodes_[0]->num_outputs(); ++i) {
+    for (int32 i = 0; i < dynamic_shape_nodes[0]->num_outputs(); ++i) {
       AttrValue attr_shape_value;
       attr_shape_value.set_type(DT_INT32);
       SetShapesToOutputDesc(result, i, attr_shape_value);
       (*output_tensor_descs.mutable_list()->mutable_func(i)->mutable_attr())[SERIALIZE_SHAPE] = attr_shape_value;
     }
   } else {
-    if (!dynamic_shape_nodes_.empty()) {
-      if (dynamic_shape_nodes_.size() != result.size()) {
+    if (!dynamic_shape_nodes.empty()) {
+      if (dynamic_shape_nodes.size() != result.size()) {
         return errors::InvalidArgument("input_shape is not match inputs num in graph");
       }
     }
-    for (size_t i = 0U; i < dynamic_shape_nodes_.size(); ++i) {
-      ADP_LOG(INFO) << "[GEOP] Change " << dynamic_shape_nodes_[i]->name() << " shape desc.";
-      NodeDef &node_def = const_cast<NodeDef &>(dynamic_shape_nodes_[i]->def());
+    for (size_t i = 0U; i < dynamic_shape_nodes.size(); ++i) {
+      ADP_LOG(INFO) << "[GEOP] Change " << dynamic_shape_nodes[i]->name() << " shape desc.";
+      NodeDef &node_def = const_cast<NodeDef &>(dynamic_shape_nodes[i]->def());
       AttrValue &output_tensor_descs = (*node_def.mutable_attr())[OUTPUT_DESC];
       AttrValue attr_shape_value;
       attr_shape_value.set_type(DT_INT32);

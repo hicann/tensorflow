@@ -141,9 +141,9 @@ class GeOp : public AsyncOpKernel {
   void SetShapesToOutputDesc(const std::vector<std::string> &input_shapes, const int &index,
                              AttrValue &attr_shape_value) const;
 
-  void BuildShapeNodeAndCacheArgNodes(Graph &graph);
+  void BuildShapeNodeAndCacheArgNodes(Graph &graph, std::vector<Node *> &dynamic_shape_nodes);
 
-  Status ChangeInputsShapeDesc();
+  Status ChangeInputsShapeDesc(std::vector<Node *> &dynamic_shape_nodes);
 
   void AnalyzeInputDesc(bool need_collect_shapes, void *tensor_ptr, ge::Tensor &input, ge::DataType type,
                         std::vector<std::string> &input_shapes) const;
@@ -221,7 +221,6 @@ class GeOp : public AsyncOpKernel {
   std::map<int, TensorShape> outputs_shape_;
   std::string is_train_graph_;
   void *handle_;
-  std::vector<Node *> dynamic_shape_nodes_;
   std::string dynamic_input_;
   std::string compile_dynamic_mode_;
   std::string shape_generalization_mode_{"STRICT"};
