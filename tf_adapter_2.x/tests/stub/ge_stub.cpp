@@ -9,10 +9,27 @@
  */
 
 #include "npu_parser.h"
+#include <cstring>
 #include "ge/ge_api.h"
 #include "ge/ge_api_wrapper.h"
 
 namespace ge {
+namespace {
+graphStatus g_get_type_status = GRAPH_SUCCESS;
+std::string g_node_type = "Data";
+bool g_host_tensor_set = false;
+}  // namespace
+
+void ConfigureGNodeStub(graphStatus get_type_status, const std::string &node_type) {
+  g_get_type_status = get_type_status;
+  g_node_type = node_type;
+  g_host_tensor_set = false;
+}
+
+bool IsHostTensorSet() {
+  return g_host_tensor_set;
+}
+
 Graph GraphUtilsEx::CreateGraphFromComputeGraph(const ge::ComputeGraphPtr compute_graph) {
   Graph graph;
   graph.graph = compute_graph->graph;
@@ -102,6 +119,23 @@ Status Session::RunGraphAsync(uint32_t graphId, const std::vector<ge::Tensor> &i
 }
 
 bool Session::IsGraphNeedRebuild(uint32_t graphId) { return graph_need_rebuild_[graphId]; }
+
+graphStatus GNode::GetType(AscendString &type) const {
+  if (g_get_type_status == GRAPH_SUCCESS) {
+    type = AscendString(g_node_type.c_str());
+  }
+  return g_get_type_status;
+}
+
+graphStatus GNode::SetAttr(const AscendString &name, bool &attr_value) const {
+  const char *attr_name = name.GetString();
+  g_host_tensor_set = (attr_name != nullptr) && (std::strcmp(attr_name, "_host_tensor") == 0) && attr_value;
+  return GRAPH_SUCCESS;
+}
+
+std::vector<GNode> Graph::GetDirectNode() const {
+  return {GNode()};
+}
 
 size_t ComputeGraph::GetAllNodesSize() const { return graph->num_op_nodes(); }
 size_t ComputeGraph::GetInputSize() const { return 1U; }

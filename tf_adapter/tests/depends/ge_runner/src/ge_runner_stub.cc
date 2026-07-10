@@ -9,6 +9,7 @@
  */
 
 #include "ge_stub.h"
+#include <cstring>
 #include "callback_executor.h"
 #include "ge/ge_api_wrapper.h"
 #include "ge/ge_ir_build.h"
@@ -19,6 +20,22 @@ extern "C" const char *aclGetCustomOpLibPath() {
 
 namespace ge {
 std::string g_custon_path;
+namespace {
+graphStatus g_get_type_status = GRAPH_SUCCESS;
+std::string g_node_type = "Data";
+bool g_host_tensor_set = false;
+}  // namespace
+
+void ConfigureGNodeStub(graphStatus get_type_status, const std::string &node_type) {
+  g_get_type_status = get_type_status;
+  g_node_type = node_type;
+  g_host_tensor_set = false;
+}
+
+bool IsHostTensorSet() {
+  return g_host_tensor_set;
+}
+
 void SetCustomPathStub(std::string path) {
   g_custon_path = path;
 }
@@ -220,11 +237,28 @@ void Graph::SetNeedIteration(bool need_iteration) {}
 
 GNode::GNode() {}
 
+graphStatus GNode::GetType(AscendString &type) const {
+  if (g_get_type_status == GRAPH_SUCCESS) {
+    type = AscendString(g_node_type.c_str());
+  }
+  return g_get_type_status;
+}
+
+graphStatus GNode::SetAttr(const AscendString &name, bool &attr_value) const {
+  const char *attr_name = name.GetString();
+  g_host_tensor_set = (attr_name != nullptr) && (std::strcmp(attr_name, "_host_tensor") == 0) && attr_value;
+  return GRAPH_SUCCESS;
+}
+
 std::vector<GNode> Graph::GetAllNodes() const {
   std::vector<GNode> res;
   GNode node;
   res.push_back(node);
   return res;
+}
+
+std::vector<GNode> Graph::GetDirectNode() const {
+  return GetAllNodes();
 }
 
 graphStatus aclgrphParseONNX(const char *model_file, const std::map<ge::AscendString, ge::AscendString> &parser_params,

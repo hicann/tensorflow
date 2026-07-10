@@ -25,6 +25,7 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <cstring>
 #include <limits>
 #include <numeric>
 
@@ -74,6 +75,22 @@ Status FunctionalizeControlFlow(Graph *graph, FunctionLibraryDefinition *library
 #else
 Status FunctionalizeControlFlow(Graph *graph, FunctionLibraryDefinition *library);
 #endif
+
+void MarkDataNodesAsHostTensor(ge::Graph &graph) {
+  for (ge::GNode &node : graph.GetDirectNode()) {
+    ge::AscendString node_type;
+    if (node.GetType(node_type) != ge::GRAPH_SUCCESS) {
+      continue;
+    }
+    const char *type = node_type.GetString();
+    if ((type != nullptr) && (std::strcmp(type, "Data") == 0)) {
+      ge::AscendString attr_name("_host_tensor");
+      bool is_host_tensor = true;
+      (void)node.SetAttr(attr_name, is_host_tensor);
+    }
+  }
+}
+
 namespace {
 const std::string ATTR_NAME_CONST_INPUT_NAME = "_const_input";
 const std::string kAutoRecompute = "auto";
@@ -104,7 +121,6 @@ const std::unordered_set<std::string> valid_mode_values = {kModeValueStep, kMode
 const std::map<GeOp::FastValue, std::string> fast_value_2_precision_mode_v2 = {
     {GeOp::FastValue::kfast, "mixed_float16"}, {GeOp::FastValue::kfast1, "mixed_bfloat16"}};
 const std::unordered_set<std::string> supported_origin_precision_mode_v2 = {"origin", ""};
-
 using geDataUniquePtr = std::unique_ptr<uint8_t[], std::function<void(uint8_t *)>>;
 
 class NpuHostFixedAllocator : public tensorflow::Allocator, public tensorflow::core::RefCounted {
@@ -1128,6 +1144,7 @@ Status GeOp::AddGraph(OpKernelContext *ctx, const uint32_t &graph_id) {
   ADP_LOG(INFO) << "Graph options: ";
   NpuAttrs::LogOptions(graph_options);
   ge::Graph ge_graph = GeApiWrapper_CreateGraphFromComputeGraph(graph_handler_.graph);
+  MarkDataNodesAsHostTensor(ge_graph);
   if (iteration_per_loop_ > 1) {
     ge_graph.SetNeedIteration(need_iteration_);
   }

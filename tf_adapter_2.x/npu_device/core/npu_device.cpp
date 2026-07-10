@@ -14,6 +14,7 @@
 #include <utility>
 #include <future>
 #include <fstream>
+#include <cstring>
 
 #include "tensorflow/core/common_runtime/eager/execute.h"
 #include "tensorflow/core/platform/blocking_counter.h"
@@ -33,6 +34,21 @@
 #include "nlohmann/json.hpp"
 
 using Format = ge::Format;
+
+void MarkDataNodesAsHostTensor(ge::Graph &graph) {
+  for (ge::GNode &node : graph.GetDirectNode()) {
+    ge::AscendString node_type;
+    if (node.GetType(node_type) != ge::GRAPH_SUCCESS) {
+      continue;
+    }
+    const char *type = node_type.GetString();
+    if ((type != nullptr) && (std::strcmp(type, "Data") == 0)) {
+      ge::AscendString attr_name("_host_tensor");
+      bool is_host_tensor = true;
+      (void)node.SetAttr(attr_name, is_host_tensor);
+    }
+  }
+}
 
 namespace {
 template <typename T, typename DT>
@@ -76,6 +92,7 @@ void SetReuseOptions(const std::string &key, size_t num, const std::map<std::str
     inserted_kv.first->second.append(std::to_string(num - 1U));
   }
 }
+
 }  // namespace
 
 namespace npu {
@@ -941,6 +958,7 @@ uint64_t NpuDevice::AddGeGraphInner(TFE_Context *context, uint64_t graph_id, con
   }
   ge::Graph ge_graph;
   NPU_CTX_REQUIRES_OK_RETURN(status, TransTfGraph2GeGraph(context, name, def, ge_graph), graph_id);
+  MarkDataNodesAsHostTensor(ge_graph);
   ge_graph.SetNeedIteration(loop);
 
   auto options = graph_options;

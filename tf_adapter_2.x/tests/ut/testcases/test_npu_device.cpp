@@ -21,9 +21,12 @@
 #include "npu_managed_buffer.h"
 #include "npu_tensor.h"
 #include "npu_unwrap.h"
+#include "ge/ge_api.h"
 #include "graph/ascend_string.h"
 
 #include "common/test_function_library.h"
+
+void MarkDataNodesAsHostTensor(ge::Graph &graph);
 
 namespace {
 const char *kNpuDeviceName = "/job:localhost/replica:0/task:0/device:NPU:0";
@@ -276,6 +279,23 @@ TEST(NpuUtils, SeparateGraphDef) {
   tensor2->set_tensor_content(tensor_content);
   attr2->insert({"value", value_attr2});
   EXPECT_EQ(npu::SeparateGraphDef(&graph_def, partition_graph, const_value_map).ok(), true);
+}
+
+TEST(NpuDevice, MarkOnlyDataNodesAsHostTensor) {
+  ge::Graph graph;
+
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Data");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_TRUE(ge::IsHostTensorSet());
+
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Add");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_FALSE(ge::IsHostTensorSet());
+
+  ge::ConfigureGNodeStub(ge::GRAPH_FAILED, "Data");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_FALSE(ge::IsHostTensorSet());
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Data");
 }
 
 TEST(NpuManagedBuffer, Assemble) {

@@ -37,5 +37,7 @@ void RegRunGraphAsyncStub(RunGraphAsyncStub stub);
 void ClearRegRunGraphAsyncStub();
 void SetCustomPathStub(std::string path);
 const char *GetCustomPathStub();
+void ConfigureGNodeStub(graphStatus get_type_status, const std::string &node_type);
+bool IsHostTensorSet();
 }  // namespace ge
 #endif  // COMMON_GRAPH_DEBUG_GE_UTIL_H_

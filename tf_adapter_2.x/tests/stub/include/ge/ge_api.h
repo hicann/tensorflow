@@ -110,10 +110,20 @@ class ComputeGraph {
   size_t GetOutputSize() const;
 };
 
+class GNode {
+ public:
+  graphStatus GetType(AscendString &type) const;
+  graphStatus SetAttr(const AscendString &name, bool &attr_value) const;
+};
+
+void ConfigureGNodeStub(graphStatus get_type_status, const std::string &node_type);
+bool IsHostTensorSet();
+
 class Graph {
  public:
   Graph() = default;
   ~Graph() = default;
+  std::vector<GNode> GetDirectNode() const;
   void SetNeedIteration(bool v) { need_iteration = v; }
   bool need_iteration = false;
   std::shared_ptr<tensorflow::Graph> graph;

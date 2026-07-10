@@ -32,6 +32,7 @@
 
 namespace tensorflow {
 extern void RewriteInputShapeOption(std::string &str);
+void MarkDataNodesAsHostTensor(ge::Graph &graph);
 namespace {
 using geDataUniquePtr = std::unique_ptr<uint8_t[], std::function<void(uint8_t *)>>;
 class NpuGetNextOutputInfo {
@@ -970,6 +971,23 @@ TEST_F(GeOpTest, test_Get_GeSession_Failed) {
   geop_node->tf_session_ = "";
   EXPECT_EQ(geop_node->CreateGeSession().ok(), false);
   CallbackExecutor::GetInstance().StopThreadPool();
+}
+
+TEST(MarkDataNodesAsHostTensorTest, MarkOnlyDataNodes) {
+  ge::Graph graph("host_tensor_test");
+
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Data");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_TRUE(ge::IsHostTensorSet());
+
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Add");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_FALSE(ge::IsHostTensorSet());
+
+  ge::ConfigureGNodeStub(ge::GRAPH_FAILED, "Data");
+  MarkDataNodesAsHostTensor(graph);
+  EXPECT_FALSE(ge::IsHostTensorSet());
+  ge::ConfigureGNodeStub(ge::GRAPH_SUCCESS, "Data");
 }
 }  // namespace
 }  // namespace tensorflow
