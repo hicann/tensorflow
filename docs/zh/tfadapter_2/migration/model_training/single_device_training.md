@@ -44,8 +44,6 @@
         export ASCEND_WORK_PATH=/repo/task001/172.16.1.12_01_03
         ```
 
-        关于环境变量ASCEND_CACHE_PATH与ASCEND_WORK_PATH的使用约束以及落盘文件说明，可参见《环境变量参考》中的“安装配置相关”章节。
-
         > [!NOTE]说明
         > 配置这些环境变量前，请使用**env**命令查询ASCEND_CACHE_PATH与ASCEND_WORK_PATH环境变量是否已存在，建议系统各功能使用统一的规划路径。
 

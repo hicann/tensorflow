@@ -30,6 +30,7 @@
     ```
 
   - 配置为2（即开启ccec编译选项）的场景下，会增大算子Kernel（\*.o文件）的大小。动态shape场景下，由于算子编译时会遍历可能存在的所有场景，最终可能会导致由于算子Kernel文件过大而无法进行编译的情况，此种场景下，建议不要配置为2。
+    
     由于算子kernel文件过大而无法编译的日志显示如下：
 
     ```text
@@ -156,7 +157,6 @@ custom_op.parameter_map["dynamic_inputs_shape_range"].s = tf.compat.as_bytes("ge
 使用注意事项：
 
 - 使用此参数时，不支持将常量设置为用户输入。
-
 - dataset输入固定标识为“getnext”，placeholder输入固定标识为“data”，不允许用其他表示。
 - 动态维度有shape范围的用波浪号“\~”表示，固定维度用固定数字表示，无限定范围的用-1表示。
 - 对于多输入场景，例如有三个dataset输入时，如果只有第二个第三个输入具有shape范围，第一个输入为固定输入时，仍需要将固定输入shape填入：
@@ -219,6 +219,7 @@ custom_op.parameter_map["dynamic_inputs_shape_range"].s = tf.compat.as_bytes("ge
     - 若网络脚本中未指定placeholder的name，则placeholder会按照会如下格式命名：
 
       xxx_0, xxx_1, xxx_2, ……
+      
       其中下划线后为placeholder在网络脚本中的定义顺序索引，placeholder会按照此索引的字母顺序进行排布，所以当placeholder的个数大于10时，则排序为“xxx_0 -\> xxx_10 -\> xxx_2 -\> xxx_3”，网络脚本中定义索引为10的placeholder排在了索引为2的placeholder前面，导致定义的shape range与实际输入的placeholder不匹配。
 
       为避免此问题，当placeholder的输入个数大于10时，建议在网络脚本中指定placeholder的name，则placeholder会以指定的name进行命名，实现shape range与placeholder name的关联。

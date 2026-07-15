@@ -1,6 +1,6 @@
 # 试验参数
 
-试验参数为调试功能扩展参数，后续版本可能会存在变更，不支持应用于商用产品中。
+试验参数为调试功能扩展参数，后续版本可能会存在变更，不支持应用于生产环境。
 
 ## experimental_config
 
@@ -53,8 +53,7 @@ config = NPURunConfig(shape_generalization_mode="FULL")
 > [!NOTE]说明
 >
 > - 该参数仅限于推荐类型网络的训练场景使用。
-> - 算子的并行执行功能不可以与多流并发执行功能（通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM设置）同时启用。
-> 关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
+> - 算子的并行执行功能不可以与多流并发执行功能（通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM设置）同时启用。关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
 
 配置示例：
 

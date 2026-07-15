@@ -12,7 +12,9 @@
   - 如果原图中某算子精度为float16，AI Core中该算子的实现不支持float16、仅支持bfloat16，则会使用float16的AI CPU算子；如果AI CPU算子也不支持，则执行报错。
   - 如果原图中某算子精度为float32，AI Core中该算子的实现不支持float32类型、仅支持float16类型，则会使用float32的AI CPU算子；如果AI CPU算子也不支持，则执行报错。
 
-- cube_fp16in_fp32out：AI Core中该算子既支持float32又支持float16数据类型时，系统内部根据算子类型不同，选择不同的处理方式。
+- cube_fp16in_fp32out：
+
+  AI Core中该算子既支持float32又支持float16数据类型时，系统内部根据算子类型不同，选择不同的处理方式。
 
   - 对于矩阵计算类算子，系统内部会按算子实现的支持情况处理：
     1. 优先选择输入数据类型为float16且输出数据类型为float32；

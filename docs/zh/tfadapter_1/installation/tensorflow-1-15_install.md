@@ -6,7 +6,6 @@
 > TensorFlow 1.15配套的Python版本是：Python3.7.x（3.7.5\~3.7.11）。
 
 - 对于x86架构，可直接跳过安装前准备。
-
 - 对于aarch64架构，由于TensorFlow依赖h5py，而h5py依赖HDF5，需要先编译安装HDF5，否则使用pip安装h5py会报错，以下步骤以root用户操作。
   1. 确保已安装配套版本的Python。
   2. 编译安装HDF5 1.10.5版本。

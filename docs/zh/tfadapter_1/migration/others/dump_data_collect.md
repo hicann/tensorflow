@@ -325,7 +325,7 @@ export DUMP_GRAPH_PATH=/home/dumpgraph
 3. 选取dump数据文件。
     1. 打开步骤2中找到的计算图文件，记录graph中的name字段值。如下示例中，记录“ge_default_20240613143502_1”。
 
-        ```txt
+        ```text
         graph {
           name: "ge_default_20240613143502_1"
           op {

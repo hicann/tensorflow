@@ -1,0 +1,16 @@
+# npu.global_options
+
+- [Overview](overview.md)
+- [Basic Options](basic_options.md)
+- [Memory Management](memory_management.md)
+- [Dynamic Shape](dynamic_shape.md)
+- [Debugging](debugging.md)
+- [Accuracy Tuning](accuracy_tuning.md)
+- [Accuracy Comparison](accuracy_comparison.md)
+- [Performance Tuning](performance_tuning.md)
+- [Profiling](Profiling.md)
+- [AOE](AOE.md)
+- [Operator and Graph Build](operator_and_graph_build.md)
+- [Exception Remedy](exception_remedy.md)
+- [Experiment Options](experiment_options.md)
+- [Options That Will Be Deprecated in Later Versions](deprecated_options.md)

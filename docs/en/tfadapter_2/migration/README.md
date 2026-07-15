@@ -1,0 +1,65 @@
+# TensorFlow 2.6.5 Model Porting Guide
+
+- [Introduction](../introduction.md)
+- [About TF Adapter](../about_tf_adapter.md)
+- [Environment Setup<a name="sub_menu"></a>](../installation/README.md)
+- [Automated Porting](./script_migration/automated_porting.md)
+- [Manual Porting](./script_migration/manual_porting.md)
+- [Manual Porting of compat.v1](./script_migration/compat-v1/manual_porting_of_compatv1.md)
+  - [Context](./script_migration/compat-v1/context.md)
+  - [Porting with Estimator](./script_migration/compat-v1/estimator_porting.md)
+  - [Porting with sess.run](./script_migration/compat-v1/sessrun_porting.md)
+  - [Porting with Keras](./script_migration/compat-v1/keras_porting.md)
+  - [Porting with Horovod](./script_migration/compat-v1/horovod_porting.md)
+
+- [Model Training](./model_training/model-training.md)
+  - [Training with a Single Device](./model_training/single_device_training.md)
+  - [Distributed Training with Multiple Devices](./model_training/distributed_training.md)
+
+- [Accuracy Debugging](./accuracy_debugging/accuracy_debugging.md)
+  - [Accuracy Debugging Process](./accuracy_debugging/accuracy_debugging_process.md)
+  - [Pre-tuning Check](./accuracy_debugging/pre-tuning_check.md)
+  - [One-Click Accuracy Analyzer Deployment](./accuracy_debugging/accuracy_analyzer_deployment.md)
+  - [Floating-Point Exception Detection](./accuracy_debugging/floating-point_exception_detection.md)
+  - [Fusion Exception Detection](./accuracy_debugging/fusion_exception_detection.md)
+  - [Network Accuracy Comparison](./accuracy_debugging/network_accuracy_comparison.md)
+  - [Random Error Detection](./accuracy_debugging/random_error_detection.md)
+  - [Version-related Accuracy Issue Detection](./accuracy_debugging/version-related_accuracy_issue_detection.md)
+
+  - [Appendixes](./accuracy_debugging/appendixes.md)
+    - [precision_tool Command Reference](./accuracy_debugging/precision_tool_ommand_ref.md)
+    - [Network Accuracy Comparison Result File](./accuracy_debugging/network_accuracy_comparison_result_file.md)
+
+- [Performance Tuning](./performance_tuning/performance_tuning.md)
+  - [Performance Tuning Process](./performance_tuning/performance_tuning_process.md)
+  - [Basic Tuning](./performance_tuning/basic-tuning.md)
+    - [Training with Mixed Precision](./performance_tuning/mixed_precision_training.md)
+    - [Replacing the GELU Activation Function](./performance_tuning/gelu_activation_function_replace.md)
+    - [Automatic AOE Tuning](./performance_tuning/automatic_aoe_tuning.md)
+    - [Affinity-based Automatic CPU Core Binding Optimization](./performance_tuning/cpu_core_binding.md)
+
+  - [Profile Data Collection and Analysis](./performance_tuning/profile_data_collection_and_analysis.md)
+  - [Advanced Tuning](./performance_tuning/advanced_tuning.md)
+
+- [Model Freezing](model_freezing.md)
+- [Model Inference](./model_inference/model_inference.md)
+  - [Offline Inference](./model_inference/offline_inference.md)
+  - [Online Inference](./model_inference/onlne_inference.md)
+
+- [Additional Features](./others/additional_features.md)
+  - [Adjusting Gradient Splitting Strategy](./others/adjust_gradient_split_strategy.md)
+  - [Developing a Custom Operator](./others/developing_custom_operator.md)
+
+- [Samples](./sample_ref/samples.md)
+  - [Automated Porting and Training](./sample_ref/auto_porting_and_training.md)
+  - [Manual Porting and Training](./sample_ref/manual_porting_and_training.md)
+
+- [Common Operations](./common_operation/common_operations.md)
+  - [Calling C++ APIs of TensorFlow to Execute Methods on NPUs](./common_operation/call_cpp_apis_of_tf.md)
+  - [Installing Protobuf of the Python Version](./common_operation/install_python_protobuf.md)
+
+- [FAQ](./faq/faq.md)
+  - [Script Execution Failure After the Horovod Script Is Migrated Using a Tool in compat.v1 Mode](./faq/hvrovod-compat-v1-migration-failed.md)
+  - [What Do I Do If Operator ReduceSum Has Poor Performance on a Network?](./faq/networktest_reducesum_low_performance.md)
+  - [An Error Is Reported When import tensorflow Is Executed After TensorFlow 2.6.5 Is Installed](./faq/tensorFlow-2-6-5_import_error.md)
+  - [How Do I Fix Application Errors Caused by Model Execution on Multiple Devices?](./faq/multi-device_model_error.md)

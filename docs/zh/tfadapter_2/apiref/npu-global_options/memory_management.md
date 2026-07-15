@@ -68,7 +68,7 @@ npu.global_options().memory_config.variable_use_1g_huge_page=1
 
   若环境中未配置环境变量ASCEND_WORK_PATH，则权重文件落盘至当前执行目录“tmp_weight_<pid\>_<sessionid\>”下。
 
-  若环境中配置了环境变量ASCEND_WORK_PATH，则权重文件会落盘至$\{ASCEND_WORK_PATH\}/tmp_weight_<pid\>_<sessionid\>目录下，关于ASCEND_WORK_PATH的详细说明，可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》中的“安装配置相关”章节。
+  若环境中配置了环境变量ASCEND_WORK_PATH，则权重文件会落盘至$\{ASCEND_WORK_PATH\}/tmp_weight_<pid\>_<sessionid\>目录下。
 
   模型卸载时，会自动删除“tmp_weight_<pid\>_<sessionid\>”目录。
 
@@ -107,16 +107,17 @@ Host侧输入数据搬运到Device时，是否开启批量内存拷贝功能。
 - True：开启批量内存拷贝功能。该配置仅在用户输入个数大于1时生效。
 - False（默认值）：关闭批量内存拷贝功能。
 
-> [!NOTE]说明
->
-> - 该参数仅支持以下产品：
->   - Ascend 950PR/Ascend 950DT
->   - Atlas A3 训练系列产品/Atlas A3 推理系列产品
->   - Atlas A2 训练系列产品/Atlas A2 推理系列产品
-> - 该参数可以提升Host到Device的数据搬运性能，适用于需要频繁搬运数据且PCIe带宽利用率较低的场景。通过该参数使能批量拷贝功能后，可提升带宽利用率。
-> - 若网络初始输入个数仅有1个，即使配置了批量拷贝功能也不会生效。
-> - 当同时配置了“input_fusion_size”参数以启用合并拷贝功能和“input_batch_cpy”参数以启用批量拷贝功能时，合并拷贝的阈值可能会影响批量拷贝功能。
->   例如，如果用户有5个输入，其中有4个输入数据小于合并拷贝阈值，满足数据合并条件，那么这4个输入会执行合并拷贝，剩余的1个输入由于不满足批量拷贝的输入个数，则不会执行批量拷贝。
+说明：
+
+- 该参数仅支持以下产品：
+  - Ascend 950PR/Ascend 950DT
+  - Atlas A3 训练系列产品/Atlas A3 推理系列产品
+  - Atlas A2 训练系列产品/Atlas A2 推理系列产品
+- 该参数可以提升Host到Device的数据搬运性能，适用于需要频繁搬运数据且PCIe带宽利用率较低的场景。通过该参数使能批量拷贝功能后，可提升带宽利用率。
+- 若网络初始输入个数仅有1个，即使配置了批量拷贝功能也不会生效。
+- 当同时配置了“input_fusion_size”参数以启用合并拷贝功能和“input_batch_cpy”参数以启用批量拷贝功能时，合并拷贝的阈值可能会影响批量拷贝功能。
+
+  例如，如果用户有5个输入，其中有4个输入数据小于合并拷贝阈值，满足数据合并条件，那么这4个输入会执行合并拷贝，剩余的1个输入由于不满足批量拷贝的输入个数，则不会执行批量拷贝。
 
 配置示例：
 

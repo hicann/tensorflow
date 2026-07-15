@@ -4,10 +4,10 @@
 
 是否启用Allreduce梯度更新和前后向并行执行
 
-- True：开启Allreduce并行。
+- True（默认值）：开启Allreduce并行。
 - False：关闭Allreduce并行。
 
-默认值为“True”，配置示例：
+配置示例：
 
 ```python
 npu.global_options().hcom_parallel=True
@@ -83,9 +83,13 @@ npu.global_options().enable_small_channel=1
 此参数仅适用于NMT网络。
 
 指定AICPU/AICORE引擎的并行度，从而实现AICPU/AICORE算子间的并行执行。
-DNN_VM_AICPU为AICPU引擎名称，本示例指定了AICPU引擎的并发数为10；
+
+DNN_VM_AICPU为AICPU引擎名称，本示例指定了AICPU引擎的并发数为10。
+
 AIcoreEngine为AICORE引擎名称，本示例指定了AICORE引擎的并发数为1。
+
 AICPU/AICORE引擎的并行度默认为1，取值范围为：\[1,13\]。
+
 配置示例：
 
 ```python

@@ -77,7 +77,7 @@ export PROFILING_OPTIONS='{"output":"/home/HwHiAiUser/output","training_trace":"
 
 TF Adapter 2.x暂不支持局部采集Profiling数据，但开发者可通过compat.v1模块调用TF Adapter 1.x中的Profiler类，从而实现局部采集性能数据的功能，即仅Profiler类作用域下的命令才会开启性能数据采集功能。
 
-关于Profiler类的详细介绍可参见《TensorFlow 1.15模型迁移指南》中的“TF Adapter 1.x接口参考 \> npu_bridge.profiler.profiler \> Profiler构造函数”。
+关于Profiler类的详细介绍可参见[npu_bridge.profiler.profiler](../../../tfadapter_1/apiref/profiler/Profiler_constructor.md)。
 
 下面介绍如何通过compat.v1模块调用TF Adapter 1.x的Profiler类实现采集局部性能数据的功能。
 
@@ -166,8 +166,6 @@ TF Adapter 2.x暂不支持局部采集Profiling数据，但开发者可通过com
     ```bash
     ./msprof --export=on --output=/home/test/profiling_output
     ```
-
-    说明：关于Profiling工具的更详细说明，可参见《性能调优工具用户指南》。
 
 ## 分析Profiling数据
 

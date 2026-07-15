@@ -24,7 +24,6 @@
 
 1. 已准备好迁移成功的TensorFlow训练脚本和对应数据集。
 2. 多Device上执行训练时，请确保不同Device上执行的模型相同，否则业务会执行失败，详细可参见[多Device上执行模型不同导致应用程序出错](../faq/multi-device_model_error.md)。
-
 3. 针对Atlas 训练系列产品，单Server场景下，要求实际参与集合通信的AI处理器数目为1、2、4、8，且0-3卡和4-7卡各为一个组网，使用2张卡或4张卡训练时，不支持跨组网创建设备集群；Server集群场景，要求参与集合通信的AI处理器数目只能为1\*n、2\*n、4\*n、8\*n（n为参与训练的Server个数），且n为2的指数倍情况下，集群性能最好，建议用户优先采用此种方式进行集群组网。
 4. 针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，单Server场景，对参与集合通信的AI处理器数量无限制；Server集群场景要求参与集合通信的AI处理器数量为（1\~8）\*n（n为参与训练的Server个数）。建议每个Server中参与集合通信的AI处理器数量保持一致，若不一致，会造成性能劣化。
 5. 针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，建议每个超节点中的Server数量一致，每个Server中的AI处理器数量一致，若不一致，会造成性能劣化。
@@ -167,7 +166,6 @@ rank table为JSON格式，记录了参与集合通信的所有NPU信息，开发
 通过环境变量配置资源信息的方式仅支持如下产品：
 
 - Atlas A2 训练系列产品/Atlas A2 推理系列产品
-
 - Atlas 训练系列产品
 
 开发者需要在执行训练的每个AI Server节点上分别配置如下环境变量，进行资源信息的配置，示例如下：
@@ -191,13 +189,17 @@ export HCCL_SOCKET_FAMILY=AF_INET
 - CM_WORKER_IP：用于配置当前节点与Master进行通信时所用的网卡IP，要求为常规IPv4或IPv6格式。
 - HCCL_SOCKET_FAMILY：**此环境变量可选**，用于控制Device侧通信网卡使用的IP协议版本。AF_INET代表使用IPv4协议，AF_INET6代表使用IPv6协议，**缺省时，优先使用IPv4协议**。
 
-> [!NOTE]说明
->
-> - 如果环境变量“HCCL_SOCKET_FAMILY”指定的IP协议与实际获取到的网卡信息不匹配，则以实际环境上的网卡信息为准。
->   例如，环境变量“HCCL_SOCKET_FAMILY”指定为“AF_INET6”，但Device侧只存在IPv4协议的网卡，则实际会使用IPv4协议的网卡。
-> - 通过以上环境变量的方式配置集群信息时，环境中不能存在环境变量RANK_TABLE_FILE、RANK_ID、RANK_SIZE。
-> - 针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，若业务为单卡多进程场景，建议通过环境变量“HCCL_NPU_SOCKET_PORT_RANGE”配置HCCL在NPU侧使用的通信端口，否则可能会导致端口冲突，但需要注意，多进程会对资源开销、通信性能产生一定的影响，配置示例：
->   export HCCL_NPU_SOCKET_PORT_RANGE="auto"
+说明：
+
+- 如果环境变量“HCCL_SOCKET_FAMILY”指定的IP协议与实际获取到的网卡信息不匹配，则以实际环境上的网卡信息为准。
+   
+   例如，环境变量“HCCL_SOCKET_FAMILY”指定为“AF_INET6”，但Device侧只存在IPv4协议的网卡，则实际会使用IPv4协议的网卡。
+- 通过以上环境变量的方式配置集群信息时，环境中不能存在环境变量RANK_TABLE_FILE、RANK_ID、RANK_SIZE。
+- 针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，若业务为单卡多进程场景，建议通过环境变量“HCCL_NPU_SOCKET_PORT_RANGE”配置HCCL在NPU侧使用的通信端口，否则可能会导致端口冲突，但需要注意，多进程会对资源开销、通信性能产生一定的影响，配置示例：
+   
+   ```bash
+   export HCCL_NPU_SOCKET_PORT_RANGE="auto"
+   ```
 
 假设执行分布式训练的AI Server节点数量为2，Device数量为16为例，每个AI Server节点有8个Device。启动每个Device上的训练进程前，在对应的shell窗口中配置如下所示环境变量，进行资源信息的配置。
 

@@ -3,7 +3,7 @@
 迁移到AI处理器进行训练的网络如果存在性能不达标的问题，可按照如下流程进行性能调优：
 
 **图 1**  性能调优流程
-![](../figures/performance_tune_process.png "性能调优流程")
+![](../figures/performance_tune_process.png)
 
 1. 当性能不达标时，优先推荐进行如下通用的性能提升操作。
 

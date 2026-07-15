@@ -154,9 +154,9 @@
   - -al/rl：可选，al为绝对误差，rl为相对误差，使用示例如下：
 
     ```python
-    示例1：
+    # 示例1：
     np.allclose(left, right, atol=al, rtol=rl)
-    示例2：
+    # 示例2：
     err_cnt += 1 if abs(data_left[i] - data_right[i]) > (al + rl * abs(data_right[i]))
     ```
 

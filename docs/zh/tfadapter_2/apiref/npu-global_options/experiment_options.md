@@ -1,12 +1,13 @@
 # 试验参数
 
-试验参数为调试功能扩展参数，后续版本可能会存在变更，不支持应用于商用产品中。
+试验参数为调试功能扩展参数，后续版本可能会存在变更，不支持应用于生产环境。
 
 ## graph_compiler_cache_dir
 
 该参数用于配置图编译磁盘缓存目录，当该参数配置为非空时，图编译磁盘缓存功能生效。
 
 图编译缓存功能支持将图编译结果进行磁盘持久化，当再次执行图编译运行时，直接加载磁盘上缓存的编译结果，从而减少图编译时长。
+
 需要注意：
 
 - 配置的缓存目录必须存在，否则会导致编译失败。
@@ -14,6 +15,7 @@
 - 图发生变化后，原来的缓存文件不可用，用户需要手动删除缓存目录中的缓文件，然后重新编译生成缓存文件。
 - 缓存不保证跨版本的兼容性，如果版本升级，需要清理缓存目录重新编译生缓存。
 - 该功能当前不支持带资源类算子的模型。
+
 配置示例：
 
 ```python
@@ -30,6 +32,7 @@ npu.global_options().graph_compiler_cache_dir="/rootbuild_cache_dir"
 
 > [!NOTE]说明
 > 该参数仅限于大型推荐类型网络使用。
+
 配置示例：
 
 ```python
@@ -66,8 +69,7 @@ npu.global_options().shape_generalization_mode = "FULL"
 > [!NOTE]说明
 >
 > - 该参数仅限于推荐类型网络的训练场景使用。
-> - 算子的并行执行功能不可以与多流并发执行功能（通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM设置）同时启用。
-> 关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
+> - 算子的并行执行功能不可以与多流并发执行功能（通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM设置）同时启用。关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
 
 配置示例：
 

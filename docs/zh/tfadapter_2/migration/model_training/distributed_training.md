@@ -202,8 +202,6 @@ export HCCL_SOCKET_FAMILY=AF_INET
   export HCCL_NPU_SOCKET_PORT_RANGE="auto"
   ```
 
-  关于环境变量“HCCL_NPU_SOCKET_PORT_RANGE”的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》中的“集合通信”章节。
-
 ### 配置示例
 
 假设执行分布式训练的AI Server节点数量为2，Device数量为16为例，每个AI Server节点有8个Device。启动每个Device上的训练进程前，在对应的shell窗口中配置如下环境变量，进行资源信息的配置。

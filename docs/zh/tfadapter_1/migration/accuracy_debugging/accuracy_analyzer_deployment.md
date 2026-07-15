@@ -40,6 +40,7 @@
 - 如果CANN开发/运行环境独立部署，需要将**precision_tool**文件夹上传到CANN运行环境的训练工作目录下，同时将**precision_tool**上传到CANN开发环境的任意目录下。
 
     > [!NOTE]说明
+    >
     > - CANN运行环境（包含AI处理器，即启动NPU训练的环境），在训练精度调试工作中，主要用于训练时精度数据的采集。
     > - CANN开发环境，在训练精度调试工作中，主要用于精度数据分析。
 
@@ -48,9 +49,9 @@
 CANN开发环境与运行环境合一部署的场景下，使用一键式精度分析工具precision_tool进行精度分析的总体流程如下图所示。
 
 **图 1**  CANN开发/运行环境合一部署
-![](../figures/CANN_deployment.png "CANN开发-运行环境合一部署")
+![](../figures/dev_run_merge.png "CANN开发-运行环境合一部署")
 
 CANN开发环境与运行环境独立部署的场景下，使用一键式精度分析工具precision_tool进行精度分析的总体流程如下图所示。
 
 **图 2**  CANN开发/运行环境独立部署
-![](../figures/cann_separate_deployment.png "CANN开发-运行环境独立部署")
+![](../figures/dev_run_part.png "CANN开发-运行环境独立部署")

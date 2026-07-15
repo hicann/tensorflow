@@ -119,16 +119,15 @@ config = NPURunConfig(op_compiler_cache_dir="/home/test/kernel_cache")
 
 关闭常量折叠功能后，若网络编译运行出错，如下所示：
 
-- 示例1：
-  debug日志中报错信息如下所示：
+- 示例1：debug日志中报错信息如下所示：
 
   ```text
   [ERROR] GE(3469659,python3.7):2025-02-25-05:** [ge_deleted_op.cc:21]3470503 Run: ErrorNo: 4294967295(failed) [Delete][Node] Node:HcomAllReduce/input type is ExpandDims, should be deleted by ge.
   ```
 
   如上错误信息说明网络中存在图编译时需要被常量折叠的算子“ExpandDims”，所以不支持关闭常量折叠功能。
-- 示例2：
-  返回错误码“EZ3003”，打屏信息如下所示：
+
+- 示例2：返回错误码“EZ3003”，打屏信息如下所示：
 
   ```text
   Error Message is :

@@ -15,7 +15,7 @@
 
 迭代轨迹数据即训练任务及AI软件栈的软件信息，实现对训练任务的性能分析。以默认的两段式梯度切分为例，通过打印出训练任务中关键节点fp_start/bp_end/allreduce1_start/allreduce1_end/allreduce2_start/allreduce2_end/Iteration_end的时间戳，达到把一个迭代的执行情况描述清楚的目的。
 
-![确定梯度切分策略](../figures/gradient_split_1.png)
+![确定梯度切分策略](../figures/gradient_split_strategy_1.png)
 
 一个较优的梯度数据切分原则为：
 
@@ -28,25 +28,25 @@
 
 例如原始设置为第一段梯度数据量为50%，第二段梯度数据量为50%：
 
-![](../figures/gradient_split_2.png)
+![](../figures/gradient_split_strategy_2.png)
 
 可以修改为第一段梯度数据量为80%，第二段梯度数据量为20%：
 
-![](../figures/gradient_split_3.png)
+![](../figures/gradient_split_strategy_3.png)
 
 【优化场景2】AR1开始时间较晚，AR1时间超出了FPBP的时间，这种情况下，可以将切分点往前设置，从而将AR1隐藏在FPBP之间。
 
 例如原始设置为第一段梯度数据量为90%，第二段梯度数据量为10%：
 
-![](../figures/gradient_split_4.png)
+![](../figures/gradient_split_strategy_4.png)
 
 可以修改为第一段梯度数据量为80%，第二段梯度数据量为20%：
 
-![](../figures/gradient_split_5.png)
+![](../figures/gradient_split_strategy_5.png)
 
 【优化场景3】FPBP数据量较大，计算时间较长，两段式梯度切分的情况下，如果把大部分梯度数据放到AR1中会导致拖尾时间很长，参见优化场景2；如果把大部分的梯度数据放到AR2中会导致AR2时间很长，参见优化场景1。但FPBP中还有较多的时间可以利用，此时可以新增切分段数，使更多的集合通信时间和FPBP并行起来。
 
-![](../figures/gradient_split_6.png)
+![](../figures/gradient_split_strategy_6.png)
 
 ## 梯度切分策略调整
 

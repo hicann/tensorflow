@@ -154,5 +154,3 @@ Estimator可以保存ckpt和saved_model两种格式的模型。ckpt方式与sess
                     clear_devices=False,
                     input_meta_graph=False)
     ```
-
-完整的代码示例可参考[ModelZoo-TensorFlow](https://gitee.com/ascend/ModelZoo-TensorFlow/blob/master/TensorFlow/built-in/cv/image_classification/Resnet101_TF_Atlas_for_TensorFlow/official/r1/transformer/transformer_main.py)。

@@ -91,4 +91,5 @@
 
     > [!NOTE]说明
     > 具体融合规则说明请参考《[图融合和UB融合规则参考](https://hiascend.com/document/redirect/CannCommunitygraphubfusionref)》。
+    >
     > **注意：针对Ascend 950PR/Ascend 950DT，不支持UB融合。**

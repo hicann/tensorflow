@@ -70,7 +70,7 @@
 
 4. 使用max_pool_with_argmax算子替代max_pooling2d算子，以获得更好的计算性能。
 
-    代码位置：“official/r1/resnet/resnet_model.py“的__call__\(\)函数（修改部分为“NPU modify begin”与“NPU modify end ”之间的内容）：
+    代码位置：“official/r1/resnet/resnet_model.py“的call\(\)函数（修改部分为“NPU modify begin”与“NPU modify end ”之间的内容）：
 
     ```python
          # 是否进行第一次池化。

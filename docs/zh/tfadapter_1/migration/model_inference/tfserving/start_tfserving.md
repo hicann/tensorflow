@@ -56,7 +56,7 @@
 
     此处以inception_v3_flowers、inception_v4和inception_v4_imagenet三个模型为例，请根据实际情况自行替换。
 
-    ```txt
+    ```text
     model_config_list:{
             config:{
               name:"inception_v3_flowers",      # 模型名称
@@ -78,7 +78,7 @@
 
 3. 在“tf_serving_test“路径下放置训练好的**SavedModel模型**，参见如下目录。
 
-    ```txt
+    ```text
     squeezenext/ 
     └── 1
          ├── saved_model.pb

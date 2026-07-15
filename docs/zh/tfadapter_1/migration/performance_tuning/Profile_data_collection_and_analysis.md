@@ -60,6 +60,7 @@ TensorFlow网络性能数据采集与分析的整体流程如下所示：
         需要注意，仅[initialize_system](../../apiref/npu_ops/initialize_system.md)中支持的配置项可在init_resource函数的config中进行配置，若需配置其他功能，请在npu_run_config_init函数的run_config中进行配置。
 
         > [!NOTE]说明
+        >
         > - profiling_mode：是否开启Profiling采集。
         > - output：Profiling数据存放路径，该参数指定的目录需要在启动训练的环境上（容器或Host侧）提前创建且确保安装时配置的运行用户具有读写权限，支持配置绝对路径或相对路径。
         > - task_trace：是否采集任务轨迹数据。
@@ -180,6 +181,7 @@ config = NPURunConfig(profiling_config=profiling_config, session_config=session_
         需要注意，仅[initialize_system](../../apiref/npu_ops/initialize_system.md)中支持的配置项可在init_resource函数的config中进行配置，若需配置其他功能，请在npu_config_proto函数的config_proto中进行配置。
 
         > [!NOTE]说明
+        >
         >- profiling_mode：是否开启Profiling采集。
         >- output：Profiling数据存放路径，该参数指定的目录需要在启动训练的环境上（容器或Host侧）提前创建且确保安装时配置的运行用户具有读写权限，支持配置绝对路径或相对路径。
         >- task_trace：是否采集任务轨迹数据。
@@ -273,6 +275,7 @@ with tf.Session(config=config) as sess:
         需要注意，仅[initialize_system](../../apiref/npu_ops/initialize_system.md)中支持的配置项可在init_resource函数的config中进行配置，若需配置其他功能，请在set_keras_session_npu_config函数的config中进行配置。
 
         > [!NOTE]说明
+        >
         >- profiling_mode：是否开启Profiling采集。
         >- output：Profiling数据存放路径，该参数指定的目录需要在启动训练的环境上（容器或Host侧）提前创建且确保安装时配置的运行用户具有读写权限，支持配置绝对路径或相对路径。
         >- task_trace：是否采集任务轨迹数据。

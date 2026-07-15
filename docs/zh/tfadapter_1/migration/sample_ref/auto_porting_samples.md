@@ -212,9 +212,6 @@
     python3 /root/models/official/resnet/cifar10_main.py
     ```
 
-    > [!NOTE]说明
-    > 除了以上方式，您还可以通过自定义启动脚本通过循环方式依次启动多个训练进程，具体样例请参考[链接](https://gitee.com/ascend/ModelZoo-TensorFlow/blob/master/TensorFlow/built-in/nlp/BertBase_Google_ID0631_for_TensorFlow/test/train_performance_8p.sh)。
-
 3. 训练结束后，每个Device的日志信息如下所示，代表训练结束，可查看Loss是否收敛。
 
     ![](../figures/sample_result3.png)

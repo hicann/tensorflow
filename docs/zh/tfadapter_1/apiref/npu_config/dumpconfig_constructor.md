@@ -27,6 +27,7 @@ class DumpConfig():
   - False（默认值）：关闭Data Dump功能。
 
   > [!NOTE]说明
+  >
   > - 不能同时开启Data Dump与溢出数据采集功能，即不同时将enable_dump和enable_dump_debug参数配置为“True”。
   > - 若“enable_dump/enable_dump_debug（二选一）”参数配置为“True”，同时“enable_exception_dump”配置为了“1”（即开启普通ExceptionDump）。此时，针对动态shape网络，仅“enable_exception_dump”生效；针对静态shape网络，“enable_exception_dump”与“enable_dump/enable_dump_debug（二选一）”都生效。
 

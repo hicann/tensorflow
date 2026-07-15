@@ -16,12 +16,13 @@
     3. 如果2中的场景不支持，则选择输入数据类型为float16且输出数据类型为float16；
     4. 如果3中的场景不支持，则报错。
   - 对于矢量计算类算子，表示原图中算子精度为float16或bfloat16，强制选择float32。
+    
     如果原图中存在部分算子，在AI Core中该算子的实现不支持float32，比如某算子仅支持float16类型，则该参数不生效，仍然使用支持的float16；如果在AI Core中该算子的实现不支持float32，且又配置了黑名单（precision_reduce = false），则会使用float32的AI CPU算子；如果AI CPU算子也不支持，则执行报错。
 - mixed_float16：表示使用混合精度float16、bfloat16和float32数据类型来处理神经网络。针对原图中float32和bfloat16数据类型的算子，按照内置的优化策略，自动将部分float32和bfloat16的算子降低精度到float16，从而在精度损失很小的情况下提升系统性能并减少内存使用。
 
   开启该功能开关后，用户可以同时使能Loss Scaling，从而补偿降低精度带来的精度损失。
-- mixed_bfloat16：
-    表示使用混合精度bfloat16和float32数据类型来处理神经网络。针对原图中float32数据类型的算子，按照内置的优化策略，自动将部分float32的算子降低精度到bfloat16，从而在精度损失很小的情况下提升系统性能并减少内存使用；如果算子不支持bfloat16和float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
+- mixed_bfloat16：表示使用混合精度bfloat16和float32数据类型来处理神经网络。针对原图中float32数据类型的算子，按照内置的优化策略，自动将部分float32的算子降低精度到bfloat16，从而在精度损失很小的情况下提升系统性能并减少内存使用；如果算子不支持bfloat16和float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
+    
     说明：仅Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置。
 - mixed_hif8：开启自动混合精度功能，表示混合使用hifloat8（此数据类型介绍可参见[HiFloat8](https://arxiv.org/abs/2409.16626?context=cs.AR)）、float16、bfloat16和float32数据类型来处理神经网络。针对原图中float16、bfloat16和float32数据类型的算子，按照内置的优化策略，自动将部分float16、bfloat16和float32的算子降低精度到hifloat8，从而在精度损失很小的情况下提升系统性能并减少内存使用。
   
@@ -37,6 +38,7 @@
 - 针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，该配置项默认值为origin”。
 - 针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，该配置项默认值为origin”。
 - 针对Atlas 训练系列产品，该配置项无默认取值，以“precision_mode”参数默认值为准，即“allow_fp32_to_fp16”。
+
 配置示例：
 
 ```python
@@ -73,6 +75,7 @@ npu.global_options().precision_mode_v2="origin"
     3. 如果2中的场景不支持，则选择输入数据类型为float16且输出数据类型为float16；
     4. 如果3中的场景不支持，则报错。
   - 对于矢量计算类算子，表示原图中算子精度为float16或bfloat16，强制选择float32。
+    
     如果原图中存在部分算子，在AI Core中该算子的实现不支持float32，比如某算子仅支持float16类型，则该参数不生效，仍然使用支持的float16；如果在AI Core中该算子的实现不支持float32，且又配置了黑名单（precision_reduce = false），则会使用float32的AI CPU算子；如果AI CPU算子也不支持，则执行报错。
 - must_keep_origin_dtype：
   
@@ -90,6 +93,7 @@ npu.global_options().precision_mode_v2="origin"
   表示使用混合精度bfloat16和float32数据类型来处理神经网络的过程。针对原始模型中float32数据类型的算子，按照内置的优化策略，自动将部分float32的算子降低精度到bfloat16，从而在精度损失很小的情况下提升系统性能并减少内存使用；如果AI Core中算子不支持bfloat16和float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
 
   说明：仅Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置。
+
 - allow_fp32_to_bf16：
   - 如果原图中算子精度为float32，则优先使用原图精度float32，如果AI Core中算子不支持float32，则降低精度到bfloat16；如果AI Core中算子不支持bfloat16，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
   - 如果原图中算子精度为bfloat16，则优先使用原图精度bfloat16，如果AI Core中算子不支持bfloat16，则选择float32，如果AI Core中算子不支持float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
@@ -98,10 +102,10 @@ npu.global_options().precision_mode_v2="origin"
 
 默认值：
 
-针对Ascend 950PR/Ascend 950DT，默认配置项为must_keep_origin_dtype”。
-针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，默认配置项为must_keep_origin_dtype”。
-针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，默认配置项为must_keep_origin_dtype”。
-针对Atlas 训练系列产品，默认配置项为“allow_fp32_to_fp16”。
+- 针对Ascend 950PR/Ascend 950DT，默认配置项为must_keep_origin_dtype”。
+- 针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，默认配置项为must_keep_origin_dtype”。
+- 针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，默认配置项为must_keep_origin_dtype”。
+- 针对Atlas 训练系列产品，默认配置项为“allow_fp32_to_fp16”。
 
 配置示例：
 

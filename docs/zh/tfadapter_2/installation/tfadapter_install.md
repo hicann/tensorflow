@@ -9,7 +9,7 @@
 
 1. 获取TF Adapter安装包。
     1. 单击[TF Adapter Gitcode仓](https://gitcode.com/cann/tensorflow/tags)，进入TF Adapter发布标签页面。
-    2. 选择配套CANN版本的标签，然后单击“查看发行版”，进入“发行版”页面。
+    2. 选择配套CANN版本的标签，然后单击“发行版”，进入“发行版”页面。
 
         TF Adapter源码仓标签命名规则为：tfa_\$\{tag版本\}_\$\{TF Adapter软件版本\}，其中$\{TF Adapter软件版本\}与配套的CANN软件版本号一致。
 

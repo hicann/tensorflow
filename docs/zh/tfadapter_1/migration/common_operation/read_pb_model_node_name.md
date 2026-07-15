@@ -19,7 +19,7 @@ with tf.Session() as sess:
 
 执行如下命令：
 
-**python3.7 readNodeName_from_pb.py**
+`python3.7 readNodeName_from_pb.py`
 
 则可以输出模型文件中的节点名称。
 

@@ -100,7 +100,7 @@
 
         修改NSYNC_CPP_START_后的内容，修改后内容如下。
 
-        ```text
+        ```c
         #include "nsync_cpp.h"
         #include "nsync_atomic.h"
         

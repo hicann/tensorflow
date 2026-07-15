@@ -118,6 +118,7 @@ op_debug_list=GatherV2,opType::ReduceSum
 **说明：**
 
 - 开启ccec编译选项的场景下（即ccec_O0、ccec_g选项），会增大算子Kernel（\*.o文件）的大小。动态shape场景下，由于算子编译时会遍历可能存在的所有场景，最终可能会导致由于算子Kernel文件过大而无法进行编译的情况，此种场景下，建议不要开启ccec编译选项。
+  
   由于算子kernel文件过大而无法编译的日志显示如下：
   
   ```text
