@@ -42,18 +42,17 @@ config = NPURunConfig(shape_generalization_mode="FULL")
 
 ## auto_multistream_parallel_mode
 
-该参数仅适用于静态shape图场景，开发者可通过配置此参数配置多流并行算法，以提升图执行性能。当前支持以下取值：
+该参数适用于静态/动态shape图场景，开发者可通过配置此参数配置多流并行算法，以提升图执行性能。当前支持以下取值：
 
 - **cv**，代表开启Cube算子与Vector算子的并行执行功能。
-- **LoadBalance**，负载均衡算法，将所有算子均匀分布在8条流上执行。
 - **LoadBalance:n**，负载均衡算法，将所有算子均匀分布在n条流上执行。n为最大流数量，正整数，取值范围[1,64]。若n的取值超过了实际可用核数，性能可能会降低。
 - **MainStream:n**，主流算法，串行算子分布在主流上执行，其他可并行算子分布在其他流上执行。n为最大流数量，正整数，取值范围[1,64]。若n取值超过了实际可用核数，性能可能会降低。
 - 默认值为空，Cube算子与Vector算子串行执行。
 
 > [!NOTE]说明
 >
-> - 该参数仅限于推荐类型网络的训练场景使用。
-> - 算子的并行执行功能不可以与多流并发执行功能（通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM设置）同时启用。关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
+> - 该参数仅限于推荐类型网络使用。
+> - 动态shape多流下使用此功能需要先通过环境变量ENABLE_DYNAMIC_SHAPE_MULTI_STREAM使能动态shape多流，再配置此参数。关于环境变量的详细说明可参见《[环境变量参考](https://hiascend.com/document/redirect/CannCommunityEnvRef)》。
 
 配置示例：
 
