@@ -44,7 +44,7 @@ This section details how to run a ported TensorFlow training script on a single 
         export ASCEND_WORK_PATH=/repo/task001/172.16.1.12_01_03
         ```
 
-        For details about the restrictions on the usage of the environment variables  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH**  and the description of the flushed files, see  Installation and Configuration  in  [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+        For details about the restrictions on the usage of the environment variables  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH**  and the description of the flushed files, see  Installation and Configuration  in  [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
         > [!NOTE]NOTE
         > Before setting the environment variables, run the  **env**  command to check whether  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH**  exist. It is recommended that all functions use the same planned path.

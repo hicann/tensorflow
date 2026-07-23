@@ -1,0 +1,22 @@
+# TF1.x Script Migration Tool User Guide
+
+## Introduction
+
+This tool applies to native TensorFlow training script migration scenarios. AI algorithm engineers can use this tool to analyze the compatibility of native TensorFlow Python APIs and Horovod Python APIs on Ascend AI processors, and automatically migrate native TensorFlow training scripts to scripts supported by Ascend AI processors. For APIs that cannot be automatically migrated, refer to the migration report output by the tool to make corresponding adaptation modifications to the training scripts.
+
+## User Guide
+
+- [TensorFlow 1.15 Model Automated Porting](../docs/en/tfadapter_1/migration/script_migration/automated_porting.md)
+- [TensorFlow 2.6.5 Model Automated Porting](../docs/en/tfadapter_2/migration/script_migration/automated_porting.md)
+
+## Contributing
+
+Contributions are welcome.
+
+## Release Notes
+
+For release notes, refer to [RELEASE](RELEASE.md).
+
+## License
+
+[CANN Open Software License 2.0](LICENSE)

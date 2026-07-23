@@ -6,7 +6,7 @@ To identify performance bottlenecks by analyzing profile data and take correspon
 
     If profile data analysis shows that the performance of the ReduceSum operator is poor, add the operator to the blocklist for mixed precision according to  [What Do I Do If Operator ReduceSum Has Poor Performance on a Network?](../faq/networktest_reducesum_low_performance.md).
 
-    If AI CPU operators exist, further analyze whether their time segments can be covered by the execution time of AI Core operators. If not, replace the AI CPU operators with AI Core operators. For details, see  [Ascend C Operator Development](https://www.hiascend.com/document/detail/en/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_10_0001.html).
+    If AI CPU operators exist, further analyze whether their time segments can be covered by the execution time of AI Core operators. If not, replace the AI CPU operators with AI Core operators. For details, see  [Ascend C Operator Development](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/programug/Ascendcopdevg/atlas_ascendc_map_10_0002.html).
 
 - If analysis of the iteration trace data shows that  **Data Aug Bound**  or frontend computing is time-consuming, you can use the native Profiling tool of TensorFlow to identify computing-irrelevant operations and shield them to improve the single-iteration performance.
 - If analysis of the  **op_statistic_\*.csv**  file shows that some operators take a long time, you can use the  [op_precision_mode](../../apiref/session_config/performance_tuning.md#op_precision_mode) parameter to specify the operators as high-performance ones to improve the operator performance.

@@ -4,7 +4,7 @@
 
 In TensorFlow distributed training or inference scenarios, this environment variable is used to specify the rank table resource configuration file of the  AI processor  involved in collective communication, including the path and name of the rank table file.
 
-For details about the rank table configuration file, see "Reference \> Cluster Information Configuration" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+For details about the rank table configuration file, see "Reference \> Cluster Information Configuration" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 ## Example
 

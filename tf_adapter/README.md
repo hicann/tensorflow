@@ -155,6 +155,7 @@ pip3 install swig
 ![修改前TF_Adapter链接的是tensorflow官网源码](../docs/zh/figures/tensorflow_cmake.png)
 
 修改图中FetchContent_Declare下的URL和URL_HASH MD5，将其替换成您自己环境上的tensorflow软件包的地址和MD5值。
+
 例如，您的tensorflow软件包如果放在/opt/hw路径下，则您此处tensorflow.cmake的源码可以修改为
 
 ![修改后TF_Adapter链接您环境上的tensorflow定制源码](../docs/zh/figures/revise_tensorflow.png)

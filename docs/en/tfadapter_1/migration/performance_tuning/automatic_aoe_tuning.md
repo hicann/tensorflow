@@ -46,4 +46,4 @@ You can enable AOE tuning in training scenarios using either of the following me
     custom_op.parameter_map["aoe_mode"].s = tf.compat.as_bytes("2")
     ```
 
-For details about the restrictions and functions of the AOE tool, see  [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/aoe/auxiliarydevtool_aoe_0001.html).
+For details about the restrictions and functions of the AOE tool, see  [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html).

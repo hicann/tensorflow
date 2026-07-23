@@ -12,7 +12,7 @@
   - [Porting with Keras](./script_migration/compat-v1/keras_porting.md)
   - [Porting with Horovod](./script_migration/compat-v1/horovod_porting.md)
 
-- [Model Training](./model_training/model-training.md)
+- [Model Training](./model_training/model_training.md)
   - [Training with a Single Device](./model_training/single_device_training.md)
   - [Distributed Training with Multiple Devices](./model_training/distributed_training.md)
 
@@ -32,7 +32,7 @@
 
 - [Performance Tuning](./performance_tuning/performance_tuning.md)
   - [Performance Tuning Process](./performance_tuning/performance_tuning_process.md)
-  - [Basic Tuning](./performance_tuning/basic-tuning.md)
+  - [Basic Tuning](./performance_tuning/basic_tuning.md)
     - [Training with Mixed Precision](./performance_tuning/mixed_precision_training.md)
     - [Replacing the GELU Activation Function](./performance_tuning/gelu_activation_function_replace.md)
     - [Automatic AOE Tuning](./performance_tuning/automatic_aoe_tuning.md)

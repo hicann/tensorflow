@@ -133,7 +133,7 @@ Directory of the fusion switch configuration file, including the file name.
 
 The value can contain letters, digits, underscores (_), hyphens (-), and periods (.).
 
-The built-in graph fusion and UB fusion patterns are enabled by default. You can disable selected fusion patterns in the configuration file as needed. For details about fusion patterns that can be disabled, see [Graph Fusion and UB Fusion Patterns](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/graphubfusionref/atlasrr_30_0003.html).
+The built-in graph fusion and UB fusion patterns are enabled by default. You can disable selected fusion patterns in the configuration file as needed. For details about fusion patterns that can be disabled, see [Graph Fusion and UB Fusion Patterns](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/graphubfusionref/atlasrr_30_0003.html).
 
 Note: UB fusion is not supported for the Ascend 950PR/Ascend 950DT.
 

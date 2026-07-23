@@ -13,7 +13,7 @@ Example:
 npu.global_options().profiling_config.enable_profiling=True
 ```
 
-Note: The priority of this configuration item is higher than that of the environment variable PROFILING_MODE. For details about the environment variable, see "Profile Data Collection" in [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+Note: The priority of this configuration item is higher than that of the environment variable PROFILING_MODE. For details about the environment variable, see "Profile Data Collection" in [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 ## profiling_config.profiling_options
 

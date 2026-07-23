@@ -14,7 +14,7 @@ If the performance of the network ported to the  Ascend AI Processor  for traini
         > [!CAUTION]NOTICE
         > Ascend 910_95 AI Processors do not support the AOE tool.
 
-    For details, see  [Basic Tuning](basic-tuning.md).
+    For details, see  [Basic Tuning](basic_tuning.md).
 
 2. Perform model training again and evaluate whether the training performance is satisfactory.
     - If the performance is satisfactory, the tuning is complete.

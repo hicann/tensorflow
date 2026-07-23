@@ -39,7 +39,7 @@ Notes:
 
 2. Using environment variable ASCEND_MAX_OP_CACHE_SIZE.
 
-   You can use the environment variable ASCEND_MAX_OP_CACHE_SIZE to limit the disk space for cache files under an AI processor. When the compilation cache space reaches the value set by ASCEND_MAX_OP_CACHE_SIZE and a cache file has not been accessed for more than half an hour, the cache file will be aged out. ASCEND_REMAIN_CACHE_SIZE_RATIO can be used to set the percentage of cache space to retain. For details about environment variables, see in [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+   You can use the environment variable ASCEND_MAX_OP_CACHE_SIZE to limit the disk space for cache files under an AI processor. When the compilation cache space reaches the value set by ASCEND_MAX_OP_CACHE_SIZE and a cache file has not been accessed for more than half an hour, the cache file will be aged out. ASCEND_REMAIN_CACHE_SIZE_RATIO can be used to set the percentage of cache space to retain. For details about environment variables, see in [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
    To disable the compilation cache aging function, set ASCEND_MAX_OP_CACHE_SIZE to -1.
 
@@ -63,7 +63,7 @@ The storage priority of operator compilation cache files is as follows:
 
 op_compiler_cache_dir > ${ASCEND_CACHE_PATH}/kernel_cache > Default path ($HOME/atc_data)
 
-For details about the environment variable ASCEND_CACHE_PATH, see Installation and Configuration in [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+For details about the environment variable ASCEND_CACHE_PATH, see Installation and Configuration in [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Example:
 

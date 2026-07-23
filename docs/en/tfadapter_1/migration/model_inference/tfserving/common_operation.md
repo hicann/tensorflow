@@ -165,14 +165,14 @@ This section describes how to use the  [saved_model2om.py](https://gitee.com/asc
 | --method_name | - Inference method when the TF Serving runtime is configured. If this parameter is not specified, the inference method is obtained from the original SavedModel file.<br>  - Optional. | /tensorflow/serving/predict |
 | --new_input_nodes | - Re-selects an input node. The format is "Operator:Type:Operator name;Operator:Type:Operator name".<br>  - Optional. | embedding:DT_FLOAT:bert/embedding/word_embeddings:0;add:DT_INT:bert/embedding/add:0 |
 | --new_output_nodes | - Re-selects an output node. The format is "Operator:Operator name".<br>  - Optional. | loss:loss/Softmax:0 |
-| --output_type | - Sets the output data type of the network or an output node. For details about how to use the option, see [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/aoe/auxiliarydevtool_aoe_0001.html) or [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/atctool/atlasatc_16_0001.html).<br>  - Optional. | node1:0:FP16 |
-| --input_fp16_nodes | - Sets the name of the input node whose input data type is FP16. For details about how to use the option, see [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/aoe/auxiliarydevtool_aoe_0001.html) or [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/atctool/atlasatc_16_0001.html).<br>  - Optional. | node_name1;node_name2 |
+| --output_type | - Sets the output data type of the network or an output node. For details about how to use the option, see [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html) or [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/atlasatc_16_0001.html).<br>  - Optional. | node1:0:FP16 |
+| --input_fp16_nodes | - Sets the name of the input node whose input data type is FP16. For details about how to use the option, see [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html) or [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/atlasatc_16_0001.html).<br>  - Optional. | node_name1;node_name2 |
 
 > [!NOTE]NOTE
 >This tool supports both ATC and AOE parameters.
 >
->- If  **--profiling**  is set, see  [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/aoe/auxiliarydevtool_aoe_0001.html).
->- If  **--profiling**  is not set, see  [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/atctool/atlasatc_16_0001.html).
+>- If  **--profiling**  is set, see  [AOE Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html).
+>- If  **--profiling**  is not set, see  [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/atlasatc_16_0001.html).
 >This tool does not support the  **--out_nodes**,  **--is_input_adjust_hw_layout**, and  **--is_output_adjust_hw_layout**  options of the ATC and AOE tools. The  **--out_nodes**  option can be replaced by the  **--new_output_nodes**  option in  in the preceding table.
 
 ## Conversion
@@ -184,7 +184,7 @@ This section describes how to use the  [saved_model2om.py](https://gitee.com/asc
     python3 saved_model2om.py --input_path "$HOME/inputpath/model" --output_path "$HOME/outputpath/model" --input_shape "input:16,224,224,3" --soc_version "Ascendxxx"
     ```
 
-    For the method of querying the value of **--soc_version**, please refer to the  [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/atctool/atlasatc_16_0001.html).
+    For the method of querying the value of **--soc_version**, please refer to the  [ATC Offline Model Builder](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/atlasatc_16_0001.html).
 
     If subgraph or operator tuning is required during the conversion, run the following command:
 

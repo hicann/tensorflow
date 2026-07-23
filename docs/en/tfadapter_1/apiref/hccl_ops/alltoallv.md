@@ -34,7 +34,7 @@ The result tensor after the  **all_to_all_v**  operation is performed on the inp
 
     In a cluster network, the communicators of 1p and 2p in a single server must be in the same cluster \(with devices 0–3 and devices 4–7 each belonging to a separate cluster\). In the communicators of 4p and 8p in a single server and multiple servers, the ranks must be based on the clusters, and the selected clusters in servers must be consistent.
 
-3. The performance of the AlltoAllV operation is related to the size of the buffer for storing shared data between NPUs. When the communication data size exceeds the buffer size, the performance deteriorates significantly. If the amount of AlltoAllV communication data is large, you are advised to increase the buffer size by setting the environment variable  **HCCL_BUFFSIZE**  to improve the communication performance. For details about  **HCCL_BUFFSIZE**, see  [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+3. The performance of the AlltoAllV operation is related to the size of the buffer for storing shared data between NPUs. When the communication data size exceeds the buffer size, the performance deteriorates significantly. If the amount of AlltoAllV communication data is large, you are advised to increase the buffer size by setting the environment variable  **HCCL_BUFFSIZE**  to improve the communication performance. For details about  **HCCL_BUFFSIZE**, see  [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclenvref_07_0005.html).
 4. Atlas training product: If a single server is used, the NIC must be in the  **up**  state. Otherwise, this API fails to be executed.
 
 ## Example

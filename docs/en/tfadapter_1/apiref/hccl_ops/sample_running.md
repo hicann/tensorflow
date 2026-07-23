@@ -6,7 +6,7 @@ This section uses the single-server 8-device networking and ranktable file as an
 
 1. Prepare the ranktable file.
 
-    For details about the configuration examples and parameter description of the ranktable file for different product forms, see  "Reference" \> "Cluster Information Configuration"  in the  _[HCCL User Guide](https://www.hiascend.com/document/detail/en/canncommercial/850/commlib/hcclug/hcclug_000001.html)_.
+    For details about the configuration examples and parameter description of the ranktable file for different product forms, see  "Reference" \> "Cluster Information Configuration"  in the  _[HCCL User Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html)_.
 
 2. Construct the startup script.
 

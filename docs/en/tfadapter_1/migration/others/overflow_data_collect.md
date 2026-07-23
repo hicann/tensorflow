@@ -67,4 +67,4 @@ with tf.Session(config=config) as sess:
 
 By default, the generated overflow/underflow operator data file is stored in the  **_\{dump_path\}/\{time\}/\{device_id\}/\{model_name\}/\{model_id\}/\{data_index\}_**  directory, for example,  **/home/HwHiAiUser/output/20200808163566/0/npu_cluster_0/11/0**. If no overflow/underflow data is collected, that is, no overflow occurs, the preceding directory is not generated.
 
-For details about overflow/underflow data files and how to parse them, see  Extended Functions \> Overflow/Underflow Operator Data Collection and Analysis  in  [Accuracy Analyzer](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/ModelAccuracyAnalyzer/atlasaccuracy_16_1000.html).
+For details about overflow/underflow data files and how to parse them, see  Extended Functions \> Overflow/Underflow Operator Data Collection and Analysis  in  [Accuracy Analyzer](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/ModelAccuracyAnalyzer/atlasaccuracy_16_0001.html).

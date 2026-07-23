@@ -176,7 +176,7 @@ If the  **initialize_system**  API needs to be called and the following function
         ```
 
     - If the value of this parameter is not  **0**, you can use the  **debug_dir**  parameter to specify the path for storing debugging-related process files.
-    - If this parameter is set to  **0**  and  **NPU_COLLECT_PATH**  is set, the operator compilation directory  **kernel_meta**  is generated in the current path after the command is executed. If  **ASCEND_WORK_PATH**  is set,  **kernel_meta**  is generated in the path specified by the environment variable. For details about environment variables, see  [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+    - If this parameter is set to  **0**  and  **NPU_COLLECT_PATH**  is set, the operator compilation directory  **kernel_meta**  is generated in the current path after the command is executed. If  **ASCEND_WORK_PATH**  is set,  **kernel_meta**  is generated in the path specified by the environment variable. For details about environment variables, see  [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
     - When the debug function is enabled, if the model contains the following merged compute and communication \(MC2\) operators, the  **\*.o**,  **\*.json**, and  **\*.cce**  files of the operators are not generated in the operator build folder  **kernel_meta**.
 
     ```text

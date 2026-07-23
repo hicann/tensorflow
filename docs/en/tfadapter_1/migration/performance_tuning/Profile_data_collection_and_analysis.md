@@ -324,7 +324,7 @@ export PROFILING_MODE=true
 export PROFILING_OPTIONS='{"output":"/home/test/output","training_trace":"on","task_trace":"on","aicpu":"on","fp_point":"","bp_point":"","aic_metrics":"PipeUtilization"}'
 ```
 
-For details about how to set the  **PROFILING_OPTIONS**  environment variable, see  Profile Data Collection  in  [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+For details about how to set the  **PROFILING_OPTIONS**  environment variable, see  Profile Data Collection  in  [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Note that the environment variable  **PROFILING_MODE**  takes lower priority than the  **profiling_mode**  configuration item in the training script.
 
@@ -403,13 +403,13 @@ The following uses the msprof command line as an example to describe how to pars
     ./msprof --export=on --output=/home/test/profiling_output
     ```
 
-    For details about the Profiling tool, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/Profiling/atlasprofiling_16_0144.html).
+    For details about the Profiling tool, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/Profiling/atlasprofiling_16_0001.html).
 
 ## Analyzing Profile Data
 
 Developers can identify performance bottlenecks by analyzing the timeline and summary files obtained by parsing the profile data with the profiling tool.
 
-The following describes key profile data files and analysis methods. For details about more profile data files, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/Profiling/atlasprofiling_16_0144.html).
+The following describes key profile data files and analysis methods. For details about more profile data files, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/Profiling/atlasprofiling_16_0001.html).
 
 - Timeline file:  **step_trace_\*.csv**
 

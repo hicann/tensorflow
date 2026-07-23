@@ -6,7 +6,7 @@ Prepare a dataset and upload it to a directory in the operating environment, for
 
 ## Preparing the Ranktable File
 
-For details about the rank table file example and description, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+For details about the rank table file example and description, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 ## Setting Environment Variables
 

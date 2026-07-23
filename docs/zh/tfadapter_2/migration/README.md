@@ -25,7 +25,7 @@
   - [整网数据比对](./accuracy_debugging/network_accuracy_comparison.md)
   - [随机错误检测](./accuracy_debugging/random_error_detection.md)
   - [跨版本精度问题检测](./accuracy_debugging/version-related_accuracy_issue_detection.md)
-  - [参考](./accuracy_debugging/references.md)
+  - [参考](./accuracy_debugging/appendixes.md)
     - [precision_tool命令参考](./accuracy_debugging/precision_tool_ommand_ref.md)
     - [整网精度比对结果文件说明](./accuracy_debugging/network_accuracy_comparison_result_file.md)
 

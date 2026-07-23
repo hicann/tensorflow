@@ -12,7 +12,7 @@ export RANK_ID=0
 
 ## Constraints
 
-The value of this environment variable must be the same as that of the  **rank_id**  field in the rank table file. For details about the rank table configuration file, see "Reference \> Cluster Information Configuration" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+The value of this environment variable must be the same as that of the  **rank_id**  field in the rank table file. For details about the rank table configuration file, see "Reference \> Cluster Information Configuration" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 ## Applicability
 

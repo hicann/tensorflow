@@ -108,7 +108,7 @@ The following describes how to use the tool to port a ResNet-50 network.
     }
     ```
 
-    For details about the rank table configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+    For details about the rank table configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 2. Configure the environment variables required for starting the training process.
 
@@ -170,7 +170,7 @@ The following describes how to use the tool to port a ResNet-50 network.
     }
     ```
 
-    For details about the rank table configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+    For details about the rank table configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 2. Start the training processes in different shells.
 

@@ -13,7 +13,7 @@ When multiple models are loaded in a session, if the weights of these models can
 
 If the environment variable ASCEND_WORK_PATH is not configured in the environment, the weight files are flushed to the current execution directory tmp_weight_<pid\>_<sessionid\>.
 
-If ASCEND_WORK_PATH is configured in the environment, the weight files are flushed to the ${ASCEND_WORK_PATH}/tmp_weight_<pid\>_<sessionid\> directory. For details about ASCEND_WORK_PATH, see Installation and Configuration in [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+If ASCEND_WORK_PATH is configured in the environment, the weight files are flushed to the ${ASCEND_WORK_PATH}/tmp_weight_<pid\>_<sessionid\> directory. For details about ASCEND_WORK_PATH, see Installation and Configuration in [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 When the model is uninstalled, the tmp_weight_<pid\>_<sessionid\> directory is automatically deleted.
 

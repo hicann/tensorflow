@@ -351,4 +351,4 @@ export DUMP_GRAPH_PATH=/home/dumpgraph
 
 ## Model Accuracy Analysis
 
-You can use Model Accuracy Analyzer to analyze the dump data by referring to  Extended Functions \> Viewing Dump Files  in  [Accuracy Analyzer](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/ModelAccuracyAnalyzer/atlasaccuracy_16_1000.html).
+You can use Model Accuracy Analyzer to analyze the dump data by referring to  Extended Functions \> Viewing Dump Files  in  [Accuracy Analyzer](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/ModelAccuracyAnalyzer/atlasaccuracy_16_0001.html).

@@ -16,7 +16,7 @@ Whether to dump data of exception operators.
 > [!NOTE]NOTE
 > If the environment variable NPU_COLLECT_PATH is configured, exception operator data is dumped in accordance with mode 1 (common ExceptionDump) regardless of the value of enable_exception_dump, and the dump data is stored in the directory specified by NPU_COLLECT_PATH.
 
-For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Example:
 
@@ -151,7 +151,7 @@ The path priority for storing the debugging files generated during operator comp
 
 debug_dir > ASCEND_WORK_PATH > default storage path (current script execution path).
 
-For details about the environment variable ASCEND_WORK_PATH, see [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+For details about the environment variable ASCEND_WORK_PATH, see [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Example:
 
@@ -178,7 +178,7 @@ The fusion_result.json file records the fusion patterns used during graph compil
 
 NOTE:
 
-- If ASCEND_WORK_PATH is not configured in the environment, the operator fusion result is saved to the fusion_result.json file in the current execution directory. If ASCEND_WORK_PATH is configured, the operator fusion result is saved to the $ASCEND_WORK_PATH/FE/${Process ID}/fusion_result.json file. For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+- If ASCEND_WORK_PATH is not configured in the environment, the operator fusion result is saved to the fusion_result.json file in the current execution directory. If ASCEND_WORK_PATH is configured, the operator fusion result is saved to the $ASCEND_WORK_PATH/FE/${Process ID}/fusion_result.json file. For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 - The fusion patterns disabled by fusion_switch_file are not displayed in fusion_result.json.
 
 Example:

@@ -11,7 +11,7 @@ The default splitting strategy is two segments with the first taking up 96.54% o
 You need to use the Profiling tool to analyze the iteration traces of the training process to determine the gradient splitting strategy and improve the training performance in distributed scenarios.
 
 > [!NOTE]NOTE
->For details, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/canncommercial/900/devaids/Profiling/atlasprofiling_16_0144.html).
+>For details, see  [Performance Tuning Tool](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/Profiling/atlasprofiling_16_0001.html).
 
 Iteration tracing is to trace the software status of a training job and the AI software stack, which can be used to analyze the performance of a training job. If the default two-segment gradient splitting strategy is applied, the following iteration traces of a training job are printed to describe the job execution status in an iteration:  **fp_start**,  **bp_end**,  **allreduce1_start**,  **allreduce1_end**,  **allreduce2_start**,  **allreduce2_end**, and  **Iteration_end**  in the training job.
 
@@ -66,7 +66,7 @@ from hccl.split.api import set_split_strategy_by_size
 set_split_strategy_by_size([60, 20, 20])
 ```
 
-For details about the detailed API description of  **set_split_strategy_by_idx**  and  **set_split_strategy_by_size**, see "API Reference" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+For details about the detailed API description of  **set_split_strategy_by_idx**  and  **set_split_strategy_by_size**, see "API Reference" in  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 Call either of the preceding APIs before the Allreduce call \(the collective communication API must be initialized\).
 

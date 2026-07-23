@@ -58,10 +58,9 @@ npu.global_options().shape_generalization_mode = "FULL"
 
 ## auto_multistream_parallel_mode
 
-This option applies only to graphs with a static shape. You can enable parallel execution of Cube and Vector operators to improve graph execution performance.
+This option applies to static and dynamic shape graph scenarios. You can enable parallel execution of Cube and Vector operators to improve graph execution performance.
 
 - **cv**, Parallel execution of Cube and Vector operators is enabled.
-- **LoadBalance**, Load balancing algorithm that distributes all operators evenly across 8 streams for execution.
 - **LoadBalance:n**, Load balancing algorithm that distributes all operators evenly across n streams for execution. Here, n represents the maximum number of streams, which must be a positive integer within the range [1, 64]. If n exceeds the number of available cores, performance may degrade.
 - **MainStream:n**，Main stream algorithm that executes serial operators on the main stream, while other parallelizable operators are distributed across other streams. Here, n represents the maximum number of streams, which must be a positive integer within the range [1, 64]. If n exceeds the number of available cores, performance may degrade.
 - The default value is empty, meaning Cube and Vector operators are executed serially.
@@ -69,7 +68,7 @@ This option applies only to graphs with a static shape. You can enable parallel 
 > [!NOTE]NOTE
 >
 > - This option is used only for recommendation networks.
-> - Parallel execution of operators cannot be enabled at the same time as the multi-stream concurrency function (configured by the ENABLE_DYNAMIC_SHAPE_MULTI_STREAM environment variable).For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+> - To use this function in dynamic shape multi-stream mode, you need to first enable dynamic shape multi-stream by setting the environment variable ENABLE_DYNAMIC_SHAPE_MULTI_STREAM, and then configure this option. For details about environment variables, see [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Configuration example:
 

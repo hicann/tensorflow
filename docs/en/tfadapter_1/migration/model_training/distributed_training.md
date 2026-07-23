@@ -15,7 +15,7 @@ Currently, resource information can be configured using configuration files or e
   - Atlas A2 training product/Atlas A2 inference product
   - Atlas training product
 
-For details about the restrictions on the usage of the environment variables  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH** mentioned below and the description of the flushed files, see  Installation and Configuration  in  [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+For details about the restrictions on the usage of the environment variables  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH** mentioned below and the description of the flushed files, see  Installation and Configuration  in  [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 > [!NOTE]NOTE
 > Before setting the environment variables, run the  **env**  command to check whether  **ASCEND_CACHE_PATH**  and  **ASCEND_WORK_PATH**  exist. It is recommended that all functions use the same planned path.
@@ -35,7 +35,7 @@ You can configure the NPU resources for collective communication in the rank tab
 
 ### Preparing the Rank Table Resource Configuration File
 
-The rank table is in JSON format and records the information of all NPUs involved in collective communication. You can prepare the rank table resource configuration file as described in  Reference \> Cluster Information Configuration  of  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+The rank table is in JSON format and records the information of all NPUs involved in collective communication. You can prepare the rank table resource configuration file as described in  Reference \> Cluster Information Configuration  of  [Huawei Collective Communication Library \(HCCL\)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
 ### Single-Server Multi-Device Scenario
 
@@ -366,7 +366,7 @@ After distributed training is complete, you can check the execution result and l
 
     You can spot the fault by checking the host log file  **plog_\*.log**  in  **$HOME/ascend/log/run/plog**  where  **$HOME**  is the root directory of the host user.
 
-    If the execution succeeds on a single device but fails on multiple devices, the issue is typically related to collective communication, as shown in the following figure. For details, see section "FAQs" in  [Huawei Collective Communication Library (HCCL)](https://www.hiascend.com/document/detail/en/canncommercial/900/API/hcclug/hcclug_000001.html).
+    If the execution succeeds on a single device but fails on multiple devices, the issue is typically related to collective communication, as shown in the following figure. For details, see section "FAQs" in  [Huawei Collective Communication Library (HCCL)](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/hcclug/hcclug_000001.html).
 
     ![](../figures/hccl_faq.png)
 
@@ -379,7 +379,7 @@ Path of the run logs generated when the app is running on the device:  **\$HOME/
 **$HOME**  indicates the root directory of the user on the host.
 
 > [!NOTE]NOTE
-> For more information, see  [Log Reference](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/logreference/logreference_0001.html).
+> For more information, see  [Log Reference](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/logreference/logreference_0001.html).
 
 You can identify the error module and determine the cause by using ERROR-level logs.
 

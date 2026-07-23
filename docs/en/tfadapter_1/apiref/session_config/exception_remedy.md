@@ -22,7 +22,7 @@ You can set the timeout interval if the default value does not meet your require
   For example, if hccl_timeout is set to 600, the actual timeout interval set in the system is 544s (600 // 68 × 68 = 8 × 68).
 
 > [!NOTE]NOTE
-> The priority of hccl_timeout supersedes that of the environment variable HCCL_EXEC_TIMEOUT. If both hccl_timeout and HCCL_EXEC_TIMEOUT are configured, hccl_timeout is used. For details about HCCL_EXEC_TIMEOUT, see [Environment Variables](https://www.hiascend.com/document/detail/en/canncommercial/900/maintenref/envvar/envref_07_0001.html).
+> The priority of hccl_timeout supersedes that of the environment variable HCCL_EXEC_TIMEOUT. If both hccl_timeout and HCCL_EXEC_TIMEOUT are configured, hccl_timeout is used. For details about HCCL_EXEC_TIMEOUT, see [Environment Variables](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/envvar/envref_07_0001.html).
 
 Example:
 
