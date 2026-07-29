@@ -386,6 +386,7 @@ TensorFlow原始代码：
 ```python
 from tensorflow.python.keras.layers import Input, Dense
 from tensorflow.python.keras.models import Model
+from tensorflow.python.keras.applications import ResNet50
 
 # This returns a tensor
 inputs = Input(shape=(224, 224, 3))
