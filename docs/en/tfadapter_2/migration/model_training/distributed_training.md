@@ -33,7 +33,7 @@ For details about the restrictions on the usage of the environment variables  **
 
 You can configure the NPU resources for collective communication in the rank table file, and specify the NPU resources to use when starting the training process.
 
-The rank table is in JSON format and records the information of all NPUs involved in collective communication. You can prepare the rank table resource configuration file as described in  "Reference" \> "Cluster Information Configuration"  of  _[HCCL User Guide](https://hiascend.com/document/redirect/CannCommunityHcclUg)_.
+The rank table is in JSON format and records the information of all NPUs involved in collective communication. You can prepare the rank table resource configuration file as described in  "Reference" \> "Cluster Information Configuration"  of  _[HCCL User Guide](https://hiascend.com/en/document/redirect/CannCommunityHcclUg)_.
 
 ### Single-Server Multi-Device Scenario
 

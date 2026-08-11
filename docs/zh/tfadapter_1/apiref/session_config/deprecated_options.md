@@ -1,8 +1,8 @@
 # 后续版本废弃配置
 
-以下参数在后续版本将废弃，建议开发者不再使用。
-
 ## op_debug_level
+
+> 该参数后续版本将废弃，建议使用[op_debug_config](./debugging.md#op_debug_config)。
 
 功能调试配置项，算子debug功能开关。
 
@@ -60,6 +60,8 @@ custom_op.parameter_map["op_debug_level"].i = 0
 
 ## enable_data_pre_proc
 
+> 当前版本该参数不再生效，系统会自适应判断GetNext算子是否下沉到NPU执行。
+
 性能调优配置项，用于配置GetNext算子是否下沉到NPU侧执行。GetNext算子下沉是使能训练迭代循环下沉的必要条件。
 
 - True：下沉，GetNext算子下沉的前提是必须使用TensorFlow Dataset方式读数据。
@@ -72,6 +74,8 @@ custom_op.parameter_map["enable_data_pre_proc"].b = True
 ```
 
 ## variable_format_optimize
+
+> 该参数为功能调试开关，后续版本将废弃，不建议用户使用。
 
 性能调优配置项，用户配置是否开启变量格式优化。
 
@@ -90,7 +94,11 @@ custom_op.parameter_map["variable_format_optimize"].b =  True
 
 ## op_select_implmode
 
-性能调优配置项，NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。取值包括：
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
+
+性能调优配置项，NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。
+
+该参数取值包括：
 
 - high_precision：表示算子选择高精度实现。高精度实现算子是指在fp16输入的情况下，通过泰勒展开/牛顿迭代等手段进一步提升算子的精度。
 - high_performance：表示算子选择高性能实现。高性能实现算子是指在fp16输入的情况下，不影响网络精度前提的最优性能实现。
@@ -104,6 +112,8 @@ custom_op.parameter_map["op_select_implmode"].s = tf.compat.as_bytes("high_preci
 ```
 
 ## optypelist_for_implmode
+
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
 
 性能调优配置项，列举算子optype的列表，该列表中的算子使用op_select_implmode参数指定的模式，当前支持的算子为Pooling、SoftmaxV2、LRN、ROIAlign，多个算子以英文逗号分隔。
 
@@ -123,6 +133,8 @@ custom_op.parameter_map["optypelist_for_implmode"].s = tf.compat.as_bytes("Pooli
 
 ## dynamic_input
 
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
+
 当前网络的输入是否为动态输入，取值包括：
 
 - True：动态输入。
@@ -136,6 +148,8 @@ custom_op.parameter_map["dynamic_input"].b = True
 
 ## dynamic_graph_execute_mode
 
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
+
 对于动态输入场景，需要通过该参数设置执行模式，即dynamic_input为True时该参数生效。取值为：
 
 dynamic_execute：动态图编译模式。该模式下获取dynamic_inputs_shape_range中配置的shape范围进行编译。
@@ -147,6 +161,8 @@ custom_op.parameter_map["dynamic_graph_execute_mode"].s = tf.compat.as_bytes("dy
 ```
 
 ## dynamic_inputs_shape_range
+
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
 
 动态输入的shape范围。例如全图有3个输入，两个为dataset输入，一个为placeholder输入，则配置示例为：
 
