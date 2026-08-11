@@ -19,4 +19,4 @@ If the TensorFlow network contains operators that are not supported by CANN, you
 3. Build and deploy the operator project. Build and generate the custom operator installation package, install the operator package, and deploy the custom operator to the operator acceleration library.
 4. Call the operator in TensorFlow.
 
-For details about the preceding process, see  Programming Guide \> Appendixes \> AI Framework Operator Adaptation \> TensorFlow Framework  in  [Ascend C Operator Development](https://hiascend.com/document/redirect/CannCommunityOpdevAscendC).
+For details about the preceding process, see  Programming Guide \> Appendixes \> AI Framework Operator Adaptation \> TensorFlow Framework  in  [Ascend C Operator Development](https://hiascend.com/en/document/redirect/CannCommunityOpdevAscendC).

@@ -319,7 +319,7 @@ python3 resnet_ctl_imagenet_main.py \
 >
 > - Replace  **/path/to/rank_table.json**  with the NPU distributed configuration file that meets your setup requirements.
 > - Replace  **/path/to/imagenet_TF/**  with the actual dataset directory.
-> - In this example, the resource information of the  AI processor  is configured in the configuration file \(that is, a rank table file\). For details about the configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://hiascend.com/document/redirect/CannCommunityHcclUg). Alternatively, you can use environment variables to specify resource information of the  AI processor. For details, see  [Training Execution \(Setting Environment Variables\)](../model_training/distributed_training.md#training-execution-configuring-resources-via-environment-variables).
+> - In this example, the resource information of the  AI processor  is configured in the configuration file \(that is, a rank table file\). For details about the configuration file, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://hiascend.com/en/document/redirect/CannCommunityHcclUg). Alternatively, you can use environment variables to specify resource information of the  AI processor. For details, see  [Training Execution \(Setting Environment Variables\)](../model_training/distributed_training.md#training-execution-configuring-resources-via-environment-variables).
 
 Add the  **models**  directory to  **PYTHONPATH**  according to the description in  **official/vision/image_classification/resnet/README.md**. For example, if the  **models**  directory is  **/path/to/models**, set the environment variable as follows:
 

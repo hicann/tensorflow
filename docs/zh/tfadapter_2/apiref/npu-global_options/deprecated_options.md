@@ -2,7 +2,9 @@
 
 ## op_select_implmode
 
-NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。取值包括
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
+
+NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。
 
 - high_precision：表示算子选择高精度实现。高精度实现算子是指在fp16输的情况下，通过泰勒展开/牛顿迭代等手段进一步提升算子的精度。
 - high_performance：表示算子选择高性能实现。高性能实现算子是指在fp16入的情况下，不影响网络精度前提的最优性能实现。
@@ -17,6 +19,8 @@ npu.global_options().op_select_implmode="high_precision"
 
 ## optypelist_for_implmode
 
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
+
 列举算子optype的列表，该列表中的算子使用op_select_implmode参数指定的模式，当前支持的算子为Pooling、SoftmaxV2、LRN、ROIAlign，多个算子以“,”分隔。
 
 该参数需要与op_select_implmode参数配合使用，配置示例：
@@ -29,6 +33,8 @@ npu.global_options().optypelist_for_implmode="Pooling,SoftmaxV2"
 默认值为None，代表不使能此配置。
 
 ## variable_format_optimize
+
+> 该参数为功能调试开关，后续版本将废弃，不建议用户使用。
 
 是否开启变量格式优化。
 
@@ -47,7 +53,9 @@ npu.global_options().variable_format_optimize=True
 
 ## op_debug_level
 
-算子debug功能开关，取值：
+> 该参数后续版本将废弃，建议使用[op_debug_config](./debugging.md#op_debug_config)。
+
+算子debug功能开关。
 
 - 0：不开启算子debug功能。
 - 1：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成BE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o.json文件），用于后续工具进行AI Core Error问题定位。

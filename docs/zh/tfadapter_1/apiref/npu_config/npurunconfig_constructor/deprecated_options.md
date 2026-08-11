@@ -1,8 +1,8 @@
 # 后续版本废弃配置
 
-如下配置在后续版本即将废弃，请不要使用如下配置。
-
 ## enable_data_pre_proc
+
+> 当前版本该参数不再生效，系统会自适应判断GetNext算子是否下沉到NPU执行。
 
 性能调优相关配置，用于指定GetNext算子是否下沉到NPU侧执行，GetNext算子下沉是使能训练迭代循环下沉的必要条件。
 
@@ -16,6 +16,8 @@ config = NPURunConfig(enable_data_pre_proc=True)
 ```
 
 ## variable_format_optimize
+
+> 该参数为功能调试开关，后续版本将废弃，不建议用户使用。
 
 性能调优相关配置，是否开启变量格式优化。
 
@@ -34,7 +36,9 @@ config = NPURunConfig(variable_format_optimize=True)
 
 ## op_debug_level
 
-算子debug功能开关，取值：
+> 该参数后续版本将废弃，建议使用[op_debug_config](./debugging.md#op_debug_config)参数。
+
+算子debug功能开关。
 
 - 0：不开启算子debug功能。
 - 1：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成TBE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o和.json文件），用于后续工具进行AI Core Error问题定位。
@@ -91,7 +95,9 @@ config = NPURunConfig(op_debug_level=1)
 
 ## op_select_implmode
 
-NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。取值包括：
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
+
+NPU内置算子有高精度和高性能实现方式，用户可以通过该参数配置模型编译时选择哪种算子。
 
 - high_precision：表示算子选择高精度实现。高精度实现算子是指在fp16输入的情况下，通过泰勒展开/牛顿迭代等手段进一步提升算子的精度。
 - high_performance：表示算子选择高性能实现。高性能实现算子是指在fp16输入的情况下，不影响网络精度前提的最优性能实现。
@@ -106,9 +112,11 @@ config = NPURunConfig(op_select_implmode="high_precision")
 
 ## optypelist_for_implmode
 
+> 该参数后续版本将废弃，建议使用[op_precision_mode](./performance_tuning.md#op_precision_mode)参数。
+
 列举算子optype的列表，该列表中的算子使用op_select_implmode参数指定的模式，当前支持的算子为Pooling、SoftmaxV2、LRN、ROIAlign，多个算子以“,”分隔。
 
-该参数需要与op_select_implmode参数配合使用，配置示例：
+`optypelist_for_implmode`参数需要与op_select_implmode参数配合使用，配置示例：
 
 ```python
 config = NPURunConfig(
@@ -119,6 +127,8 @@ config = NPURunConfig(
 默认值为空，代表不使能此配置。
 
 ## dynamic_input
+
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
 
 当前网络的输入是否为动态输入，取值包括：
 
@@ -133,6 +143,8 @@ config = NPURunConfig(dynamic_input=True)
 
 ## dynamic_graph_execute_mode
 
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
+
 对于动态输入场景，需要通过该参数设置执行模式，即dynamic_input为True时该参数生效。取值为：
 
 dynamic_execute：动态图编译模式。该模式下获取dynamic_inputs_shape_range中配置的shape范围进行编译。
@@ -144,6 +156,8 @@ config = NPURunConfig(dynamic_graph_execute_mode="dynamic_execute")
 ```
 
 ## dynamic_inputs_shape_range
+
+> 该参数后续版本将废弃，不建议开发者使用。当前版本已默认支持动态shape网络，可参见[jit_compile](./experiment_options.md#jit_compile)参数。
 
 动态输入的shape范围。例如全图有3个输入，两个为dataset输入，一个为placeholder输入，则配置示例为：
 

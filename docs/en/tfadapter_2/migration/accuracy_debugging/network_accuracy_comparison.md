@@ -112,7 +112,7 @@ Generally, dump of the first step is enough for comparison and analysis. To avoi
     ```
 
     > [!NOTE]NOTE
-    > In addition to this method, you can find another mode to collect dump data in  [Accuracy Analyzer](https://hiascend.com/document/redirect/CannCommunityToolAccucacy). However, the configuration is complex, and you need to manually extract the dump data and save it to the required directory for analysis. Note that the two modes are mutually exclusive.
+    > In addition to this method, you can find another mode to collect dump data in  [Accuracy Analyzer](https://hiascend.com/en/document/redirect/CannCommunityToolAccucacy). However, the configuration is complex, and you need to manually extract the dump data and save it to the required directory for analysis. Note that the two modes are mutually exclusive.
 
 3. Run training. The dump graph and dump data files of GE are generated in the  **precision_data/npu/debug_0**  directory.
 

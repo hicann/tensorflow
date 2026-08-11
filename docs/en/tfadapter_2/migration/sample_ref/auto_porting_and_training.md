@@ -147,7 +147,7 @@ The following uses 2-device training as an example to describe how to use the po
 1. Prepare a 2-device rank table resource configuration file. Assume that the file is named  **rank_table_2p.json**. The following provides a file template.
 
     > [!NOTE]NOTE
-    > The rank table file format may vary with the  AI processor  model. The following information is for reference only. For details about the rank table configuration, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://hiascend.com/document/redirect/CannCommunityHcclUg).
+    > The rank table file format may vary with the  AI processor  model. The following information is for reference only. For details about the rank table configuration, see  Reference \> Cluster Information Configuration  in  [Huawei Collective Communication Library \(HCCL\)](https://hiascend.com/en/document/redirect/CannCommunityHcclUg).
 
     ```json
     { 

@@ -171,7 +171,7 @@ The following uses the msprof command line as an example to describe how to pars
 
 Developers can identify performance bottlenecks by analyzing the timeline and summary files obtained by parsing the profile data with the Profiling tool.
 
-The following describes only key profile data files. For details about more profile data files, see  _[Profiling Instructions](https://hiascend.com/document/redirect/CannCommunityToolProfiling)_.
+The following describes only key profile data files. For details about more profile data files, see  _[Profiling Instructions](https://hiascend.com/en/document/redirect/CannCommunityToolProfiling)_.
 
 - Timeline file:  **step_trace_\*.csv**
 
