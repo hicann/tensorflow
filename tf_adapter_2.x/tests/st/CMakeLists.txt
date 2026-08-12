@@ -25,21 +25,21 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../npu_ops npu_ops)
 
 add_custom_target(adapter2_st ALL
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_st
-    COMMAND lcov -c -q -d . -o st_p1.coverage && lcov -q -e st_p1.coverage "*npu_device*" -o st_p1.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p1.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p1.coverage "*npu_device*" -o st_p1.coverage
     COMMAND export GE_USE_STATIC_MEMORY=1 && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_st.Adapter2St_EnvGeStaticMemory
-    COMMAND lcov -c -q -d . -o st_p2.coverage && lcov -q -e st_p2.coverage "*npu_device*" -o st_p2.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p2.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p2.coverage "*npu_device*" -o st_p2.coverage
     COMMAND cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_aoe_st
-    COMMAND lcov -c -q -d . -o st_p3.coverage && lcov -q -e st_p3.coverage "*npu_device*" -o st_p3.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p3.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p3.coverage "*npu_device*" -o st_p3.coverage
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_jit_compile_st
-    COMMAND lcov -c -q -d . -o st_p4.coverage && lcov -q -e st_p4.coverage "*npu_device*" -o st_p4.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p4.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p4.coverage "*npu_device*" -o st_p4.coverage
     COMMAND cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_options.Adapter2Options
-    COMMAND lcov -c -q -d . -o st_p5.coverage && lcov -q -e st_p5.coverage "*npu_device*" -o st_p5.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p5.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p5.coverage "*npu_device*" -o st_p5.coverage
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_compile_dynamic_mode_st
-    COMMAND lcov -c -q -d . -o st_p6.coverage && lcov -q -e st_p6.coverage "*npu_device*" -o st_p6.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p6.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p6.coverage "*npu_device*" -o st_p6.coverage
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_shape_generalization_mode_st
-    COMMAND lcov -c -q -d . -o st_p7.coverage && lcov -q -e st_p7.coverage "*npu_device*" -o st_p7.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p7.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p7.coverage "*npu_device*" -o st_p7.coverage
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_shape_generalization_mode_ignore_st
-    COMMAND lcov -c -q -d . -o st_p8.coverage && lcov -q -e st_p7.coverage "*npu_device*" -o st_p8.coverage
+    COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p8.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p8.coverage "*npu_device*" -o st_p8.coverage
     COMMAND lcov -o st.coverage -a st_p1.coverage -a st_p2.coverage -a st_p3.coverage -a st_p4.coverage -a st_p5.coverage -a st_p6.coverage -a st_p7.coverage -a st_p8.coverage
     DEPENDS _npu_ops _npu_device_backends aoe_tuning
     VERBATIM)

@@ -137,6 +137,14 @@ main() {
   if [[ "X$ENABLE_TFADAPTER_UT" = "Xoff" ]] && [[ "X$ENABLE_TFADAPTER_ST" = "Xoff" ]] && [[ "X$ENABLE_CI_BUILD" = "Xon" ]]; then
     release_tfadapter
   fi
+  LCOV_MAJOR=$(lcov --version 2>/dev/null | head -n1 | sed 's/.*version \([0-9]*\).*/\1/')
+  if [[ "${LCOV_MAJOR:-0}" -ge 2 ]]; then
+    LCOV_IGNORE_CAPTURE="--ignore-errors mismatch,mismatch,gcov"
+    LCOV_IGNORE_REMOVE="--ignore-errors unused,unused"
+  else
+    LCOV_IGNORE_CAPTURE=""
+    LCOV_IGNORE_REMOVE=""
+  fi
   if [[ "X$ENABLE_TFADAPTER_UT" = "Xon" ]]; then
     cd ${BASE_PATH}
     export ASCEND_OPP_PATH=${BASE_PATH}/tf_adapter/tests/depends/support_json
@@ -152,8 +160,8 @@ main() {
     logging "Generating coverage statistics, please wait..."
     rm -rf ${BASE_PATH}/coverage
     mkdir ${BASE_PATH}/coverage
-    lcov -c -d ${CMAKE_PATH}/tf_adapter/tests/ut/ -o coverage/tmp.info
-    lcov -r coverage/tmp.info '*/tests/*' '*/nlohmann_json-src/*' '*/tensorflow-src/*' \
+    lcov ${LCOV_IGNORE_CAPTURE} -c -d ${CMAKE_PATH}/tf_adapter/tests/ut/ -o coverage/tmp.info
+    lcov ${LCOV_IGNORE_REMOVE} -r coverage/tmp.info '*/tests/*' '*/nlohmann_json-src/*' '*/tensorflow-src/*' \
       '*/inc/*' '*/output/*' '*/usr/*' '*/Eigen/*' '*/absl/*' '*/google/*' '*/tensorflow/core/*' \
       -o adapter1_coverage.info
     export LD_LIBRARY_PATH=${BASE_PATH}/tf_adapter_2.x/tests/build/:$LD_LIBRARY_PATH
@@ -175,8 +183,8 @@ main() {
     logging "Generating coverage statistics, please wait..."
     rm -rf ${BASE_PATH}/coverage
     mkdir ${BASE_PATH}/coverage
-    lcov -c -d ${CMAKE_PATH}/tf_adapter/tests/st/ -o coverage/tmp.info
-    lcov -r coverage/tmp.info '*/tests/*' '*/nlohmann_json-src/*' '*/tensorflow-src/*' \
+    lcov ${LCOV_IGNORE_CAPTURE} -c -d ${CMAKE_PATH}/tf_adapter/tests/st/ -o coverage/tmp.info
+    lcov ${LCOV_IGNORE_REMOVE} -r coverage/tmp.info '*/tests/*' '*/nlohmann_json-src/*' '*/tensorflow-src/*' \
       '*/inc/*' '*/output/*' '*/usr/*' '*/Eigen/*' '*/absl/*' '*/google/*' '*/tensorflow/core/*' \
       -o adapter1_coverage.info
     export LD_LIBRARY_PATH=${BASE_PATH}/tf_adapter_2.x/tests/build/:$LD_LIBRARY_PATH

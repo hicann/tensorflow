@@ -61,6 +61,7 @@ target_compile_options(tfadapter_stest PRIVATE
     -Wno-unused-but-set-parameter
     -Wno-unused-function
     -Wno-unused-result
+    -Wno-maybe-uninitialized
 )
 
 add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)

@@ -56,5 +56,25 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/tensorflow/module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/graph_engine/module.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/secure_c.cmake)
 
+# Detect lcov version for compatibility
+execute_process(
+    COMMAND lcov --version
+    OUTPUT_VARIABLE LCOV_VERSION_OUTPUT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+string(REGEX MATCH "version ([0-9]+)" _match "${LCOV_VERSION_OUTPUT}")
+set(LCOV_MAJOR_VERSION ${CMAKE_MATCH_1})
+if(NOT LCOV_MAJOR_VERSION)
+    set(LCOV_MAJOR_VERSION 0)
+endif()
+if(LCOV_MAJOR_VERSION GREATER_EQUAL 2)
+    set(LCOV_IGNORE_CAPTURE "--ignore-errors" "mismatch,mismatch,gcov")
+    set(LCOV_IGNORE_EXTRACT "--ignore-errors" "unused,unused")
+else()
+    set(LCOV_IGNORE_CAPTURE "")
+    set(LCOV_IGNORE_EXTRACT "")
+endif()
+
 add_subdirectory(ut)
 add_subdirectory(st)
