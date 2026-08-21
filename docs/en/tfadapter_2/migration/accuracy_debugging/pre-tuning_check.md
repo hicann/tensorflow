@@ -38,7 +38,7 @@ If the benchmark model does not meet the standard, check if the following condit
 - The dataset quality is high.
 - The hyperparameters are stable.
 
-**For a well-developed model \(using hyperparameter borrowing\):**
+**For a well-developed model \(We can use hyperparameter borrowing\):**
 
 1. Check the hyperparameters in use and ensure that they are consistent with the given benchmarks.
 2. For cluster training, check that the cluster training mode is the same as the given benchmark.
