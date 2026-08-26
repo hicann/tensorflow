@@ -449,9 +449,21 @@ aclError aclrtRecordEvent(aclrtEvent event, aclrtStream stream) {
   return ACL_ERROR_NONE;
 }
 
+int32_t g_aclrtMallocFailAfter = -1;
+
 aclError aclrtMalloc(void **devPtr, size_t size, aclrtMemMallocPolicy policy) {
+  if (g_aclrtMallocFailAfter == 0) {
+    return ACL_ERROR_BAD_ALLOC;
+  }
+  if (g_aclrtMallocFailAfter > 0) {
+    --g_aclrtMallocFailAfter;
+  }
   *devPtr = malloc(size);
   return ACL_ERROR_NONE;
+}
+
+void SetAclrtMallocFailAfter(int32_t call_count) {
+  g_aclrtMallocFailAfter = call_count;
 }
 
 aclError aclrtFree(void *devPtr) {
@@ -596,13 +608,14 @@ aclError aclmdlGetDesc(aclmdlDesc *modelDesc, uint32_t modelId) {
 
 bool g_output_dynamic = false;
 void SetOutputDynamic(const bool is_dynamic) {
-  g_output_dynamic = true;
+  g_output_dynamic = is_dynamic;
 }
 
 aclTensorDesc g_output_dynamic_desc;
 aclTensorDesc *aclmdlGetDatasetTensorDesc(const aclmdlDataset *dataset, size_t index) {
   if (g_output_dynamic) {
     g_output_dynamic_desc.dataType = ACL_FLOAT;
+    g_output_dynamic_desc.dims.clear();
     int64_t dim = 2;
     g_output_dynamic_desc.dims.emplace_back(dim);
     return &g_output_dynamic_desc;

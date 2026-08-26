@@ -13,7 +13,7 @@
 import os
 import time
 
-os.environ['ASCEND_OPP_PATH'] = 'non-existed-path'
+os.environ["ASCEND_OPP_PATH"] = "non-existed-path"
 
 import npu_device
 from npu_device.npu_device import stupid_repeat
@@ -30,12 +30,12 @@ npu_device.global_options().experimental.multi_branches_config.dynamic_node_type
 npu_device.global_options().experimental.multi_branches_config.dynamic_dims = "1;2"
 npu_device.global_options().aoe_config.work_path = "./"
 npu_device.global_options().graph_run_mode = 0
-npu_device.global_options().graph_compiler_cache_dir = "./st_graph_cache_dir";
-os.environ['CM_CHIEF_IP'] = "1"
-os.environ['CM_CHIEF_PORT'] = "3"
-os.environ['CM_CHIEF_DEVICE'] = "4"
+npu_device.global_options().graph_compiler_cache_dir = "./st_graph_cache_dir"
+os.environ["CM_CHIEF_IP"] = "1"
+os.environ["CM_CHIEF_PORT"] = "3"
+os.environ["CM_CHIEF_DEVICE"] = "4"
 # os.environ['CM_WORKER_SIZE'] = "2"
-os.environ['CM_WORKER_IP'] = "123"
+os.environ["CM_WORKER_IP"] = "123"
 npu = npu_device.open().as_default()
 npu.workers_num = 2  # mock run in 2P env
 
@@ -71,9 +71,9 @@ def foo_cpu_add_(v):
 class Adapter2St(unittest.TestCase):
     def test_set_device_sat_mode(self):
         set_device_sat_mode(2)
-        self.assertFalse(is_inf_nan_enabled());
+        self.assertFalse(is_inf_nan_enabled())
         set_device_sat_mode(1)
-        self.assertTrue(is_inf_nan_enabled());
+        self.assertTrue(is_inf_nan_enabled())
 
     def test_mix_resource(self):
         with context.device("/job:localhost/replica:0/task:0/device:CPU:0"):
@@ -121,10 +121,14 @@ class Adapter2St(unittest.TestCase):
     def test_basic7(self):  # Force run on npu by tensorflow
         x = tf.Variable(1)
         self.assertTrue(x.device == npu.name())
-        self.assertTrue(foo_cpu_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0")
+        self.assertTrue(
+            foo_cpu_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0"
+        )
         with context.device("/job:localhost/replica:0/task:0/device:CPU:0"):
             x = tf.Variable(1)
-        self.assertTrue(foo_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0")
+        self.assertTrue(
+            foo_add_(x).device == "/job:localhost/replica:0/task:0/device:CPU:0"
+        )
 
     def test_string_unimp1(self):
         x = tf.Variable(1)
@@ -134,7 +138,9 @@ class Adapter2St(unittest.TestCase):
             x.assign_add(1)
             return tf.strings.to_number(v1 + v2)
 
-        self.assertTrue(tensor_equal(f(tf.constant('1'), tf.constant('2')), tf.constant(12)))
+        self.assertTrue(
+            tensor_equal(f(tf.constant("1"), tf.constant("2")), tf.constant(12))
+        )
 
     def test_string_unimp2(self):
         x = tf.Variable(1)
@@ -144,27 +150,32 @@ class Adapter2St(unittest.TestCase):
             x.assign_add(1)
             return v1 + v2
 
-        self.assertTrue(tensor_equal(f(tf.constant('1'), tf.constant('2')), tf.constant('12')))
+        self.assertTrue(
+            tensor_equal(f(tf.constant("1"), tf.constant("2")), tf.constant("12"))
+        )
 
     def test_string_fallback_cpu1(self):
         @tf.function
         def f(v1, v2):
             return tf.strings.to_number(v1 + v2)
 
-        self.assertTrue(tensor_exact_equal(f(tf.constant('1'), tf.constant('2')), tf.constant(12.0)))
+        self.assertTrue(
+            tensor_exact_equal(f(tf.constant("1"), tf.constant("2")), tf.constant(12.0))
+        )
 
     def test_string_output_ref_input(self):
         @tf.function
         def f(v1, v2):
             return v1, v2
 
-        x, y = f(tf.constant(1.0), tf.constant('abc'))
+        x, y = f(tf.constant(1.0), tf.constant("abc"))
 
         self.assertTrue(tensor_exact_equal(x, tf.constant(1.0)))
-        self.assertTrue(tensor_exact_equal(y, tf.constant('abc')))
+        self.assertTrue(tensor_exact_equal(y, tf.constant("abc")))
 
     def test_resource_output_ref_input(self):
         from tensorflow.python.ops import resource_variable_ops
+
         v = resource_variable_ops.VarHandleOp(dtype=tf.float32, shape=())
 
         @tf.function
@@ -177,7 +188,9 @@ class Adapter2St(unittest.TestCase):
         self.assertTrue(tensor_equal(y, v))
 
     def test_string_fallback_cpu2(self):
-        self.assertTrue(tensor_equal(foo_add(tf.constant('1'), tf.constant('2')), tf.constant('12')))
+        self.assertTrue(
+            tensor_equal(foo_add(tf.constant("1"), tf.constant("2")), tf.constant("12"))
+        )
 
     def test_checkpoint(self):
         step = tf.Variable(0, name="step")  # 0
@@ -212,7 +225,11 @@ class Adapter2St(unittest.TestCase):
 
         @tf.function
         def f():
-            tf.cond(cond < tf.constant(2.0), lambda: x.assign_add(y), lambda: y.assign_add(x))
+            tf.cond(
+                cond < tf.constant(2.0),
+                lambda: x.assign_add(y),
+                lambda: y.assign_add(x),
+            )
             return x, y
 
         v1, v2 = f()
@@ -224,12 +241,20 @@ class Adapter2St(unittest.TestCase):
         x = tf.Variable(0)
         t1 = tf.Variable([[1, 2, 3], [4, 5, 6]])
         t2 = tf.Variable([[7, 8, 9], [10, 11, 12]])
+
         @tf.function
         def f():
-            tf.cond(cond < tf.constant(2.0), lambda: x.assign_add(1), lambda: x.assign_add(2))
+            tf.cond(
+                cond < tf.constant(2.0),
+                lambda: x.assign_add(1),
+                lambda: x.assign_add(2),
+            )
+
         f()
         c1 = tf.concat([t1, t2], x)
-        self.assertTrue(tensor_equal(c1, tf.constant([[1, 2, 3, 7, 8, 9], [4, 5, 6, 10, 11, 12]])))
+        self.assertTrue(
+            tensor_equal(c1, tf.constant([[1, 2, 3, 7, 8, 9], [4, 5, 6, 10, 11, 12]]))
+        )
 
     def test_cond2(self):
         cond = tf.Variable(1.0)
@@ -238,7 +263,11 @@ class Adapter2St(unittest.TestCase):
 
         @tf.function
         def f():
-            tf.cond(cond < tf.constant(2.0), lambda: x.assign_add(1.0), lambda: y.assign_add(1.0))
+            tf.cond(
+                cond < tf.constant(2.0),
+                lambda: x.assign_add(1.0),
+                lambda: y.assign_add(1.0),
+            )
             return x, y
 
         v1, v2 = f()
@@ -318,7 +347,11 @@ class Adapter2St(unittest.TestCase):
 
         @tf.function
         def f():
-            return tf.cond(cond < tf.constant(2.0), lambda: x.assign_add(y), lambda: y.assign_add(x))
+            return tf.cond(
+                cond < tf.constant(2.0),
+                lambda: x.assign_add(y),
+                lambda: y.assign_add(x),
+            )
 
         self.assertTrue(tensor_equal(f(), tf.constant(3.0)))
 
@@ -347,17 +380,21 @@ class Adapter2St(unittest.TestCase):
 
     def test_empty_while(self):
         def dataset_fn():
-            dataset = tf.data.Dataset.range(1,13)
+            dataset = tf.data.Dataset.range(1, 13)
+
             def map_fn(x):
-                return tf.fill([3,0], 1)
+                return tf.fill([3, 0], 1)
+
             dataset = dataset.map(map_fn)
             dataset = dataset.prefetch(1)
             return dataset
+
         iterator = iter(dataset_fn())
 
         @tf.function
         def loop_fn(iterator):
-            output = next(iterator)
+            _output = next(iterator)
+
         get_next_times = 10
         for i in range(get_next_times):
             output = next(iterator)
@@ -371,7 +408,9 @@ class Adapter2St(unittest.TestCase):
             for i in tf.range(10):
                 v.assign_add(next(iterator))
 
-        dataset = tf.data.Dataset.from_tensors(tf.ones([10, 1024, 1024], dtype=tf.int64)).repeat()
+        dataset = tf.data.Dataset.from_tensors(
+            tf.ones([10, 1024, 1024], dtype=tf.int64)
+        ).repeat()
         iterator = iter(dataset)
         f(iterator)
         time.sleep(5)
@@ -380,15 +419,25 @@ class Adapter2St(unittest.TestCase):
         @tf.function
         def f(x):
             noise_shape = tf.shape(x)
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
 
         f(tf.constant([[0.1]]))
@@ -435,8 +484,9 @@ class Adapter2St(unittest.TestCase):
                 loss = tf.reduce_sum(p5)
             grads = tape.gradient(loss, [x, x1, x2, x3, x4])
             grads = npu_device.distribute.all_reduce(grads)
-            npu_device.distribute.grouping_gradients_apply(scaled_optimizer.apply_gradients,
-                                                           zip(grads, [x, x1, x2, x3, x4]))
+            npu_device.distribute.grouping_gradients_apply(
+                scaled_optimizer.apply_gradients, zip(grads, [x, x1, x2, x3, x4])
+            )
 
         @tf.function
         def train_loop():
@@ -465,9 +515,9 @@ class Adapter2St(unittest.TestCase):
         def augment(images):
             return tf.cast(images, tf.uint8)
 
-        ds = tf.data.Dataset.from_tensor_slices(tf.constant([2.2], dtype=tf.float32)).map(
-            lambda x: tf.py_function(augment, [x], [tf.uint8]), num_parallel_calls=1
-        )
+        ds = tf.data.Dataset.from_tensor_slices(
+            tf.constant([2.2], dtype=tf.float32)
+        ).map(lambda x: tf.py_function(augment, [x], [tf.uint8]), num_parallel_calls=1)
 
         y = next(iter(ds))
         self.assertTrue(tensor_equal(y, tf.constant(2)))
@@ -477,9 +527,15 @@ class Adapter2St(unittest.TestCase):
         y = x._copy()
         self.assertTrue(tensor_equal(y, tf.constant(2)))
 
+    def test_copy_npu_to_cpu(self):
+        x = tf.add(1, 1)
+        with context.device("/job:localhost/replica:0/task:0/device:CPU:0"):
+            y = tf.identity(x)
+        self.assertTrue(tensor_equal(y, tf.constant(2)))
+
     def test_mix_fuzz_compile(self):
         def gen():
-            v = [['1'], ['2', '3'], ['4', '5', '6']]
+            v = [["1"], ["2", "3"], ["4", "5", "6"]]
             while len(v):
                 yield v.pop(0)
 
@@ -523,7 +579,9 @@ class Adapter2St(unittest.TestCase):
         def train_step(iterator):
             v = next(iterator)
             cond = tf.less(tf.reduce_sum(v), 5)
-            tf.cond(cond, lambda: tf.print(tf.unique(v)), lambda: tf.print(tf.reduce_sum(v)))
+            tf.cond(
+                cond, lambda: tf.print(tf.unique(v)), lambda: tf.print(tf.reduce_sum(v))
+            )
 
         @tf.function
         def train_loop(iterator):
@@ -553,15 +611,25 @@ class Adapter2St_EnvGeStaticMemory(unittest.TestCase):
         @tf.function
         def f(x):
             noise_shape = tf.shape(x)
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
-            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(noise_shape, tf.constant(0.1), 0, 0)
+            gen_out = npu_device.gen_npu_ops.drop_out_gen_mask_v3(
+                noise_shape, tf.constant(0.1), 0, 0
+            )
             npu_device.gen_npu_ops.drop_out_do_mask_v3(x, gen_out, tf.constant(0.1))
 
         f(tf.constant([[0.1]]))
@@ -573,7 +641,9 @@ class Adapter2St_EnvGeStaticMemory(unittest.TestCase):
         @tf.function
         def run_fill():
             return [tf.fill([1024, 1024], i) for i in range(1024)]
+
         run_fill()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

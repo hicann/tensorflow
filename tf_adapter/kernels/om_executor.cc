@@ -75,7 +75,7 @@ Status ModelProcess::GetDynamicGearInfo() {
     }
     for (size_t j = 0U; j < is_input_dynamic_.size(); ++j) {
       if (is_input_dynamic_[j]) {
-        // the first dynamic inut is enough
+        // the first dynamic input is enough
         dynamic_gear_input_index_ = j;
         break;
       }
@@ -226,7 +226,7 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
       return tensorflow::errors::Internal("input num is invalid");
     }
   }
-  // dynamic gear data need to be feeded alone
+  // dynamic gear data needs to be fed alone
   size_t need_feed_input_cnts = ((dymainc_gear_type_ == DynamicGearType::DYNAMIC_UNDEFINED) && (model_input_size >= 1U))
                                     ? model_input_size
                                     : (model_input_size - 1U);
@@ -241,6 +241,7 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
     if (tensor_size > cur_size) {  // dynamic input maybe larger than last, free and malloc larger size
       if (dev_ptr != nullptr) {    // only not nullptr need to be free, first infer maybe nullptr and 0 size
         (void)aclrtFree(dev_ptr);
+        (void)aclUpdateDataBuffer(data_buf, nullptr, 0U);
       }
       REQUIRES_ACL_STATUS_OK(aclrtMalloc(&dev_ptr, tensor_size, ACL_MEM_MALLOC_NORMAL_ONLY), aclrtMalloc);
       (void)aclUpdateDataBuffer(data_buf, dev_ptr, tensor_size);
@@ -248,7 +249,7 @@ Status ModelProcess::ProcessInput(const std::vector<Tensor> &inputs) const {
     REQUIRES_NOT_NULL(dev_ptr);
     REQUIRES_ACL_STATUS_OK(aclrtMemcpy(dev_ptr, tensor_size, tensor_data, tensor_size, ACL_MEMCPY_HOST_TO_DEVICE),
                            aclrtMemcpy);
-    // set shpae
+    // set shape
     tensorflow::DataType tf_type = inputs[i].dtype();
     aclDataType acl_dt = ACL_DT_UNDEFINED;
     TF_RETURN_IF_ERROR(MappingTfDtToAcl(tf_type, acl_dt));

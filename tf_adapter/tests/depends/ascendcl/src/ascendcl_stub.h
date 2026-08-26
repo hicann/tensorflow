@@ -77,7 +77,7 @@ struct aclprofConfig {
 };
 
 struct acltdtDataset {
-  acltdtDataset() : freeSelf(false){};
+  acltdtDataset() : freeSelf(false) {};
   ~acltdtDataset() {
     if (freeSelf) {
       for (auto iter = blobs.begin(); iter != blobs.end(); ++iter) {
@@ -189,5 +189,6 @@ void RegAclRunGraphStub(AclRunGraphStub stub);
 
 void SetAclmdlAddDatasetBufferRet(const bool isSuccess);
 void SetAclmdlSetDatasetTensorDescRet(const bool isSuccess);
+void SetAclrtMallocFailAfter(int32_t call_count);
 
 #endif  // ACL_TENSOR_DATA_TRANSFER_H

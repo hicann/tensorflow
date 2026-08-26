@@ -10,6 +10,8 @@
 
 #include "npu_device_register.h"
 
+#include <memory>
+
 #include "tensorflow/core/platform/logging.h"
 
 #include "npu_device.h"
@@ -45,12 +47,13 @@ TFE_TensorHandle *CopyTensorFromNpuDevice(TFE_Context *context, TFE_TensorHandle
   if (TF_GetCode(status) != TF_OK) {
     return nullptr;
   }
+  std::unique_ptr<TFE_TensorHandle, decltype(&TFE_DeleteTensorHandle)> local_tensor_deleter(
+    local_tensor, TFE_DeleteTensorHandle);
   TFE_TensorHandle *target_tensor = TFE_TensorHandleCopyToDevice(local_tensor, context, target_device_name, status);
   if (TF_GetCode(status) != TF_OK) {
     return nullptr;
   }
 
-  TFE_DeleteTensorHandle(local_tensor);
   return target_tensor;
 }
 

@@ -59,6 +59,33 @@ class LoadAndExecuteOmTest : public testing::Test {
     return ctx->status();
   }
 
+  std::vector<Tensor> CreateInputTensors(const TensorShape &shape = TensorShape({2, 1})) {
+    std::vector<Tensor> tensors;
+    Tensor tensor = Tensor(DT_FLOAT, shape);
+    tensors.emplace_back(tensor);
+    tensors.emplace_back(tensor);
+    Tensor tensor_var = Tensor(DT_STRING, {});
+    tensors.emplace_back(tensor_var);
+    return tensors;
+  }
+
+  Status CreateOmKernel() {
+    NodeDef def;
+    NodeDefBuilder::NodeOut input1("input1", 0, DT_FLOAT);
+    NodeDefBuilder::NodeOut input2("input1", 1, DT_FLOAT);
+    NodeDefBuilder::NodeOut var_input("model_data", 2, DT_STRING);
+    auto status = tensorflow::NodeDefBuilder("om", "LoadAndExecuteOm")
+                      .Input(gtl::ArraySlice<NodeDefBuilder::NodeOut>{input1, input2})
+                      .Input(var_input)
+                      .Attr("Tin", DataTypeVector{DT_FLOAT, DT_FLOAT})
+                      .Attr("output_dtypes", DataTypeVector{})
+                      .Finalize(&def);
+    if (!status.ok()) {
+      return status;
+    }
+    return CreateKernel(def);
+  }
+
   void TearDown() override {}
 
   std::unique_ptr<OpKernel> kernel;
@@ -187,6 +214,17 @@ TEST_F(LoadAndExecuteOmTest, TestOmNodeExecuteDynamicOutputZero) {
   ASSERT_EQ(Run(tensors), Status::OK());
   SetOutputDynamic(false);
   SetOutputNeedNull(false);
+}
+
+TEST_F(LoadAndExecuteOmTest, TestDynamicInputMallocFailureDoesNotDoubleFree) {
+  ASSERT_EQ(CreateOmKernel(), Status::OK());
+  auto initial_tensors = CreateInputTensors();
+  ASSERT_EQ(Run(initial_tensors), Status::OK());
+
+  SetAclrtMallocFailAfter(0);
+  auto larger_tensors = CreateInputTensors(TensorShape({2, 2}));
+  EXPECT_FALSE(Run(larger_tensors).ok());
+  SetAclrtMallocFailAfter(-1);
 }
 }  // namespace
 }  // namespace tensorflow

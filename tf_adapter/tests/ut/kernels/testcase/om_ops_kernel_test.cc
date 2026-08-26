@@ -59,12 +59,9 @@ class LoadAndExecuteOmTest : public testing::Test {
     return ctx->status();
   }
 
-  std::vector<Tensor> CreateInputTensors() {
+  std::vector<Tensor> CreateInputTensors(const TensorShape &shape = TensorShape({2, 1})) {
     std::vector<Tensor> tensors;
-    TensorShape tf_shape;
-    tf_shape.AddDim(2);
-    tf_shape.AddDim(1);
-    Tensor tensor = Tensor(DT_FLOAT, tf_shape);
+    Tensor tensor = Tensor(DT_FLOAT, shape);
     tensors.emplace_back(tensor);
     tensors.emplace_back(tensor);
     Tensor tensor_var = Tensor(DT_STRING, {});
@@ -72,7 +69,7 @@ class LoadAndExecuteOmTest : public testing::Test {
     return tensors;
   }
 
-  Status CreateAndRunOmKernel() {
+  Status CreateOmKernel() {
     NodeDef def;
     NodeDefBuilder::NodeOut input1("input1", 0, DT_FLOAT);
     NodeDefBuilder::NodeOut input2("input1", 1, DT_FLOAT);
@@ -90,6 +87,11 @@ class LoadAndExecuteOmTest : public testing::Test {
     if (!kernel_status.ok()) {
       return kernel_status;
     }
+    return Status::OK();
+  }
+
+  Status CreateAndRunOmKernel() {
+    TF_RETURN_IF_ERROR(CreateOmKernel());
     auto tensors = CreateInputTensors();
     return Run(tensors);
   }
@@ -138,6 +140,17 @@ TEST_F(LoadAndExecuteOmTest, TestOmNodeExecuteDynamicOutputZero) {
   ASSERT_EQ(CreateAndRunOmKernel(), Status::OK());
   SetOutputDynamic(false);
   SetOutputNeedNull(false);
+}
+
+TEST_F(LoadAndExecuteOmTest, TestDynamicInputMallocFailureDoesNotDoubleFree) {
+  ASSERT_EQ(CreateOmKernel(), Status::OK());
+  auto initial_tensors = CreateInputTensors();
+  ASSERT_EQ(Run(initial_tensors), Status::OK());
+
+  SetAclrtMallocFailAfter(0);
+  auto larger_tensors = CreateInputTensors(TensorShape({2, 2}));
+  EXPECT_FALSE(Run(larger_tensors).ok());
+  SetAclrtMallocFailAfter(-1);
 }
 }  // namespace
 }  // namespace tensorflow
