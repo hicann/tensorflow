@@ -8,6 +8,7 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 
+#include <cstdint>
 #include "tdt/tdt_host_interface.h"
 
 namespace tdt {
