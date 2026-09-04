@@ -238,3 +238,15 @@ def set_device_sat_mode(mode):
 def is_inf_nan_enabled():
     """device sat mode: 1 is INF-NAN"""
     return tf_adapter.GetDeviceSatMode() == 1
+
+
+def set_schedule_aicore_task_early(value):
+    val = 1 if value else 0
+    return tf_adapter.SetSysParamOpt(tf_adapter.ACL_OPT_ENABLE_KERNEL_EARLY_START, val)
+
+
+def get_schedule_aicore_task_early():
+    res = tf_adapter.GetSysParamOpt(tf_adapter.ACL_OPT_ENABLE_KERNEL_EARLY_START)
+    if res[0] != 0:
+        raise RuntimeError('get schedule aicore task early failed')
+    return bool(res[1])

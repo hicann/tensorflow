@@ -73,6 +73,8 @@
 
 - [npu_bridge.estimator.npu.npu_plugin](./npu_plugin/npu_plugin.md)
   - [set_device_sat_mode](./npu_plugin/set_device_sat_mode.md)
+  - [set_schedule_aicore_task_early](./npu_plugin/set_schedule_aicore_task_early.md)
+  - [get_schedule_aicore_task_early](./npu_plugin/get_schedule_aicore_task_early.md)
 
 - [npu_bridge.scoped_graph_manager.scoped_graph_manager](./scoped_graph_manager/scoped_graph_manager.md)
   - [ScopedGraphManager](./scoped_graph_manager/ScopedGraphManager.md)

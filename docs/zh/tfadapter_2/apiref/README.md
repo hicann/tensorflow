@@ -12,4 +12,6 @@
 - [npu.train.optimizer.NpuLossScaleOptimizer](npu-train-optimizer-NpuLossScaleOptimizer.md)
 - [npu.ops.gelu](npu-ops-gelu.md)
 - [set_device_sat_mode](set_device_sat_mode.md)
+- [set_schedule_aicore_task_early](set_schedule_aicore_task_early.md)
+- [get_schedule_aicore_task_early](get_schedule_aicore_task_early.md)
 - [TensorFlow 2.6 API支持列表](tf-2.6-api-support-list.md)

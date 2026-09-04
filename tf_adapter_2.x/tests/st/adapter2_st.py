@@ -19,6 +19,9 @@ import npu_device
 from npu_device.npu_device import stupid_repeat
 from npu_device.npu_device import set_device_sat_mode
 from npu_device.npu_device import is_inf_nan_enabled
+from npu_device.npu_device import set_schedule_aicore_task_early
+from npu_device.npu_device import get_schedule_aicore_task_early
+from npu_device import _npu_device_backends
 import unittest
 import tensorflow as tf
 from tensorflow.python.eager import context
@@ -74,6 +77,19 @@ class Adapter2St(unittest.TestCase):
         self.assertFalse(is_inf_nan_enabled())
         set_device_sat_mode(1)
         self.assertTrue(is_inf_nan_enabled())
+
+    def test_schedule_aicore_task_early(self):
+        self.assertEqual(set_schedule_aicore_task_early(True), 0)
+        self.assertTrue(get_schedule_aicore_task_early())
+        self.assertEqual(set_schedule_aicore_task_early(False), 0)
+        self.assertFalse(get_schedule_aicore_task_early())
+
+    def test_acl_sys_param_opt_enum(self):
+        opt = _npu_device_backends.aclSysParamOpt
+        self.assertEqual(opt.ACL_OPT_DETERMINISTIC, 0)
+        self.assertEqual(opt.ACL_OPT_ENABLE_DEBUG_KERNEL, 1)
+        self.assertEqual(opt.ACL_OPT_STRONG_CONSISTENCY, 2)
+        self.assertEqual(opt.ACL_OPT_ENABLE_KERNEL_EARLY_START, 3)
 
     def test_mix_resource(self):
         with context.device("/job:localhost/replica:0/task:0/device:CPU:0"):

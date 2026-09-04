@@ -10,6 +10,7 @@
 
 #include "tf_adapter/util/npu_plugin.h"
 #include "tf_adapter/util/npu_attrs.h"
+#include "acl/acl_rt.h"
 #include "gtest/gtest.h"
 #include <stdlib.h>
 
@@ -177,6 +178,37 @@ TEST_F(GePluginTest, SetDeviceSatModeTest) {
   ret = SetDeviceSatMode(mode);
   EXPECT_EQ(ret, -1);
   EXPECT_EQ(GetDeviceSatMode(), -1);
+}
+TEST_F(GePluginTest, SysParamOptTest) {
+  int64_t value = 1;
+  int32_t ret = SetSysParamOpt(ACL_OPT_DETERMINISTIC, value);
+  EXPECT_EQ(ret, 0);
+  int64_t getValue = 0;
+  ret = GetSysParamOpt(ACL_OPT_DETERMINISTIC, getValue);
+  EXPECT_EQ(ret, 0);
+  EXPECT_EQ(getValue, value);
+}
+TEST_F(GePluginTest, SysParamOptSetFailedTest) {
+  auto invalidOpt = static_cast<aclSysParamOpt>(-1);
+  int32_t ret = SetSysParamOpt(invalidOpt, 1);
+  EXPECT_EQ(ret, -1);
+}
+TEST_F(GePluginTest, SysParamOptSetFailedNotOverwriteTest) {
+  int64_t value = 42;
+  int32_t ret = SetSysParamOpt(ACL_OPT_ENABLE_DEBUG_KERNEL, value);
+  EXPECT_EQ(ret, 0);
+  auto invalidOpt = static_cast<aclSysParamOpt>(-1);
+  ret = SetSysParamOpt(invalidOpt, 99);
+  EXPECT_EQ(ret, -1);
+  int64_t getValue = 0;
+  ret = GetSysParamOpt(ACL_OPT_ENABLE_DEBUG_KERNEL, getValue);
+  EXPECT_EQ(ret, 0);
+  EXPECT_EQ(getValue, value);
+}
+TEST_F(GePluginTest, SysParamOptGetFailedTest) {
+  int64_t getValue = 0;
+  int32_t ret = GetSysParamOpt(ACL_OPT_ENABLE_KERNEL_EARLY_START, getValue);
+  EXPECT_EQ(ret, -1);
 }
 TEST_F(GePluginTest, NpuCloseTest) {
   std::map<std::string, std::string> init_options;

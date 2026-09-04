@@ -42,6 +42,8 @@ namespace std{
 
 %apply uint64_t &OUTPUT { uint64_t &base_addr, uint64_t &var_size, uint64_t &dev_addr, uint64_t &memory_size };
 
+%apply int64_t &OUTPUT { int64_t &value };
+
 %{
 #include "tf_adapter/util/npu_plugin.h"
 #include "tf_adapter/util/profiler_interface.h"
@@ -60,6 +62,10 @@ extern int32_t MallocSharedMem(const std::string &var_name, const std::vector<in
 extern int32_t SetDeviceSatMode(uint32_t mode);
 
 extern int32_t GetDeviceSatMode();
+
+extern int32_t SetSysParamOpt(aclSysParamOpt opt, int64_t value);
+
+extern int32_t GetSysParamOpt(aclSysParamOpt opt, int64_t &value);
 
 extern const std::string ProfilerStart(const std::string &level,
     const std::string &aic_metrics, const std::string &output_path);
@@ -128,6 +134,13 @@ namespace ge{
   };
 }
 
+typedef enum {
+  ACL_OPT_DETERMINISTIC = 0,
+  ACL_OPT_ENABLE_DEBUG_KERNEL = 1,
+  ACL_OPT_STRONG_CONSISTENCY = 2,
+  ACL_OPT_ENABLE_KERNEL_EARLY_START = 3
+} aclSysParamOpt;
+
 extern int32_t InitRdmaPool(size_t size);
 
 extern int32_t RegistRdmaRemoteAddr(const std::vector<std::pair<uint64_t, uint64_t>> &var_info);
@@ -142,6 +155,10 @@ extern int32_t MallocSharedMem(const std::string &var_name, const std::vector<in
 extern int32_t SetDeviceSatMode(uint32_t mode);
 
 extern int32_t GetDeviceSatMode();
+
+extern int32_t SetSysParamOpt(aclSysParamOpt opt, int64_t value);
+
+extern int32_t GetSysParamOpt(aclSysParamOpt opt, int64_t &value);
 
 extern const std::string ProfilerStart(const std::string &level,
     const std::string &aic_metrics, const std::string &output_path);

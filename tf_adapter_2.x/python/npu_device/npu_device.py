@@ -69,6 +69,20 @@ def is_inf_nan_enabled():
     return _npu_device_backends.GetDeviceSatMode() == 1
 
 
+def set_schedule_aicore_task_early(value):
+    val = 1 if value else 0
+    opt = _npu_device_backends.aclSysParamOpt
+    return _npu_device_backends.SetSysParamOpt(opt.ACL_OPT_ENABLE_KERNEL_EARLY_START, val)
+
+
+def get_schedule_aicore_task_early():
+    opt = _npu_device_backends.aclSysParamOpt
+    res = _npu_device_backends.GetSysParamOpt(opt.ACL_OPT_ENABLE_KERNEL_EARLY_START)
+    if res[0] != 0:
+        raise RuntimeError('get schedule aicore task early failed')
+    return bool(res[1])
+
+
 _global_options = None
 _global_options_lock = threading.Lock()
 

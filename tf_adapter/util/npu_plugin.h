@@ -13,6 +13,7 @@
 
 #include <map>
 #include <string>
+#include "acl/acl_rt.h"
 #include "ge_common/ge_api_types.h"
 #include "ge_plugin.h"
 #include "ge/ge_api_wrapper.h"
@@ -48,4 +49,9 @@ int32_t MallocSharedMem(const std::string &var_name, const std::vector<int64_t> 
 int32_t SetDeviceSatMode(uint32_t mode);
 
 int32_t GetDeviceSatMode();
+
+int32_t SetSysParamOpt(aclSysParamOpt opt, int64_t value);
+
+int32_t GetSysParamOpt(aclSysParamOpt opt, int64_t &value);
+
 #endif  // TENSORFLOW_NPU_PLUGIN_H_

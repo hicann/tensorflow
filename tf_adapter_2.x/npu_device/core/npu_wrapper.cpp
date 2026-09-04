@@ -392,6 +392,33 @@ PYBIND11_MODULE(_npu_device_backends, m) {
     return static_cast<int32_t>(mode);
   });
 
+  (void)m.def("SetSysParamOpt", [](aclSysParamOpt opt, int64_t value) -> int32_t {
+    aclError ret = aclrtSetSysParamOpt(opt, value);
+    if (ret != ACL_SUCCESS) {
+      LOG(ERROR) << "set sys param opt failed, ret : " << static_cast<int32_t>(ret);
+      return -1;
+    }
+    return 0;
+  });
+
+  (void)m.def("GetSysParamOpt", [](aclSysParamOpt opt) -> std::tuple<int32_t, int64_t> {
+    int64_t value = 0;
+    aclError ret = aclrtGetSysParamOpt(opt, &value);
+    if (ret != ACL_SUCCESS) {
+      LOG(ERROR) << "get sys param opt failed, ret : " << static_cast<int32_t>(ret);
+      return {-1, 0};
+    }
+    LOG(INFO) << "get sys param opt success";
+    return {0, value};
+  });
+
+  (void)py::enum_<aclSysParamOpt>(m, "aclSysParamOpt")
+      .value("ACL_OPT_DETERMINISTIC", ACL_OPT_DETERMINISTIC)
+      .value("ACL_OPT_ENABLE_DEBUG_KERNEL", ACL_OPT_ENABLE_DEBUG_KERNEL)
+      .value("ACL_OPT_STRONG_CONSISTENCY", ACL_OPT_STRONG_CONSISTENCY)
+      .value("ACL_OPT_ENABLE_KERNEL_EARLY_START", ACL_OPT_ENABLE_KERNEL_EARLY_START)
+      .export_values();
+
   (void)m.def("RunContextOptionsSetMemoryOptimizeOptions", &RunContextOptionsSetMemoryOptimizeOptions);
   (void)m.def("CleanRunContextOptions", &CleanRunContextOptions);
 };

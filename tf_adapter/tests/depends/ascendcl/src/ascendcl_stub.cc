@@ -19,6 +19,7 @@
 namespace {
 constexpr uint32_t kDeviceSatModeLimit = 2U;
 std::uint32_t deviceSatMode = 2U;
+std::map<int32_t, int64_t> sysParamOptMap;
 std::mutex aclChannleMutex;
 std::map<std::string, acltdtChannelHandle *> aclChannleMap;
 std::map<std::string, aclDataType> aclDataTypeStrMap = {
@@ -723,6 +724,26 @@ aclError aclrtGetDeviceSatMode(aclrtFloatOverflowMode *mode) {
     return ACL_ERROR_FAILURE;
   }
   *mode = static_cast<aclrtFloatOverflowMode>(deviceSatMode);
+  return ACL_SUCCESS;
+}
+
+aclError aclrtSetSysParamOpt(aclSysParamOpt opt, int64_t value) {
+  if (static_cast<int32_t>(opt) < 0) {
+    return ACL_ERROR_INVALID_PARAM;
+  }
+  sysParamOptMap[static_cast<int32_t>(opt)] = value;
+  return ACL_SUCCESS;
+}
+
+aclError aclrtGetSysParamOpt(aclSysParamOpt opt, int64_t *value) {
+  if (value == nullptr) {
+    return ACL_ERROR_INVALID_PARAM;
+  }
+  auto it = sysParamOptMap.find(static_cast<int32_t>(opt));
+  if (it == sysParamOptMap.end()) {
+    return ACL_ERROR_FAILURE;
+  }
+  *value = it->second;
   return ACL_SUCCESS;
 }
 

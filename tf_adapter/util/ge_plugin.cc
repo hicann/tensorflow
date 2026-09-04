@@ -625,4 +625,27 @@ int32_t GetDeviceSatMode() {
   ADP_LOG(INFO) << "[GePlugin] get device sat mode success.";
   return static_cast<int32_t>(floatOverflowMode);
 }
+
+int32_t SetSysParamOpt(aclSysParamOpt opt, int64_t value) {
+  aclError ret = aclrtSetSysParamOpt(opt, value);
+  if (ret != ACL_SUCCESS) {
+    ADP_LOG(ERROR) << "[GePlugin] set sys param opt failed, ret : " << static_cast<int32_t>(ret);
+    LOG(ERROR) << "[GePlugin] set sys param opt failed, ret : " << static_cast<int32_t>(ret);
+    return -1;
+  }
+  ADP_LOG(INFO) << "[GePlugin] set sys param opt success.";
+  return 0;
+}
+
+int32_t GetSysParamOpt(aclSysParamOpt opt, int64_t &value) {
+  aclError ret = aclrtGetSysParamOpt(opt, &value);
+  if (ret != ACL_SUCCESS) {
+    ADP_LOG(ERROR) << "[GePlugin] get sys param opt failed, ret : " << static_cast<int32_t>(ret);
+    LOG(ERROR) << "[GePlugin] get sys param opt failed, ret : " << static_cast<int32_t>(ret);
+    return -1;
+  }
+  ADP_LOG(INFO) << "[GePlugin] get sys param opt success.";
+  return 0;
+}
+
 std::atomic_int GePlugin::graph_counter_ = {0};
