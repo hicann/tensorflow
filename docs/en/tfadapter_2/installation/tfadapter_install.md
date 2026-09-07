@@ -21,6 +21,7 @@ Ascend provides the adaptation plugin TF Adapter for interconnecting with the de
 
 2. Install the TF Adapter package.
     1. Log in to the installation environment as the installation user and upload the obtained package to any path \(for example,  **/home/package**\) in the installation environment.
+
     2. Run the following command to install TF Adapter:
 
         ```bash

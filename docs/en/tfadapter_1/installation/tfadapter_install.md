@@ -9,6 +9,7 @@ Ascend provides the adaptation plugin TF Adapter for interconnecting with the de
 
 1. Download the TF Adapter installation package.
     1. Access the  [TF Adapter GitCode](https://gitcode.com/cann/tensorflow/tags)  repository to go to the TF Adapter release tag page.
+
     2. Select a matched CANN version and click  **Release**  to go to the  **Release**  page.
 
         TF Adapter repository tags follow the naming convention:  **tfa_$\{_Tag version_\}_$\{_TF Adapter version_\}**.  _**$\{TF Adapter version\}**_  is the same as the matched CANN version.
