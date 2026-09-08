@@ -129,6 +129,14 @@ class GeOpTest : public testing::Test {
   }
 };
 
+TEST_F(GeOpTest, NegativeOutputIndexLeavesShapeListEmpty) {
+  AttrValue output_shapes;
+  GeOp *ge_op = dynamic_cast<GeOp *>(g_op.get());
+  ASSERT_TRUE(ge_op != nullptr);
+  ge_op->SetShapesToOutputDesc({"data:1"}, -1, output_shapes);
+  EXPECT_TRUE(output_shapes.list().i().empty());
+}
+
 Status GeOpRunGraphAsync(std::string example_path, gtl::InlinedVector<TensorValue, 4> inputs, NodeDef &geop_node_def,
                          std::string node_name, bool only_run_once = true) {
   Env *env = Env::Default();

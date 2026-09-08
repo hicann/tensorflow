@@ -199,7 +199,7 @@ Status GetStepFromEnv(const std::string &env_name, uint32_t &step) {
   (void)ReadStringFromEnvVar(env_name, "", &step_string);
   std::stringstream ss;
   if (step_string.empty()) {
-    ss << env_name << " is not set, which is needed when accelarate by step";
+    ss << env_name << " is not set, which is needed when accelerate by step";
     return errors::InvalidArgument(ss.str());
   } else {
     if (!strings::safe_strtou32(step_string, &step)) {
@@ -215,7 +215,7 @@ Status GetLossFromEnv(const std::string &env_name, float &loss) {
   (void)ReadStringFromEnvVar(env_name, "", &loss_string);
   std::stringstream ss;
   if (loss_string.empty()) {
-    ss << env_name << " is not set, which is needed when accelarate by loss";
+    ss << env_name << " is not set, which is needed when accelerate by loss";
     return errors::InvalidArgument(ss.str());
   } else {
     if (!strings::safe_strtof(loss_string, &loss)) {
@@ -320,7 +320,7 @@ inline Status CheckPath(const std::string &input, std::string &output) {
     return errors::InvalidArgument("the path ", input.c_str(), " is invalid.");
   }
   if (mmAccess2(trusted_path, R_OK | W_OK) != EN_OK) {
-    return errors::InvalidArgument("the path ", input.c_str(), " does't have read, write permissions.");
+    return errors::InvalidArgument("the path ", input.c_str(), " doesn't have read, write permissions.");
   }
   output = trusted_path;
   return Status::OK();
@@ -2057,11 +2057,11 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
         constexpr int64_t max_input_fusion_size = 32 * 1024 * 1024LL;  // 32MB
         constexpr int64_t min_input_fusion_size = 0LL;                 // 0MB
         if (input_fusion_size > max_input_fusion_size) {
-          ADP_LOG(WARNING) << "input_fusion_size should not larger than: " << max_input_fusion_size << " Byte.";
+          ADP_LOG(WARNING) << "input_fusion_size should not be larger than: " << max_input_fusion_size << " Byte.";
           input_fusion_size = max_input_fusion_size;
         }
         if (input_fusion_size < min_input_fusion_size) {
-          ADP_LOG(WARNING) << "input_fusion_size should not less than: " << min_input_fusion_size << " Byte.";
+          ADP_LOG(WARNING) << "input_fusion_size should not be less than: " << min_input_fusion_size << " Byte.";
           input_fusion_size = min_input_fusion_size;
         }
       }
@@ -2374,8 +2374,10 @@ Status NpuAttrs::SetNpuOptimizerAttr(const GraphOptimizationPassOptions &options
       if (params.count("buffer_optimize") > 0) {
         buffer_optimize = params.at("buffer_optimize").s();
         if ((buffer_optimize != "l2_optimize") && (buffer_optimize != "off_optimize")) {
-          ADP_LOG(FATAL) << "buffer_optimize is valid, should be one of [l2_optimize, off_optimize]";
-          LOG(FATAL) << "buffer_optimize is valid, should be one of [l2_optimize, off_optimize]";
+          // LCOV_EXCL_START
+          ADP_LOG(FATAL) << "buffer_optimize is invalid, should be one of [l2_optimize, off_optimize]";
+          LOG(FATAL) << "buffer_optimize is invalid, should be one of [l2_optimize, off_optimize]";
+          // LCOV_EXCL_STOP
         }
       }
       if (params.count("enable_small_channel") > 0) {

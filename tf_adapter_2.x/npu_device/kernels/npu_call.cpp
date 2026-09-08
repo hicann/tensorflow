@@ -54,14 +54,14 @@ class NpuCallOp : public OpKernel {
     }
     if (compile_dynamic_mode_ == "1" && shape_generalization_mode_ != "STRICT") {
       DLOG() << "compile_dynamic_mode is 1, shape_generalization_mode[" << shape_generalization_mode_
-             << "] will be ignore, please set compile_dynamic_mode=0.";
+             << "] will be ignored, please set compile_dynamic_mode=0.";
     }
     if (jit_compile_ != "1" && shape_generalization_mode_ != "STRICT") {
       LOG(WARNING) << "jit_compile[" << jit_compile_ << "] is not 1, so shape_generalization_mode["
-                   << shape_generalization_mode_ << "] will be ignore, please set jit_compile=1 "
+                   << shape_generalization_mode_ << "] will be ignored, please set jit_compile=1 "
                    << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
       DLOG() << "jit_compile[" << jit_compile_ << "] is not 1, shape_generalization_mode[" << shape_generalization_mode_
-             << "] will be ignore, please set jit_compile=1 "
+             << "] will be ignored, please set jit_compile=1 "
              << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
     }
     bool loaded = false;

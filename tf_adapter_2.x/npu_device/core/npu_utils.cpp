@@ -53,7 +53,7 @@ tensorflow::Status MapGeType2Tf(ge::DataType ge_type, tensorflow::DataType &tf_t
     {ge::DT_FLOAT16, tensorflow::DT_HALF},          {ge::DT_BF16, tensorflow::DT_BFLOAT16},
   };
   if (kGeType2Tf.find(ge_type) == kGeType2Tf.end()) {
-    return tensorflow::errors::InvalidArgument("Unsupported ge data type enmu value ", ge_type, " by tf");
+    return tensorflow::errors::InvalidArgument("Unsupported ge data type enum value ", ge_type, " by tf");
   }
   tf_type = kGeType2Tf[ge_type];
   return tensorflow::Status::OK();
@@ -100,7 +100,7 @@ tensorflow::Status MapGeType2Acl(ge::DataType ge_type, aclDataType &acl_type) {
     {ge::DT_FLOAT16, ACL_FLOAT16},
   };
   if (kGeType2Acl.find(ge_type) == kGeType2Acl.end()) {
-    return tensorflow::errors::InvalidArgument("Unsupport ge data type enmu value ", ge_type, " by acl");
+    return tensorflow::errors::InvalidArgument("Unsupported ge data type enum value ", ge_type, " by acl");
   }
   acl_type = kGeType2Acl[ge_type];
   return tensorflow::Status::OK();
@@ -124,7 +124,7 @@ tensorflow::Status MapGeFormat2Acl(ge::Format ge_format, aclFormat &acl_format) 
                                                           {ge::Format::FORMAT_NDC1HWC0, ACL_FORMAT_NDC1HWC0},
                                                           {ge::Format::FORMAT_FRACTAL_Z_3D, ACL_FRACTAL_Z_3D}};
   if (kGeFormat2Acl.find(ge_format) == kGeFormat2Acl.end()) {
-    return tensorflow::errors::InvalidArgument("Unsupport ge format enmu value ", ge_format, " by acl");
+    return tensorflow::errors::InvalidArgument("Unsupported ge format enum value ", ge_format, " by acl");
   }
   acl_format = kGeFormat2Acl[ge_format];
   return tensorflow::Status::OK();
@@ -510,8 +510,8 @@ tensorflow::Status SeparateGraphDef(tensorflow::GraphDef *def, std::vector<ge::A
     partition_graph.push_back(ge::AscendString(def_str.c_str(), def_str.length()));
     return tensorflow::Status::OK();
   }
-  LOG(INFO) << "GraphDef is beyond 2G, which is need separate weight from model";
-  DLOG() << "GraphDef is beyond 2G, which is need separate weight from model";
+  LOG(INFO) << "GraphDef exceeds 2G, weights need to be separated from the model";
+  DLOG() << "GraphDef exceeds 2G, weights need to be separated from the model";
   for (tensorflow::NodeDef &node : *def->mutable_node()) {
     if (node.op() == "Const") {
       std::string node_name = node.name();
@@ -541,7 +541,7 @@ tensorflow::Status LoopCopy(char *dst_ptr, size_t dst_size, char *src_ptr, size_
   do {
     size_t src_copy_size = (src_size > SECUREC_MEM_MAX_LEN) ? SECUREC_MEM_MAX_LEN : src_size;
     if (memcpy_s(dst_ptr, src_copy_size, src_ptr, src_copy_size) != EOK) {
-      return tensorflow::errors::Internal("loop memory copy failed , dst_size:", src_copy_size,
+      return tensorflow::errors::Internal("loop memory copy failed, dst_size:", dst_size,
                                           ", src_size:", src_copy_size);
     }
     copy_size += src_copy_size;

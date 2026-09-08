@@ -28,8 +28,8 @@ class GEOPDatasetOp : public DatasetOpKernel {
       ADP_LOG(INFO) << "Release function handle:" << f_handle_ << " owned by node instance:" << name();
       Status s = lib_->ReleaseHandle(f_handle_);
       if (s != Status::OK()) {
-        ADP_LOG(INFO) << "Release function handle:" << f_handle_ << " owned by node instance:" << name()
-                      << " failed. original err msg: " << s.error_message();
+        ADP_LOG(ERROR) << "Release function handle:" << f_handle_ << " owned by node instance:" << name()
+                       << " failed. original err msg: " << s.error_message();
         return;
       }
     }

@@ -72,7 +72,7 @@ Status MarkStartNodePass::Run(const GraphOptimizationPassOptions &options) {
   for (Node *n : graph->get()->nodes()) {
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
-      ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip MarkStartNodePass.";
+      ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip MarkStartNodePass.";
       return Status::OK();
     }
 
@@ -173,7 +173,9 @@ Status MarkStartNodePass::TraverseNode(const Node *start_node) {
     n->AddAttr("_StartNodeName", start_node_name);
     s = TraverseNode(n);
     if (s != Status::OK()) {
-      ADP_LOG(INFO) << "traverse node : " << start_node->name() << " can't to add start node name.";
+      // LCOV_EXCL_START
+      ADP_LOG(INFO) << "traverse node : " << start_node->name() << " can't add start node name.";
+      // LCOV_EXCL_STOP
       return s;
     }
   }

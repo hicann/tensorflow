@@ -33,7 +33,6 @@ bool SessionManager::GetOrCreateGeSession(const std::string &tf_session, ge::Ses
   // find valid tf session handle
   if (tf_session.empty()) {
     ADP_LOG(ERROR) << "tf session is empty, get ge session failed.";
-    LOG(ERROR) << "tf session is empty, get ge session failed.";
     return false;
   }
 

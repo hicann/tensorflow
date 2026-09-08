@@ -328,7 +328,7 @@ tensorflow::Status TransResourceInput2NodeOptimize(TFE_Context *context, NpuMuta
     NPU_REQUIRES_OK(item.second->input_edge(0, &edge));
     if (edge->src()->IsArg()) {
       bypass_outputs[item.first] = edge->src()->attrs().Find("index")->i();
-      DLOG() << "Remove output " << item.first << " ref form input " << edge->src()->attrs().Find("index")->i();
+      DLOG() << "Remove output " << item.first << " ref from input " << edge->src()->attrs().Find("index")->i();
       mutable_graph->RemoveNode(item.second);
     }
   }

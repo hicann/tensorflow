@@ -79,7 +79,7 @@ class ClassIntfSpec:
 
     def print_detail(self):
         print("-------------------------------------------")
-        print("class name: %s, supper classes: %s" % (self.class_name, ",".join(self.supper_classes)))
+        print("class name: %s, super classes: %s" % (self.class_name, ",".join(self.supper_classes)))
         print("func list:")
         for (idx, func_spec) in self.func_list.items():
             func_spec.print_detail()
@@ -459,7 +459,7 @@ def compare_class_spec(spec1: ClassIntfSpec, spec2: ClassIntfSpec, file_name1=""
     func_names_2 = sorted([x for x in func_list_2.keys() if
                            x == "__init__" or x == "__new__" or not x.startswith("__") and not x.startswith("_")])
     if spec1.supper_classes != spec2.supper_classes:
-        print("[EEEE] compare class: \"%s\", supper_classes is different in interface define: \"%s\","
+        print("[EEEE] compare class: \"%s\", super_classes is different in interface define: \"%s\","
               " in source file: \"%s\"" % (spec1.class_name, spec1.supper_classes, spec2.supper_classes))
         return False
     for func_name in func_names_1:
@@ -503,7 +503,7 @@ def compare_file_spec(spec1: FileSpec, spec2: FileSpec):
         global_var_name2 = sorted([x.strip() for x in global_var_list_2.keys()])
         for name in global_var_name1:
             if name not in global_var_name2:
-                print("[EEEE] compare var: \"%s\" in interface define: \"%s\" not in source file：\"%s\" " \
+                print("[EEEE] compare var: \"%s\" in interface define: \"%s\" not in source file: \"%s\" " \
                       % (name, spec1.spec_file_name, spec1.source_file_name))
                 compare_matched = False
             elif not compare_global_var_spec(global_var_list_1[name], global_var_list_2[name], spec1.spec_file_name,
@@ -518,7 +518,7 @@ def compare_file_spec(spec1: FileSpec, spec2: FileSpec):
         func_names_2 = sorted([x for x in func_list_2.keys() if not x.startswith("__") and not x.startswith("_")])
         for func_name in func_names_1:
             if func_name not in func_names_2:
-                print("[EEEE] compare func: \"%s\" in interface define: \"%s\" not in source file：\"%s\" " \
+                print("[EEEE] compare func: \"%s\" in interface define: \"%s\" not in source file: \"%s\" " \
                       % (func_name, spec1.spec_file_name, spec1.source_file_name))
                 compare_matched = False
             elif not compare_func_spec(func_list_1[func_name], func_list_2[func_name], spec1.spec_file_name,
@@ -533,7 +533,7 @@ def compare_file_spec(spec1: FileSpec, spec2: FileSpec):
         class_name2 = sorted([x.strip() for x in class_list_2.keys()])
         for class_name in class_name1:
             if class_name not in class_name2:
-                print("[EEEE] compare class: \"%s\" in interface define: \"%s\" not in source file：\"%s\" " \
+                print("[EEEE] compare class: \"%s\" in interface define: \"%s\" not in source file: \"%s\" " \
                       % (class_name, spec1.spec_file_name, spec1.source_file_name))
                 compare_matched = False
             elif not compare_class_spec(class_list_1[class_name], class_list_2[class_name], spec1.spec_file_name,

@@ -89,7 +89,7 @@ def ask_the_distributed_mode(node, prompt, warning_msg):
         elif message == "exit":
             sys.exit()
         else:
-            print("Input is error, please enter 'exit' or 'c' or 'continue'.")
+            print("Invalid input, please enter 'exit' or 'c' or 'continue'.")
 
 
 def log_hvd_distributed_mode_error(node):
@@ -137,7 +137,7 @@ def log_warning_main_arg_not_set():
         elif message == "exit":
             sys.exit()
         else:
-            print("Input is error, please enter 'exit' or 'c' or 'continue'.")
+            print("Invalid input, please enter 'exit' or 'c' or 'continue'.")
     util_global.set_value('already_check_main_arg', True)
 
 
@@ -194,7 +194,7 @@ def check_input_and_output_dir(input_dir, output_dir):
                 elif message == "exit":
                     sys.exit()
                 else:
-                    print("Input is error, please enter 'exit' or 'c' or 'continue'.")
+                    print("Invalid input, please enter 'exit' or 'c' or 'continue'.")
     input_dir_size, py_files_num = get_dir_size_and_py_num(input_dir)
     output_dir_free_space = get_dir_free_space(output_dir)
     if input_dir_size > output_dir_free_space:
@@ -213,7 +213,7 @@ def check_input_and_output_dir(input_dir, output_dir):
             elif message == "exit":
                 sys.exit()
             else:
-                print("Input is error, please enter 'exit' or 'c' or 'continue'.")
+                print("Invalid input, please enter 'exit' or 'c' or 'continue'.")
     if not check_path_length(input_dir) or not check_path_length(output_dir):
         print("The length of input/output dir is invalid, please change it and try again.")
         sys.exit(1)

@@ -14,6 +14,7 @@
 #include "gtest/gtest.h"
 #include "tensorflow/core/graph/graph_def_builder.h"
 #include "tensorflow/core/kernels/data/dataset_test_base.h"
+#include "tf_adapter/util/acl_channel.h"
 #include "tf_adapter/util/npu_attrs.h"
 #include "ascendcl_stub.h"
 #include "runtime_stub.h"
@@ -22,6 +23,16 @@ class HostQueueDatasetOp;
 namespace tensorflow {
 namespace data {
 namespace {
+
+TEST(HostQueueDatasetAclChannelTest, AssembleEmptyStringTensor) {
+  acltdtDataItem *item = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING, nullptr, 0);
+  ASSERT_NE(item, nullptr);
+  std::vector<Tensor> tensors;
+  EXPECT_TRUE(AssembleAclTensor2Tensor(item, tensors, false).ok());
+  ASSERT_EQ(tensors.size(), 1);
+  EXPECT_EQ(tensors[0].scalar<tstring>()(), "");
+  EXPECT_EQ(acltdtDestroyDataItem(item), ACL_ERROR_NONE);
+}
 
 static constexpr char kNodeName[] = "host_queue_dataset";
 static constexpr const char *const kChannelName = "channel_name";

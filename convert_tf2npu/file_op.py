@@ -101,7 +101,8 @@ def check_warning(lineno, api_msg):
     """Raise warning when api is related to element range check"""
     pattern = r'tf.*.is_finite'
     if re.match(pattern, api_msg):
-        doc_msg = "{}, chapter: {}".format('"Tensorflow模型迁移和训练', '"tf.is_finite接口手工迁移" and "Loss Scale"')
+        doc_msg = "{}, chapter: {}".format(
+            '"TensorFlow model migration and training', '"tf.is_finite manual migration" and "Loss Scale"')
         content = "".join([util_global.get_value('path', ''), ":", str(lineno), ", You used tensorflow api: ",
                            api_msg, ", It is suggested to use npu api. Please refer to the online document: ",
                            doc_msg])
@@ -119,13 +120,15 @@ def log_failed_api(lineno, api_msg, is_third_party):
         print("".join(["\033[1;31mERROR\033[0m:", content]), flush=True)
 
     elif api_msg.startswith("hvd"):
-        doc_msg = "{}, chapter: {}".format('"Tensorflow模型迁移和训练', '"Horovod脚本迁移示例"')
+        doc_msg = "{}, chapter: {}".format(
+            '"TensorFlow model migration and training', '"Horovod script migration example"')
         content = "".join([util_global.get_value('path', ''), ":", str(lineno), ", NPU Unsupport API: ", api_msg,
                            ", Please refer to the online document: ", doc_msg])
         print("".join(["\033[1;33mWARNING\033[0m:", content]), flush=True)
 
     elif api_msg.startswith("tf.is_"):
-        doc_msg = "{}, chapter: {}".format('"Tensorflow模型迁移和训练', '"tf.is_finite接口手工迁移" and "Loss Scale"')
+        doc_msg = "{}, chapter: {}".format(
+            '"TensorFlow model migration and training', '"tf.is_finite manual migration" and "Loss Scale"')
         content = "".join([util_global.get_value('path', ''), ":", str(lineno), ", NPU Unsupport API: ", api_msg,
                            ", Please refer to the online document: ", doc_msg])
         print("".join(["\033[1;33mWARNING\033[0m:", content]), flush=True)

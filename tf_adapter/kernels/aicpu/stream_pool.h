@@ -172,7 +172,7 @@ class Stream {
       }
 
       if (waiting_event_queue_.empty()) {
-        return errors::InvalidArgument("No event wait to be process.");
+        return errors::InvalidArgument("No event to be processed.");
       }
       event = std::move(waiting_event_queue_.front());
       waiting_event_queue_.pop_front();
@@ -267,7 +267,7 @@ class StreamPool {
     {
       std::unique_lock<std::mutex> lck(mtx_);
       if ((stream_id >= max_stream_num_) || (cur_event_num_[stream_id] >= max_task_num_)) {
-        return errors::InvalidArgument("Cur stream is overload. reocrd event = ", cur_event_num_[stream_id]);
+        return errors::InvalidArgument("Cur stream is overload. record event = ", cur_event_num_[stream_id]);
       }
       cur_event_num_[stream_id]++;
     }

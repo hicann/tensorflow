@@ -17,7 +17,7 @@
 namespace tensorflow {
 namespace data {
 void DpMakeIteratorOp::Compute(OpKernelContext *ctx) {
-  ADP_LOG(INFO) << "===Begin Computer MakeIterator===";
+  ADP_LOG(INFO) << "===Begin Compute MakeIterator===";
   CHECK_NOT_NULL(ctx);
   DatasetBase *dataset = nullptr;
   OP_REQUIRES_OK(ctx, GetDatasetFromVariantTensor(ctx->input(0), &dataset));
@@ -28,7 +28,7 @@ void DpMakeIteratorOp::Compute(OpKernelContext *ctx) {
   if (!s.ok()) {
     ctx->SetStatus(s);
   }
-  ADP_LOG(INFO) << "===End Computer MakeIterator===";
+  ADP_LOG(INFO) << "===End Compute MakeIterator===";
 }
 
 namespace {

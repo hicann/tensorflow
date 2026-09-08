@@ -18,6 +18,7 @@
 #include "npu_env.h"
 #include "npu_utils.h"
 #include "npu_hdc.h"
+#include "npu_global.h"
 #include "npu_managed_buffer.h"
 #include "npu_tensor.h"
 #include "npu_unwrap.h"
@@ -27,6 +28,7 @@
 #include "common/test_function_library.h"
 
 void MarkDataNodesAsHostTensor(ge::Graph &graph);
+void SetCreateChannelWithCapacityStub(bool success);
 
 namespace {
 const char *kNpuDeviceName = "/job:localhost/replica:0/task:0/device:NPU:0";
@@ -279,6 +281,27 @@ TEST(NpuUtils, SeparateGraphDef) {
   tensor2->set_tensor_content(tensor_content);
   attr2->insert({"value", value_attr2});
   EXPECT_EQ(npu::SeparateGraphDef(&graph_def, partition_graph, const_value_map).ok(), true);
+}
+
+TEST(NpuUtils, RejectInvalidTypeAndFormat) {
+  tensorflow::DataType tf_type;
+  aclDataType acl_type;
+  aclFormat acl_format;
+
+  EXPECT_FALSE(npu::MapGeType2Tf(ge::DT_UNDEFINED, tf_type).ok());
+  EXPECT_FALSE(npu::MapGeType2Acl(ge::DT_UNDEFINED, acl_type).ok());
+  EXPECT_FALSE(npu::MapGeFormat2Acl(ge::FORMAT_RESERVED, acl_format).ok());
+}
+
+TEST(NpuUtils, RejectInvalidLoopCopyDestination) {
+  char source = 0;
+  EXPECT_FALSE(npu::LoopCopy(nullptr, sizeof(source), &source, sizeof(source)).ok());
+}
+
+TEST(NpuGlobal, FallBackWhenCapacityIsUnsupported) {
+  SetCreateChannelWithCapacityStub(false);
+  EXPECT_TRUE(npu::global::GlobalHdcChannel::GetInstance().Create("unsupported_capacity", 1, {0}).ok());
+  SetCreateChannelWithCapacityStub(true);
 }
 
 TEST(NpuDevice, MarkOnlyDataNodesAsHostTensor) {

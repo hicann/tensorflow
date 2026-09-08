@@ -224,7 +224,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   } else if (!env_rank_table_file.empty()) {
     SetRankTableFileEnv(init_options, env_rank_table_file);
   } else {
-    ADP_LOG(INFO) << "[GePlugin] CM_CHIEF_IP and RANK_TABLE_FILE are all not be configured.";
+    ADP_LOG(INFO) << "[GePlugin] CM_CHIEF_IP and RANK_TABLE_FILE are not configured.";
   }
 
   std::string cluster_info;

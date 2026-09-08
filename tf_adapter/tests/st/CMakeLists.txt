@@ -27,6 +27,7 @@ file(GLOB_RECURSE ST_SOURCES
 add_executable(tfadapter_stest
     "main.cc"
     ${ST_SOURCES}
+    "../coverage/log_remediation_coverage_test.cc"
 )
 
 target_include_directories(tfadapter_stest PRIVATE

@@ -115,7 +115,6 @@ Status DataItemDeliver::ParallelInitSocketClient() {
   for (auto &&result : init_status) {
     if (result.get() != Status::OK()) {
       ADP_LOG(ERROR) << "Init socket client failed.";
-      LOG(ERROR) << "Init socket client failed.";
       return errors::Internal("Init socket client failed.");
     }
   }

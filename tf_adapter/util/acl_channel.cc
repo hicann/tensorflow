@@ -82,7 +82,7 @@ Status AssembleAclTensor2Tensor(const acltdtDataItem *item, std::vector<Tensor> 
     if (acl_data != nullptr) {
       tensor.scalar<npu::compat_tf1_tf2::string>()() = std::move(npu::compat_tf1_tf2::string(acl_data, acl_data_len));
     } else {
-      LOG(INFO) << "This is a empty DT_STRING tensor.";
+      LOG(INFO) << "This is an empty DT_STRING tensor.";
     }
     tensors.emplace_back(std::move(tensor));
   } else if (DataTypeCanUseMemcpy(tf_type)) {
@@ -220,7 +220,7 @@ Status RecvTensorByAcl(const acltdtChannelHandle *acl_handle, std::vector<Tensor
 }
 // When calling SendTensorsByAcl and its'return is the queue is full or
 // empty (actually no event, drv wants us to treat it as a no event,
-// because they cannot return no evnet code , only empty). The above 2
+// because they cannot return no event code , only empty). The above 2
 // cases , we need to push data into dequeue to sent again.
 Status SendTensorsByAcl(const acltdtChannelHandle *acl_handle, acltdtTensorType acl_type,
                         const std::vector<Tensor> &tensors, bool &need_resend) {

@@ -112,7 +112,7 @@ tensorflow::Status GlobalHdcChannel::Create(const std::string &name, int64_t cha
   if (count == device_ids.size()) {
     DLOG() << "Create hdc channel with capacity success.";
   } else if (count == 0U) {
-    DLOG() << "Current version not support create hdc channel with capacity by acl.";
+    DLOG() << "Current version does not support creating hdc channel with capacity by acl.";
     return tensorflow::Status::OK();
   } else {
     return tensorflow::errors::Internal("Failed create hdc channel with capacity.");

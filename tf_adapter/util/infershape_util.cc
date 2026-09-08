@@ -31,9 +31,11 @@ int64 InferShapeUtil::GetCurrentTimestap() {
   struct timeval tv;
   int ret = gettimeofday(&tv, nullptr);
   if (ret != 0) {
-    ADP_LOG(ERROR) << "Func gettimeofday may failed, ret:" << ret;
-    LOG(ERROR) << "Func gettimeofday may failed, ret:" << ret;
+    // LCOV_EXCL_START
+    ADP_LOG(ERROR) << "Func gettimeofday may fail, ret:" << ret;
+    LOG(ERROR) << "Func gettimeofday may fail, ret:" << ret;
     return 0;
+    // LCOV_EXCL_STOP
   }
   int64 totalUsec = tv.tv_usec + tv.tv_sec * kPerSecHasUsec;
   return totalUsec;
@@ -169,9 +171,9 @@ void InferShapeUtil::setShapeOfEnterOP(const ShapeRefiner &shapeRef, const Node 
   int iInputNums = pNode->num_inputs();  // Enter has only one input
   if (iInputNums != 1) {
     ADP_LOG(ERROR) << "Node " << pNode->name() << ", type is " << pNode->type_string()
-                   << ", must has only one input, but now=" << iInputNums;
+                   << ", must have only one input, but now=" << iInputNums;
     LOG(ERROR) << "Node " << pNode->name() << ", type is " << pNode->type_string()
-               << ", must has only one input, but now=" << iInputNums;
+               << ", must have only one input, but now=" << iInputNums;
     return;
   }
   std::vector<tensorflow::shape_inference::ShapeHandle> inputShapes(iInputNums);

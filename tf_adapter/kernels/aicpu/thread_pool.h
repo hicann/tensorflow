@@ -117,7 +117,7 @@ ThreadPool::~ThreadPool() {
     } catch (const std::system_error &) {
       LOG(FATAL) << "ThreadPool join failed because of system_error.";
     } catch (...) {
-      LOG(FATAL) << "ThreadPool join failed because of unkown error.";
+      LOG(FATAL) << "ThreadPool join failed because of unknown error.";
     }
   }
 }

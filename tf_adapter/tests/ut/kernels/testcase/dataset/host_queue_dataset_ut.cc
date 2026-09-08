@@ -549,6 +549,14 @@ TEST_F(HostQueueDatasetOpTest, iterator_getnext06) {
 }
 
 TEST_F(HostQueueDatasetOpTest, iterator_getnext07) {
+  acltdtDataItem *item = acltdtCreateDataItem(ACL_TENSOR_DATA_TENSOR, nullptr, 0, ACL_STRING, nullptr, 0);
+  ASSERT_NE(item, nullptr);
+  std::vector<Tensor> output;
+  EXPECT_TRUE(AssembleAclTensor2Tensor(item, output, false).ok());
+  ASSERT_EQ(output.size(), 1);
+  EXPECT_EQ(output[0].scalar<tstring>()(), "");
+  EXPECT_EQ(acltdtDestroyDataItem(item), ACL_ERROR_NONE);
+
   acltdtDataset *acl_dataset = nullptr;
   const std::vector<Tensor> tensors = {{DT_STRING, {}}, {DT_STRING, {}}};
   std::vector<std::unique_ptr<uint8_t[]>> buff_list;

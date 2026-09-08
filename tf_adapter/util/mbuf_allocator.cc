@@ -109,7 +109,7 @@ class MbufAllocator : public Allocator {
   }
 
   void *AllocateRaw(size_t alignment, size_t num_bytes) override {
-    ADP_LOG(INFO) << "MbufAllocator AllocateRaw begin, size:" << num_bytes;
+    ADP_LOG(INFO) << "MbufAllocator AllocateRaw begin, size:" << num_bytes << " Byte";
     void *mbuf_data = nullptr;
     auto rt_error = rtBuffAlloc(num_bytes + kRuntimeTensorDescSize, &mbuf_data);
     if (rt_error != RT_ERROR_NONE) {
@@ -137,7 +137,7 @@ class MbufAllocator : public Allocator {
       return;
     }
     ADP_LOG(INFO) << "MbufAllocator DeallocateRaw success, ptr:" << ptr
-                  << ", ptr-1024:" << DataAddrToPtr(ptr, kRuntimeTensorDescSize);
+                  << ", ptr-tensorDescSize:" << DataAddrToPtr(ptr, kRuntimeTensorDescSize);
   }
 
   static void *PtrToDataAddr(void *ptr, int64_t offset) {

@@ -26,7 +26,6 @@ void *PluginLoadManager::DlOpen(const std::string &path) {
 void *PluginLoadManager::DlSym(void *handle, const std::string &func_name) {
   if (handle == nullptr) {
     ADP_LOG(WARNING) << "handle is null, not valid!";
-    LOG(WARNING) << "handle is null, not valid!";
     return nullptr;
   }
   void *func = dlsym(handle, func_name.c_str());

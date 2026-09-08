@@ -108,7 +108,7 @@ def convert_origin_func_to_npu(node, origin_func, org_func_name, params_list, is
                 log_warning("".join(["The train func in ", content,
                                      " is user-defined functions, will not perform distributed porting"]))
                 return node
-            print("Input is error, Please enter 'y' or 'n'.")
+            print("Invalid input, Please enter 'y' or 'n'.")
     for param_name in params_list:
         node = match_func_params_and_convert(node, origin_func, org_func_name, param_name, is_class_func)
 

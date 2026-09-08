@@ -73,7 +73,7 @@ void GetAccumulateBuilderInfo(Node *node, std::vector<tensorflow::NodeBuilder::N
         } else if (assign_inedge->src()->type_string() == "TemporaryVariable") {
           delete_nodes.emplace_back(assign_inedge->src());
         } else {
-          ADP_LOG(INFO) << "unsupport node in accumulate_n sub graph.";
+          ADP_LOG(INFO) << "unsupported node in accumulate_n sub graph.";
         }
       }
       delete_nodes.emplace_back(input_edge->src());
@@ -756,7 +756,7 @@ Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
           if ((iterations_per_loop == 1) && (dtype_dst == DT_STRING)) {
             continue;
           }
-          ADP_LOG(INFO) << "remove node: " << edge->dst()->name() << "from candidates because string or resource";
+          ADP_LOG(INFO) << "remove node: " << edge->dst()->name() << " from candidates because string or resource";
           if (candidates->erase(edge->dst()) > 0) {
             (void)outSet.insert(edge->dst());
           }
@@ -792,7 +792,7 @@ Status FindNpuSupportCandidates(const Graph &graph, OrderedNodeSet *candidates,
           if ((iterations_per_loop == 1) && (dtype_dst == DT_STRING)) {
             continue;
           }
-          ADP_LOG(INFO) << "remove node: " << edge->src()->name() << "from candidates because string or resource";
+          ADP_LOG(INFO) << "remove node: " << edge->src()->name() << " from candidates because string or resource";
           if (candidates->erase(edge->src()) > 0) {
             (void)outSet.insert(edge->src());
           }
@@ -1873,7 +1873,7 @@ Status OMSplitter::CopySubgraphNodes(std::unordered_map<const Node *, Node *> *n
 
     Status s = subgraphs_[subgraphId].SetOptions(npu_optimizer_options_, pass_options_, graph_options_);
     if (s != Status::OK()) {
-      ADP_LOG(INFO) << "Subgraph Id: " << subgraphId << "set npu optimizer ret != 0.";
+      ADP_LOG(INFO) << "Subgraph Id: " << subgraphId << " set npu optimizer ret != 0.";  // LCOV_EXCL_LINE
       return s;
     }
     Node *image = subgraphs_[subgraphId].MakeNodeImage(graph_in_, node);
@@ -2325,7 +2325,7 @@ Status OMPartitionSubgraphsPass::ProcessGraph(std::unique_ptr<Graph> *graph, Fun
   for (Node *n : graph->get()->nodes()) {
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
-      ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip OMPartitionSubgraphsPass.";
+      ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip OMPartitionSubgraphsPass.";
       return Status::OK();
     }
   }
@@ -2643,8 +2643,8 @@ Status OMPartitionSubgraphsPass::SplitUnaryOpsComposition(Graph *graph, Node *no
     const std::string &node_name = node_list.s(i);
     std::string op_name = node->name() + "_" + std::to_string(i) + "_" + node_name;
     const auto src_output = src_from_org ? (*node->in_edges().begin())->src_output() : 0;
-    ADP_LOG(INFO) << "op_names node_list: " << i << " is node: " << node_name << "src_node:" << pre_node->name()
-                  << "output index:" << src_output;
+    ADP_LOG(INFO) << "op_names node_list: " << i << " is node: " << node_name << ", src_node:" << pre_node->name()
+                  << ", output index:" << src_output;
     TF_CHECK_OK(NodeBuilder(op_name, node_name)
                     .Input(pre_node, src_output)
                     .Device(pre_node->def().device())

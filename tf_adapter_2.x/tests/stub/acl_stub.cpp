@@ -26,7 +26,10 @@ namespace {
 const uint32_t kDeviceSatModeLimit = 2U;
 std::uint32_t deviceSatMode = 2U;
 std::map<int32_t, int64_t> sysParamOptMap;
+bool g_create_channel_with_capacity = true;
 }  // namespace
+
+void SetCreateChannelWithCapacityStub(bool success) { g_create_channel_with_capacity = success; }
 
 struct aclopAttr {};
 struct aclDataBuffer {};
@@ -198,6 +201,9 @@ aclError acltdtStopChannel(acltdtChannelHandle *handle) { return ACL_ERROR_NONE;
 acltdtChannelHandle *acltdtCreateChannel(uint32_t deviceId, const char *name) { return new acltdtChannelHandle(name); }
 
 acltdtChannelHandle *acltdtCreateChannelWithCapacity(uint32_t deviceId, const char *name, size_t capacity) {
+  if (!g_create_channel_with_capacity) {
+    return nullptr;
+  }
   return new acltdtChannelHandle(name);
 }
 

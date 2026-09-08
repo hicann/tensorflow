@@ -28,6 +28,7 @@ file(GLOB_RECURSE UT_SOURCES
 add_executable(tfadapter_utest
     "main.cc"
     ${UT_SOURCES}
+    "../coverage/log_remediation_coverage_test.cc"
 )
 
 target_include_directories(tfadapter_utest PRIVATE

@@ -211,7 +211,6 @@ Status BuildOutputTensorInfo(OpKernelContext *ctx, std::vector<ge::Tensor> &outp
   ADP_LOG(INFO) << "BuildOutputTensorInfo, num_outputs:" << num_outputs;
   if (num_outputs != static_cast<int>(outputs.size())) {
     ADP_LOG(ERROR) << "[GEOP] Outputs num mismatched, need:" << num_outputs << ", while GE return:" << outputs.size();
-    LOG(ERROR) << "[GEOP] Outputs num mismatched, need:" << num_outputs << ", while GE return:" << outputs.size();
     return errors::InvalidArgument("Outputs num mismatched, need:", num_outputs, ", while GE return:", outputs.size());
   }
 
@@ -1018,7 +1017,7 @@ Status GeOp::CreateGeSession() {
   if (sess_init_flag_) {
     return Status::OK();
   }
-  // create ge session should be ensure after getinit aysnc success
+  // create ge session should be ensure after getinit async success
   const auto init_status = GePlugin::GetInstance()->GetInitStatus();
   const auto &warning_message = GePlugin::GetInstance()->GetInitWarningMessage();
   if (!warning_message.empty()) {
@@ -1105,7 +1104,7 @@ Status GeOp::ParserGraph(OpKernelContext *ctx, const std::vector<Tensor> &input_
     const std::string pbtxt_path = GetDumpPath() + "TF_" + ctx->op_kernel().name().c_str() + ".pbtxt";
     (void)WriteTextProto(Env::Default(), pbtxt_path, ori_graph_def);
   }
-  ADP_LOG(INFO) << "[GEOP] TFadpter process graph success, GE parser begin, kernel_name: " << ctx->op_kernel().name()
+  ADP_LOG(INFO) << "[GEOP] TFadapter process graph success, GE parser begin, kernel_name: " << ctx->op_kernel().name()
                 << " , tf session: " << tf_session_;
   const std::string compute_graph_name = "ge_default_" + CurrentTimeInStr();
   graph_handler_.graph = GeApiWrapper_MakeComputeGraphPtr(compute_graph_name.c_str());
@@ -1862,8 +1861,8 @@ Status GeOp::SeparateGraphDef(GraphDef &ori_graph_def, std::vector<ge::AscendStr
     partition_graph.push_back(ge::AscendString(graph_def_str.c_str(), graph_def_str.length()));
     return Status::OK();
   }
-  LOG(INFO) << "GraphDef is beyond 2G, which is need separate weight from model";
-  ADP_LOG(INFO) << "GraphDef is beyond 2G, which is need separate weight from model";
+  LOG(INFO) << "GraphDef exceeds 2G, weights need to be separated from the model";
+  ADP_LOG(INFO) << "GraphDef exceeds 2G, weights need to be separated from the model";
   for (NodeDef &node : *ori_graph_def.mutable_node()) {
     if (node.op() == "Const") {
       std::string node_name = node.name();
@@ -2027,8 +2026,8 @@ void GeOp::SetShapesToOutputDesc(const std::vector<std::string> &input_shapes, c
     return;
   }
   if (index < 0) {
-    ADP_LOG(ERROR) << "[GEOP] index must more than 0.";
-    LOG(ERROR) << "[GEOP] index must more than 0.";
+    ADP_LOG(ERROR) << "[GEOP] index must be more than 0.";
+    LOG(ERROR) << "[GEOP] index must be more than 0.";
     return;
   }
   ADP_LOG(INFO) << "[GEOP] Get input: " << index << ", input shape: " << input_shapes[index];

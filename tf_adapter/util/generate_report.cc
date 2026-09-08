@@ -35,7 +35,7 @@ GenerateReport::GenerateReport() {
     path = path + "/" + kUnsupportedInfoPath;
     ADP_LOG(INFO) << "[GenerateReport] Remove check report path:" << path;
     if (remove(path.c_str()) == 0) {
-      ADP_LOG(INFO) << "[GenerateReport] Succeed remove check report path:" << path;
+      ADP_LOG(INFO) << "[GenerateReport] Succeeded in removing check report path:" << path;
     }
   }
 }

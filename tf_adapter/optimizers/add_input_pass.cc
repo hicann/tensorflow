@@ -59,7 +59,7 @@ Status AddInputPass::Run(const GraphOptimizationPassOptions &options) {
     for (Node *n : graph->get()->nodes()) {
       REQUIRES_NOT_NULL(n);
       if (n->attrs().Find("_NoNeedOptimize")) {
-        ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip AddInputPass.";
+        ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip AddInputPass.";
         findMarkNoNeed = true;
         break;
       }

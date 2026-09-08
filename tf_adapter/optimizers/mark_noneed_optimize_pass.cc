@@ -61,7 +61,7 @@ Status MarkNoNeedOptimizePass::ProcessGraph(const std::unique_ptr<Graph> *graph,
 
   for (Node *n : graph->get()->nodes()) {
     if (n != nullptr && n->attrs().Find("_NoNeedOptimize")) {
-      ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip MarkNoNeedOptimizePass.";
+      ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip MarkNoNeedOptimizePass.";
       return Status::OK();
     }
   }

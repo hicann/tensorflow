@@ -55,7 +55,7 @@ constexpr int ADAPTER_ENV_MAX_LENTH = 1024 * 1024;
 #define ADAPTER_LOG_IF_ERROR(...)                                       \
   do {                                                                  \
     const ::tensorflow::Status status = (__VA_ARGS__);                  \
-    if (TF_PREDICT_FALSE(!status.ok())) LOG(INFO) << status.ToString(); \
+    if (TF_PREDICT_FALSE(!status.ok())) LOG(ERROR) << status.ToString(); \
   } while (0)
 
 #endif  // TENSORFLOW_COMMON_COMMON_H_

@@ -50,7 +50,7 @@ Status GetAttrOptimizePass::Run(const GraphOptimizationPassOptions &options) {
   for (Node *n : options.graph->get()->nodes()) {
     REQUIRES_NOT_NULL(n);
     if (n->attrs().Find("_NoNeedOptimize")) {
-      ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip AddSrcOpAttrPass.";
+      ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip AddSrcOpAttrPass.";
       return Status::OK();
     }
 

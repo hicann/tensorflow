@@ -477,8 +477,8 @@ Status DpTfToGEConversionPassImpl::RemoveNotSupportDataset(Graph &g, const std::
       end_dataset = node;
     }
     if (node->num_outputs() != 1) {
-      ADP_LOG(ERROR) << "Invalid node " << node->name() << ", op is" << node->type_string();
-      LOG(ERROR) << "Invalid node " << node->name() << ", op is" << node->type_string();
+      ADP_LOG(ERROR) << "Invalid node " << node->name() << ", op is " << node->type_string();
+      LOG(ERROR) << "Invalid node " << node->name() << ", op is " << node->type_string();
       return errors::InvalidArgument("RemoveSplitDataset: find invalid node.");
     }
     const Edge *edge = nullptr;
@@ -585,7 +585,7 @@ Status DpTfToGEConversionPassImpl::BuildDeviceDpGraph(const Node &topo_end, Grap
   // Make a copy of graph for pruned GE
   ADP_LOG(INFO) << "Start to prune GE graph";
   CopyGraph(*graph_, device_graph);
-  // Prune visiable GE graph
+  // Prune visible GE graph
   std::unordered_set<const Node *> visiable_ge;
   auto iter =
       std::find_if(device_graph->op_nodes().begin(), device_graph->op_nodes().end(),
@@ -598,7 +598,7 @@ Status DpTfToGEConversionPassImpl::BuildDeviceDpGraph(const Node &topo_end, Grap
     return ret;
   }
 
-  ADP_LOG(INFO) << "Start to to PruneForReverseReachability.";
+  ADP_LOG(INFO) << "Start to PruneForReverseReachability.";
   (void)PruneForReverseReachability(device_graph, visiable_ge);
   return ret;
 }
@@ -621,7 +621,7 @@ Status DpTfToGEConversionPassImpl::AddAttr2DeviceNodes(const Node &topo_end, con
     }
   }
   if (iterator_name.empty()) {
-    ADP_LOG(ERROR) << "There is no connection between MakeIteraotr and IteratorV2";
+    ADP_LOG(ERROR) << "There is no connection between MakeIterator and IteratorV2";
     return errors::Internal("There is no connection between MakeIteraotr and IteratorV2");
   }
   // Add dp custom kernel label
@@ -644,7 +644,7 @@ Status DpTfToGEConversionPassImpl::AddAttr2DeviceNodes(const Node &topo_end, con
 Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fdeflib, const std::string &fn_geop,
                                                           const std::string &fn_dpop,
                                                           const string &default_device) const {
-  // Add DPOP node(visable only by function of geop)
+  // Add DPOP node(visible only by function of geop)
   string func_def_str;
   (void)fdeflib.SerializeToString(&func_def_str);
 
@@ -662,7 +662,7 @@ Status DpTfToGEConversionPassImpl::AddGeopNodeFunctionDef(FunctionDefLibrary &fd
   TF_CHECK_OK(NodeDefBuilder(fn_dpop, "DPOP")
                   .Input(EMPTY_DEF_INPUT)  // No partition dp_init graph on GE
                   .Device(default_device)
-                  .Attr("function", f_attr)  // dpop funcion
+                  .Attr("function", f_attr)  // dpop function
                   .Attr("func_def", func_def_str)
                   .Attr("Tin", EMPTY_TYPE)
                   .Attr("Tout", EMPTY_TYPE)
@@ -689,7 +689,7 @@ Status DpTfToGEConversionPassImpl::AddGeopDatasetFunctionDef(
   TF_CHECK_OK(NodeDefBuilder(GetRandomName("GeOp"), "GeOp")
                   .Input(EMPTY_DEF_INPUT)  // No partition dp_init graph on GE
                   .Device(default_device)
-                  .Attr("function", f_attr)  // geop funcion
+                  .Attr("function", f_attr)  // geop function
                   .Attr("Tin", EMPTY_TYPE)
                   .Attr("Tout", EMPTY_TYPE)
                   .Attr("Tout", EMPTY_TYPE)
@@ -778,7 +778,7 @@ Status DpTfToGEConversionPassImpl::AddGeOpDatasetFunctionLibrary(
     }
   }
 
-  // Update graph function libray
+  // Update graph function library
   ADP_LOG(INFO) << "Start to add geop and geopdataset function in graph library";
   // Not a must, just for Tensorbord viewing convenience
   (void)graph_->AddFunctionLibrary(fdeflib);
@@ -1085,7 +1085,7 @@ Status DpTfToGEConversionPassImpl::ProcessGraph(const std::unique_ptr<Graph> *gr
       channel_name = n->name();
     }
     if (n->attrs().Find("_NoNeedOptimize")) {
-      ADP_LOG(INFO) << "Found mark of noneed optimize on node [" << n->name() << "], skip DpTfToGEConversionPass.";
+      ADP_LOG(INFO) << "Found mark of no-need optimize on node [" << n->name() << "], skip DpTfToGEConversionPass.";
       return Status::OK();
     }
   }

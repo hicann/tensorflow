@@ -87,7 +87,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     local_rank_id_ = std::atoi(local_rank_id.c_str());
     for (size_t i = 0UL; i < local_device_list.size(); i += 2UL) {
       int device_id = std::atoi(&local_device_list[i]);
-      OP_REQUIRES(ctx, device_id >= 0, errors::InvalidArgument("device id should be >= 0."));
+      OP_REQUIRES(ctx, device_id >= 0,
+                  errors::InvalidArgument("device id should be >= 0, but current device id is ", device_id, "."));
       local_device_list_.push_back(device_id);
     }
     SetChannelType();
@@ -114,7 +115,6 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     int32_t tdt_status = TdtInFeedDestroy(device_id_);
     if (tdt_status != 0) {
       ADP_LOG(ERROR) << "Tdt client close failed, and response code is " << tdt_status;
-      LOG(ERROR) << "Tdt client close failed, and response code is " << tdt_status;
     } else {
       ADP_LOG(INFO) << "Tdt client close success.";
       tdt_release = true;
@@ -148,7 +148,8 @@ class HostQueueDatasetOp : public DatasetOpKernel {
     size_t channel_depth = 0U;
     if (channel_type_ != ChannelType::TDT) {
       int64_t queue_depth = GetChannelDepth();
-      OP_REQUIRES(ctx, queue_depth > 0LL, errors::InvalidArgument("Current data size is unsupported."));
+      OP_REQUIRES(ctx, queue_depth > 0LL, errors::InvalidArgument("Current data size is unsupported, queue depth is ",
+                                                                  queue_depth, ", it should be greater than 0."));
       channel_depth = std::min(static_cast<size_t>(queue_depth), kMaxDepth);
       ADP_LOG(INFO) << "Channel depth is : " << channel_depth;
       if (kIsHeterogeneous) {
@@ -309,7 +310,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             }
           }
         }
-        // wait for tdt destory for sleeping one second
+        // wait for tdt destroy for sleeping one second
         if (dataset()->channel_type_ == ChannelType::TDT) {
           sleep(kSleepTime);
           mutex_lock lck(mu_);
@@ -455,7 +456,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         while (!event_finish_flag_) {
           event_finish_var_.wait(lck);
         }
-        ADP_LOG(INFO) << "All threads has finished to copy " << (closure_ret ? "successfully" : "unsuccessfully")
+        ADP_LOG(INFO) << "All threads have finished to copy " << (closure_ret ? "successfully" : "unsuccessfully")
                       << ".";
         return closure_ret;
       }
@@ -527,7 +528,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           return;
         }
         mutex_lock lck(mu_);
-        // cond_error_.wait_for is to wait forthe iterator destructed, kDelayTime is an estimate value.
+        // cond_error_.wait_for is to wait for the iterator destructed, kDelayTime is an estimate value.
         cond_error_.wait_for(lck, std::chrono::seconds(kDelayTime));
         if (!finish_send_) {
           showLog();
@@ -648,8 +649,10 @@ class HostQueueDatasetOp : public DatasetOpKernel {
                 return;
               }
               if (tensor.TotalBytes() > (UINT64_MAX - total_bytes_)) {
-                ADP_LOG(ERROR) << "The size of tensor is too big";
-                LOG(ERROR) << "The size of tensor is too big";
+                ADP_LOG(ERROR) << "The size of tensor is too big, tensor.TotalBytes() is " << tensor.TotalBytes()
+                               << ", upper limit is " << (UINT64_MAX - total_bytes_);
+                LOG(ERROR) << "The size of tensor is too big, tensor.TotalBytes() is " << tensor.TotalBytes()
+                           << ", upper limit is " << (UINT64_MAX - total_bytes_);
                 buffer_element.host_thread_finished = true;
                 buffer_element.status = errors::Internal("[GetThread] The size of tensor is too big.",
                                                          " tensor.TotalBytes() is ", tensor.TotalBytes());
@@ -1105,7 +1108,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
           return errors::InvalidArgument("HostQueueDataset resize failed.");
         }
         if ((dataset()->channel_type_ == ChannelType::ACL_QUEUE) && (!CreateChannel().ok())) {
-          return errors::InvalidArgument("Call CreatChannel queue failed");
+          return errors::InvalidArgument("Call CreateChannel queue failed");
         }
         for (size_t i = 0; i < input_impls_.size(); ++i) {
           TF_RETURN_IF_ERROR(

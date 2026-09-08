@@ -30,7 +30,7 @@ from visit_by_ast import preprocess_visit
 
 def conver():
     """The entry point to convert Tensorflow script"""
-    print("Begin conver, input file: " + util_global.get_value('input') + '\n')
+    print("Begin convert, input file: " + util_global.get_value('input') + '\n')
     out_path = util_global.get_value('output')
     dst_path = os.path.split(util_global.get_value('input').rstrip('\\/'))[-1]
     dst_path_new = dst_path + util_global.get_value('timestap')
@@ -82,4 +82,4 @@ def conver():
     else:
         analysis_report.to_excel(report_xlsx, index=True)
         get_api_statistic(analysis_report)
-    print("Finish conver, output file: " + out_path + "; report file: " + util_global.get_value('report'))
+    print("Finish convert, output file: " + out_path + "; report file: " + util_global.get_value('report'))

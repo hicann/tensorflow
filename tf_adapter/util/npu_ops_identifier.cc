@@ -180,7 +180,7 @@ int32_t NpuOpsIdentifier::ParseOps(const std::string &f, json &root) const {
         opsCnt++;
       }
     } catch (json::exception &e) {
-      ADP_LOG(INFO) << e.what();
+      ADP_LOG(ERROR) << e.what();
       jsonConfigFileStream.close();
       return 0;
     }
@@ -201,7 +201,7 @@ bool NpuOpsIdentifier::IsNpuSupported(const std::string &op_name, const std::str
   bool declared = ops_info_[op_name].is_object();
   if (!declared) {
     tensorflow::GenerateReport::Details infos;
-    static const std::string message = "This op is not exsit on npu.";
+    static const std::string message = "This op is not exist on npu.";
     infos.code = static_cast<int>(tensorflow::GenerateReport::ReasonCode::TypeNoDefine);
     infos.message = message;
     (void)tensorflow::GenerateReport::GetInstance()->AddUnSupportedInfo(node_name, op_name, infos);

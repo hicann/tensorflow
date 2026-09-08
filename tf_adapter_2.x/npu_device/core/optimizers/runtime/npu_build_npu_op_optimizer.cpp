@@ -33,7 +33,7 @@ tensorflow::Status SetShapeToOutputDesc(const std::vector<std::string> &input_sh
   // e.g. shape:["data:2,3,4"] -> ["data", "2,3,4"]
   std::vector<std::string> shape = tensorflow::str_util::Split(input_shapes[idx], ":");
   if (shape.size() != kShapeStrSize) {
-    return tensorflow::errors::InvalidArgument("Invalid shape size ", shape.size(), ", except ", kShapeStrSize);
+    return tensorflow::errors::InvalidArgument("Invalid shape size ", shape.size(), ", expected ", kShapeStrSize);
   }
   if (shape.back().empty()) {
     // scale node has no shape

@@ -23,8 +23,15 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/dist/python/npu_device)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../npu_device npu_device)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../npu_ops npu_ops)
 
+add_executable(adapter2_st_coverage_branches
+    ${CMAKE_CURRENT_LIST_DIR}/testcases/coverage_branches.cpp)
+
+target_link_libraries(adapter2_st_coverage_branches PRIVATE
+    _npu_device_backends tensorflow_libs ${PYTHON_LD_LIBRARY} -ldl -lutil)
+
 add_custom_target(adapter2_st ALL
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_st
+    COMMAND $<TARGET_FILE:adapter2_st_coverage_branches>
     COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p1.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p1.coverage "*npu_device*" -o st_p1.coverage
     COMMAND export GE_USE_STATIC_MEMORY=1 && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_st.Adapter2St_EnvGeStaticMemory
     COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p2.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p2.coverage "*npu_device*" -o st_p2.coverage
@@ -41,5 +48,5 @@ add_custom_target(adapter2_st ALL
     COMMAND export NPU_DEBUG=true && export NPU_DUMP_GRAPH=true && cd ${CMAKE_BINARY_DIR}/dist/python/ && ${PYTHON_BIN_PATH} -m unittest adapter2_shape_generalization_mode_ignore_st
     COMMAND lcov ${LCOV_IGNORE_CAPTURE} -c -q -d . -o st_p8.coverage && lcov ${LCOV_IGNORE_EXTRACT} -q -e st_p8.coverage "*npu_device*" -o st_p8.coverage
     COMMAND lcov -o st.coverage -a st_p1.coverage -a st_p2.coverage -a st_p3.coverage -a st_p4.coverage -a st_p5.coverage -a st_p6.coverage -a st_p7.coverage -a st_p8.coverage
-    DEPENDS _npu_ops _npu_device_backends aoe_tuning
+    DEPENDS _npu_ops _npu_device_backends aoe_tuning adapter2_st_coverage_branches
     VERBATIM)

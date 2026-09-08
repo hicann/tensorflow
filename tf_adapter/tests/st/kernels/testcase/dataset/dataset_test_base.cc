@@ -118,7 +118,7 @@ Status DatasetOpsTestBase::ExpectEqual(std::vector<Tensor> tensors1, std::vector
       case01(DT_UINT64);
 #undef case
       default:
-        return errors::Internal("This dtype is now unsupport: ", dtype);
+        return errors::Internal("This dtype is now unsupported: ", dtype);
     }
   }
 
