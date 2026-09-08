@@ -36,7 +36,7 @@ logging() {
   echo "[INFO] $@"
 }
 
-# parse and set optionss
+# parse and set options
 checkopts() {
   VERBOSE=""
   THREAD_NUM=8
