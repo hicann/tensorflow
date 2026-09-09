@@ -32,6 +32,8 @@ TEST_F(UtilTest, MappingDTStringTensor2DataItemTest) {
   std::vector<std::unique_ptr<uint8_t[]>> buff_list;
   tdt::DataItem item0;
   TF_CHECK_OK(MappingDTStringTensor2DataItem(t0, item0, buff_list));
+  ASSERT_EQ(buff_list.size(), 1U);
+  EXPECT_EQ(item0.dataPtr_.get(), buff_list.back().get());
   std::string res = tstring(reinterpret_cast<const char *>(item0.dataPtr_.get()), item0.dataLen_);
   EXPECT_EQ(res, "123");
 
@@ -43,6 +45,14 @@ TEST_F(UtilTest, MappingDTStringTensor2DataItemTest) {
     std::string tmp = tstring(reinterpret_cast<const char *>(base_ptr + head->addr), head->len);
     EXPECT_EQ(tmp, std::to_string(i));
   }
+
+  Tensor empty_tensor(DT_STRING, TensorShape({}));
+  empty_tensor.scalar<tstring>()() = "";
+  tdt::DataItem empty_item;
+  TF_CHECK_OK(MappingDTStringTensor2DataItem(empty_tensor, empty_item, buff_list));
+  EXPECT_EQ(empty_item.dataLen_, 0U);
+  EXPECT_EQ(empty_item.dataPtr_.get(), nullptr);
+  EXPECT_EQ(buff_list.size(), 2U);
 }
 
 TEST_F(UtilTest, MappingDtStringTensor2AclDataItemTest) {

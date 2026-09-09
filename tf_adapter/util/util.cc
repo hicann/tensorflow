@@ -64,9 +64,19 @@ Status GetDtStringTensorData(const Tensor &tensor, uint8_t *&data_ptr, uint64_t 
 Status MappingDTStringTensor2DataItem(const Tensor &tensor, tdt::DataItem &item,
                                       std::vector<std::unique_ptr<uint8_t[]>> &buff_list) {
   if (tensor.dims() == 0) {
-    std::string value = tensor.scalar<npu::compat_tf1_tf2::string>()();
-    item.dataLen_ = tensor.scalar<npu::compat_tf1_tf2::string>()().size();
-    item.dataPtr_ = std::shared_ptr<void>(const_cast<char *>(value.data()), [](const void *elem) { (void)elem; });
+    const auto value = tensor.scalar<npu::compat_tf1_tf2::string>()();
+    item.dataLen_ = value.size();
+    if (value.empty()) {
+      item.dataPtr_.reset();
+      return Status::OK();
+    }
+
+    std::unique_ptr<uint8_t[]> buffer(new (std::nothrow) uint8_t[value.size()]);
+    REQUIRES_NOT_NULL(buffer);
+    TF_RETURN_IF_ERROR(
+        LoopCopy(reinterpret_cast<char *>(buffer.get()), value.size(), const_cast<char *>(value.data()), value.size()));
+    buff_list.emplace_back(std::move(buffer));
+    item.dataPtr_ = std::shared_ptr<void>(buff_list.back().get(), [](const void *elem) { (void)elem; });
     return Status::OK();
   }
 
