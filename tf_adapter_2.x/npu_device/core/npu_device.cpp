@@ -154,7 +154,7 @@ void NpuDevice::CreateIteratorProvider(TFE_Context *context, const tensorflow::T
   LOG(INFO) << "Iterator resource provider for " << resource.name() << " created.";
 
   NPU_CTX_REQUIRES(status, provider != nullptr,
-                   tensorflow::errors::Internal("Failed create iterator reosurce provider for ", resource.name()));
+                   tensorflow::errors::Internal("Failed create iterator resource provider for ", resource.name()));
 
   iterator_providers_[resource] = provider;
 
