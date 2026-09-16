@@ -185,12 +185,12 @@ class NPUBasics(object):
                 job_info = JobInfo(device_info=device_info, rank_table_file=rank_table_file,
                                    local_checkpoint_dir=local_checkpoint_dir, rank_size=rank_size)
                 return job_info
-        except IOError:
-            logging.warning('Warning:job config file does not exist')
+        except IOError as e:
+            logging.warning('Job config file %s does not exist: %s', file_name, str(e))
 
             job_id = os.getenv('JOB_ID', "")
             if job_id == "":
-                logging.error('Error:can not get job config from env')
+                logging.error('Can not get job config: JOB_ID is empty, please set JOB_ID env')
                 return None
 
             heartbeat = os.getenv('HEARTBEAT', "")

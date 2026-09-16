@@ -55,7 +55,8 @@ void Cluster::Merge(const std::shared_ptr<Cluster> other) {
 tensorflow::Status NodePlacer::Apply(size_t depth) {
   const static size_t kMaxRecursionDepth = 16;
   NPU_REQUIRES(depth <= kMaxRecursionDepth, tensorflow::errors::Unimplemented(
-                                              "Recursion depth exceed 16 when assign subgraph node device placement"));
+                                              "Recursion depth ", depth, " exceeds ", kMaxRecursionDepth,
+                                              " when assigning subgraph node device placement"));
   NPU_REQUIRES_OK(CopyShareableNode());
   InitNodeTopo();
   NPU_REQUIRES_OK(DeterminedSurelyNodes());  // Determine surely node placement

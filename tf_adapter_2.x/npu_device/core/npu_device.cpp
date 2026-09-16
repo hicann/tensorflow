@@ -154,7 +154,7 @@ void NpuDevice::CreateIteratorProvider(TFE_Context *context, const tensorflow::T
   LOG(INFO) << "Iterator resource provider for " << resource.name() << " created.";
 
   NPU_CTX_REQUIRES(status, provider != nullptr,
-                   tensorflow::errors::Internal("Failed create iterator resource provider for ", resource.name()));
+                   tensorflow::errors::Internal("Failed to create iterator resource provider for ", resource.name()));
 
   iterator_providers_[resource] = provider;
 
@@ -1340,7 +1340,7 @@ tensorflow::Status NpuDevice::LoadCustomSupportedOps() {
       if (res.ok()) {
         DLOG() << "Load custom supported ops from " << custom_ops_json_path << " successfully.";
       } else {
-        DLOG() << "Load custom supported ops from " << custom_ops_json_path << " failed.";
+        LOG(WARNING) << "Load custom supported ops from " << custom_ops_json_path << " failed.";  // LCOV_EXCL_LINE
       }
     } else {
       DLOG() << "custom_path '" << custom_ops_json_path << "' is invalid, which is skipped.";
@@ -1363,7 +1363,7 @@ tensorflow::Status NpuDevice::LoadSupportedOps() {
   if (res.ok()) {
     DLOG() << "Load built-in supported ops from " << supported_ops_json << " successfully.";
   } else {
-    DLOG() << "Load built-in supported ops from " << supported_ops_json << " failed.";
+    LOG(WARNING) << "Load built-in supported ops from " << supported_ops_json << " failed.";  // LCOV_EXCL_LINE
   }
   const static std::vector<std::string> kAddonOps{"IteratorV2", "IteratorGetNext"};
   npu_supported_ops_.insert(kAddonOps.cbegin(), kAddonOps.cend());

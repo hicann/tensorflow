@@ -22,6 +22,7 @@
 #include "npu_managed_buffer.h"
 #include "npu_tensor.h"
 #include "npu_unwrap.h"
+#include "optimizers/runtime/node_placer.h"
 #include "ge/ge_api.h"
 #include "graph/ascend_string.h"
 
@@ -345,4 +346,10 @@ TEST(NpuHdc, RecvTensorByAcl) {
   EXPECT_TRUE(guarded_channel->RecvTensors(tensors).ok());
   EXPECT_TRUE(guarded_channel->NotifyFinish().ok());
   EXPECT_TRUE(guarded_channel->NotifyAbnormal().ok());
+}
+
+TEST(NodePlacer, RejectRecursionDepthOverLimit) {
+  npu::NodePlacer placer(nullptr, nullptr, nullptr);
+  tensorflow::Status status = placer.Apply(17);
+  EXPECT_FALSE(status.ok());
 }

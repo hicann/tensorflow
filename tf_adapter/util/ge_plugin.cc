@@ -138,9 +138,9 @@ GePlugin::GePlugin()
 }
 
 GePlugin::~GePlugin() {
-  ADP_LOG(INFO) << "[GePlugin] Destroy constructor begin";
+  ADP_LOG(INFO) << "[GePlugin] Destructor begin";
   Finalize();
-  ADP_LOG(INFO) << "[GePlugin] Destroy constructor end";
+  ADP_LOG(INFO) << "[GePlugin] Destructor end";
 }
 
 /**
@@ -154,7 +154,7 @@ GePlugin *GePlugin::GetInstance() {
 void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool is_global, const bool is_async) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (isInit_) {
-    ADP_LOG(INFO) << "[GePlugin] Ge has already initialized";
+    ADP_LOG(INFO) << "[GePlugin] GE has already been initialized";
     return;
   }
   ADP_LOG(INFO) << "Init options: ";
@@ -176,8 +176,8 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
     try {
       config_info = json::parse(tf_config);
     } catch (json::exception &e) {
-      ADP_LOG(WARNING) << "[GePlugin] Failed to convert TF_CONFIG info from string to json ,reason: " << e.what();
-      LOG(WARNING) << "[GePlugin] Failed to convert TF_CONFIG info from string to json ,reason: " << e.what();
+      ADP_LOG(WARNING) << "[GePlugin] Failed to convert TF_CONFIG info from string to json, reason: " << e.what();
+      LOG(WARNING) << "[GePlugin] Failed to convert TF_CONFIG info from string to json, reason: " << e.what();
     }
     if (config_info.is_object()) {
       if (config_info["task"]["type"] == "ps") {
@@ -191,7 +191,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   }
   init_options[OPTION_EXEC_HCCL_FLAG] = std::to_string(exec_hccl_flag);
 
-  ADP_LOG(INFO) << "[GePlugin] graph run mode : " << init_options[ge::OPTION_GRAPH_RUN_MODE];
+  ADP_LOG(INFO) << "[GePlugin] graph run mode: " << init_options[ge::OPTION_GRAPH_RUN_MODE];
 
   Status s = GetEnvDeviceID(device_id_);
   if (!s.ok()) {
@@ -199,7 +199,7 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
     LOG(FATAL) << s.error_message();
   }
   init_options[ge::OPTION_EXEC_DEVICE_ID] = std::to_string(device_id_);
-  ADP_LOG(INFO) << "[GePlugin] device id : " << init_options[ge::OPTION_EXEC_DEVICE_ID];
+  ADP_LOG(INFO) << "[GePlugin] device ID : " << init_options[ge::OPTION_EXEC_DEVICE_ID];
 
   std::string env_job_id;
   (void)ReadStringFromEnvVar("JOB_ID", "", &env_job_id);
@@ -236,36 +236,36 @@ void GePlugin::Init(std::map<std::string, std::string> &init_options, const bool
   init_options[ge::OPTION_EXEC_IS_USEHCOM] = std::to_string(is_use_hcom);
 
   // is use hcom configuration
-  ADP_LOG(INFO) << "[GePlugin] is_usehcom : " << init_options[ge::OPTION_EXEC_IS_USEHCOM]
+  ADP_LOG(INFO) << "[GePlugin] is_usehcom: " << init_options[ge::OPTION_EXEC_IS_USEHCOM]
                 << ", deploy_mode :" << init_options[ge::OPTION_EXEC_DEPLOY_MODE];
 
   // profiling configuration
-  ADP_LOG(INFO) << "[GePlugin] profiling_mode : " << init_options[ge::OPTION_EXEC_PROFILING_MODE]
+  ADP_LOG(INFO) << "[GePlugin] profiling_mode: " << init_options[ge::OPTION_EXEC_PROFILING_MODE]
                 << ", profiling_options:" << init_options[ge::OPTION_EXEC_PROFILING_OPTIONS];
 
   // mix precision configuration
   if (init_options.find(ge::PRECISION_MODE) != init_options.end()) {
-    ADP_LOG(INFO) << "[GePlugin] precision_mode : " << init_options[ge::PRECISION_MODE];
+    ADP_LOG(INFO) << "[GePlugin] precision_mode: " << init_options[ge::PRECISION_MODE];
   }
   if (init_options.find("ge.exec.precision_mode_v2") != init_options.end()) {
-    ADP_LOG(INFO) << "[GePlugin] precision_mode_v2 : " << init_options["ge.exec.precision_mode_v2"];
+    ADP_LOG(INFO) << "[GePlugin] precision_mode_v2: " << init_options["ge.exec.precision_mode_v2"];
   }
 
   // debug configuration
-  ADP_LOG(INFO) << "[GePlugin] op_debug_level : " << init_options[ge::OP_DEBUG_LEVEL];
+  ADP_LOG(INFO) << "[GePlugin] op_debug_level: " << init_options[ge::OP_DEBUG_LEVEL];
 
-  ADP_LOG(INFO) << "[GePlugin] ge.deterministic : " << init_options["ge.deterministic"];
+  ADP_LOG(INFO) << "[GePlugin] ge.deterministic: " << init_options["ge.deterministic"];
 
   // scope fusion configuration
-  ADP_LOG(INFO) << "[GePlugin] enable_scope_fusion_passes : "
+  ADP_LOG(INFO) << "[GePlugin] enable_scope_fusion_passes: "
                 << init_options[ge::OPTION_EXEC_ENABLE_SCOPE_FUSION_PASSES];
 
   // exception dump configuration
   ADP_LOG(INFO) << "[GePlugin] enable_exception_dump : " << init_options["ge.exec.enable_exception_dump"];
 
-  ADP_LOG(INFO) << "[GePlugin] job_id : " << init_options[ge::OPTION_EXEC_JOB_ID];
+  ADP_LOG(INFO) << "[GePlugin] job_id: " << init_options[ge::OPTION_EXEC_JOB_ID];
 
-  ADP_LOG(INFO) << "[GePlugin] op_compiler_cache_mode : " << init_options["ge.op_compiler_cache_mode"];
+  ADP_LOG(INFO) << "[GePlugin] op_compiler_cache_mode: " << init_options["ge.op_compiler_cache_mode"];
 
   ADP_LOG(INFO) << "[GePlugin] op_compiler_cache_dir : " << init_options["ge.op_compiler_cache_dir"];
 

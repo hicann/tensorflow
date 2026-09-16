@@ -25,7 +25,7 @@ void NpuShapeDependOnValueOp::RunImpl(TFE_Context *context, NpuDevice *device, i
   TensorPartialShapes partial_shapes;
   auto s = device->InferShape(context, *OpRegistrationData(), NodeDef(), num_inputs, inputs, partial_shapes);
   if (!s.ok()) {
-    DLOG() << Op() << " fallback cpu as infer shape failed " << s.ToString();
+    LOG(WARNING) << Op() << " fallback cpu as infer shape failed " << s.ToString();  // LCOV_EXCL_LINE
     device->FallbackCPU(context, NodeDef(), num_inputs, inputs, num_outputs, outputs, status);
     return;
   }

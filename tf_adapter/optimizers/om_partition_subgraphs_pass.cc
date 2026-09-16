@@ -1662,8 +1662,8 @@ Node *OMSplitter::Subgraph::MakeNodeImage(const Graph *graph_in, const Node *nod
     } else if (job == "localhost") {
       device_ = string("/job:localhost/replica:0/task:0/device:CPU:0");
     } else {
-      ADP_LOG(ERROR) << "job type is : " << job << " not support. ";
-      LOG(ERROR) << "job type is : " << job << " not support. ";
+      ADP_LOG(ERROR) << "Job type " << job << " is not supported. ";
+      LOG(ERROR) << "Job type " << job << " is not supported. ";
       return nullptr;
     }
   }

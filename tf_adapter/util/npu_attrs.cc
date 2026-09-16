@@ -129,7 +129,7 @@ std::string GetDumpPath() {
     if (mmAccess2(base_path_str.c_str(), M_F_OK) != EN_OK) {
       int32_t ret = mmMkdir(base_path_str.c_str(), M_IRUSR | M_IWUSR | M_IXUSR);
       if (ret != 0) {
-        ADP_LOG(WARNING) << "create dump graph dir failed, path:" << base_path_str;
+        ADP_LOG(WARNING) << "Failed to create dump graph directory, path:" << base_path_str;
         return "./";
       }
     }
@@ -144,7 +144,7 @@ std::string GetDumpPath() {
   std::string base_path = dump_graph_path.empty() ? "./" : dump_graph_path + "/";
   if (mmAccess2(base_path.c_str(), M_F_OK) != EN_OK) {
     if (mmMkdir(base_path.c_str(), M_IRUSR | M_IWUSR | M_IXUSR) != 0) {
-      ADP_LOG(WARNING) << "create dump graph dir failed, path:" << base_path;
+      ADP_LOG(WARNING) << "Failed to create dump graph directory, path:" << base_path;
       return "./";
     }
   }
@@ -159,9 +159,9 @@ Status GetEnvDeviceID(uint32_t &device_id) {
   std::string env_device_id;
   (void)ReadStringFromEnvVar("DEVICE_ID", "", &env_device_id);
   if (env_ascend_device_id.empty() && env_device_id.empty()) {
-    ADP_LOG(WARNING) << "[GePlugin] DEVICE_ID and ASCEND_DEVICE_ID is none, use default device id : 0, if set "
+    ADP_LOG(WARNING) << "[GePlugin] DEVICE_ID and ASCEND_DEVICE_ID are not set, use default device ID: 0, if set "
                         "session_device_id, session_device_id has a higher priority.";
-    LOG(WARNING) << "[GePlugin] DEVICE_ID and ASCEND_DEVICE_ID is none, use default device id : 0, if set "
+    LOG(WARNING) << "[GePlugin] DEVICE_ID and ASCEND_DEVICE_ID are not set, use default device ID: 0, if set "
                     "session_device_id, session_device_id has a higher priority.";
   } else if (!env_ascend_device_id.empty()) {
     if (!strings::safe_strto64(env_ascend_device_id, &logic_device_id)) {

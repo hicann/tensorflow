@@ -39,7 +39,7 @@ def npu_variable_scope(placement=NpuExecutePlacement.ALL):
     Enable the node in the scope adding _variable_placement attr.
     """
     if placement not in NpuExecutePlacement:
-        raise ValueError("placement vaule must be in NpuExecutePlacement's vaule")
+        raise ValueError("placement value must be in NpuExecutePlacement's value")
     attrs = {
         "_variable_placement": attr_value_pb2.AttrValue(s=compat.as_bytes(placement.value))
     }

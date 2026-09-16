@@ -443,14 +443,14 @@ void GeOp::Initialize(OpKernelConstruction *ctx) {
                 << ", shape_generalization_mode: " << shape_generalization_mode_;
 
   if (compile_dynamic_mode_ == "1" && shape_generalization_mode_ != "STRICT") {
-    ADP_LOG(WARNING) << "compile_dynamic_mode is true, so shape_generalization_mode[" << shape_generalization_mode_
+    ADP_LOG(WARNING) << "compile_dynamic_mode is set to true, shape_generalization_mode[" << shape_generalization_mode_
                      << "] will be ignore, please set compile_dynamic_mode=false.";
   }
   if (jit_compile_ != "1" && shape_generalization_mode_ != "STRICT") {
-    LOG(WARNING) << "jit_compile is not true, so shape_generalization_mode[" << shape_generalization_mode_
+    LOG(WARNING) << "jit_compile is not set to true, shape_generalization_mode[" << shape_generalization_mode_
                  << "] will be ignore, please set jit_compile=true "
                  << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
-    ADP_LOG(WARNING) << "jit_compile is not true, so shape_generalization_mode[" << shape_generalization_mode_
+    ADP_LOG(WARNING) << "jit_compile is not set to true, shape_generalization_mode[" << shape_generalization_mode_
                      << "] will be ignore, please set jit_compile=true "
                      << "and shape_generalization_mode=" << shape_generalization_mode_ << ".";
   }
@@ -460,11 +460,11 @@ void GeOp::Initialize(OpKernelConstruction *ctx) {
   std::map<std::string, std::string> pass_options = NpuAttrs::GetPassOptions(ctx);
   iteration_per_loop_ = std::atoi(pass_options["iterations_per_loop"].c_str());
   graph_max_parallel_model_num_ = std::max(std::atoi(pass_options["graph_max_parallel_model_num"].c_str()), 1);
-  ADP_LOG(INFO) << "graph_max_parallel_model_num :" << graph_max_parallel_model_num_;
+  ADP_LOG(INFO) << "graph_max_parallel_model_num: " << graph_max_parallel_model_num_;
   job_type_ = pass_options["job"];
   mix_compile_mode_ = pass_options["mix_compile_mode"];
   accelerate_train_mode_ = pass_options["accelerate_train_mode"];
-  ADP_LOG(INFO) << "accelerate train mode :" << accelerate_train_mode_;
+  ADP_LOG(INFO) << "accelerate train mode: " << accelerate_train_mode_;
   if (GePlugin::GetInstance()->IsGlobal()) {
     ADP_LOG(INFO) << "[GEOP] GePlugin global, skip GePlugin init";
     InitAoeFlag();
@@ -473,7 +473,7 @@ void GeOp::Initialize(OpKernelConstruction *ctx) {
     InitAoeFlag();
     // aoe should not init ge async
     GePlugin::GetInstance()->Init(init_options_, false, !is_aoe_);
-    ADP_LOG(INFO) << "[GEOP] GePlugin init success.";
+    ADP_LOG(INFO) << "[GEOP] GePlugin initialized successfully.";
   }
   ADP_LOG(INFO) << "init options: ";
   if (is_aoe_) {
@@ -529,7 +529,7 @@ void GeOp::Initialize(OpKernelConstruction *ctx) {
 
   init_flag_ = true;
   int64 endTime = InferShapeUtil::GetCurrentTimestap();
-  ADP_LOG(EVENT) << "[GEOP] GeOp Initialize success, cost:[" << ((endTime - startTime) / kMicrosToMillis) << " ms].";
+  ADP_LOG(EVENT) << "[GEOP] GeOp initialized successfully, cost:[" << ((endTime - startTime) / kMicrosToMillis) << " ms].";
   return;
 }
 
@@ -558,7 +558,7 @@ void GeOp::Finalize() {
       if (!SessionManager::GetInstance().IsGeSessionExist()) {
         if (!GePlugin::GetInstance()->IsGlobal()) {
           GePlugin::GetInstance()->Finalize();
-          ADP_LOG(INFO) << "[GEOP] GePlugin Finalize success.";
+          ADP_LOG(INFO) << "[GEOP] GePlugin finalized successfully.";
           if (!init_options_["ge.jobType"].empty() && !init_options_["ge.tuningPath"].empty() &&
               aoe_finalize_ != nullptr && tuned_initialize_flag_) {
             AoeStatus tune_ret = (*aoe_finalize_)();
@@ -583,7 +583,7 @@ void GeOp::Finalize() {
     }
   }
   init_flag_ = false;
-  ADP_LOG(INFO) << "[GEOP] GeOp finalize success, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
+  ADP_LOG(INFO) << "[GEOP] GeOp finalized successfully, tf session: " << tf_session_ << ", graph_id_: " << graph_id_;
   return;
 }
 

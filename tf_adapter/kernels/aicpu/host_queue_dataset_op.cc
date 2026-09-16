@@ -405,7 +405,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
 
       bool ParallelCopy(void *const dst_ptr, uint64_t dst_size, const char *src_ptr, uint64_t src_size) {
         if (dst_size < src_size) {
-          ADP_LOG(ERROR) << "Parameters is invalid. "
+          ADP_LOG(ERROR) << "Parameters are invalid. "
                          << "[dst_size:" << dst_size << ", src_size:" << src_size << "].";
           return false;
         }
@@ -435,7 +435,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
             if (len > src_size || dst_len < len) {
               closure_ret = false;
               NotifyEventFinish();
-              ADP_LOG(ERROR) << "Parameters is invalid. "
+              ADP_LOG(ERROR) << "Parameters are invalid. "
                              << "[len:" << len << ", buffer_size:" << dst_len << "].";
               return;
             }
@@ -703,7 +703,7 @@ class HostQueueDatasetOp : public DatasetOpKernel {
         while (data_deliver_->RecvDataVec(items).ok()) {
           int32_t tdt_status = TdtHostPushData(dataset()->channel_name_, items, dataset()->device_id_);
           if (tdt_status != 0) {
-            ADP_LOG(ERROR) << "End training as tdt host push data finished:" << tdt_status;
+            ADP_LOG(INFO) << "End training as tdt host push data finished:" << tdt_status;
             break;
           }
           items.clear();
