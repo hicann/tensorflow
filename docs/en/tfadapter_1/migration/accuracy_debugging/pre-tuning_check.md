@@ -111,7 +111,7 @@ There are two methods to enable mixed-precision training on the GPU:
 
 Note that you should enable only one of the preceding methods to avoid unexpected problems invited by frequent graph modification. In addition, the same method should be used in case of porting to the NPU and the NPU accuracy configuration is as follows:
 
-For Atlas training product, use the **precision_mode**  parameter and set it to **allow_fp32_to_fp16**. For other products, use the **precision_mode_v2** parameter and set it to origin.
+For Atlas training products, use the **precision_mode**  parameter and set it to **allow_fp32_to_fp16**. For other products, use the **precision_mode_v2** parameter and set it to origin.
 
 ### Loss Scaling on NPU
 

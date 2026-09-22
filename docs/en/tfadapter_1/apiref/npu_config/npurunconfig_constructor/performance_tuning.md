@@ -58,11 +58,11 @@ nodename4=support_out_of_bound_index
 
 This option is supported only by the following products:
 
-Ascend 950PR/Ascend 950DT
+Ascend 950PR&950DT products
 
-Atlas A3 training product/Atlas A3 inference product
+Atlas A3 products
 
-Atlas A2 training product/Atlas A2 inference product
+Atlas A2 products
 
 - enable_hi_float_32_execution: The HF32 data type is used for internal processing of operators. After this configuration is enabled, the FP32 data type is automatically converted to the HF32 data type. This configuration can reduce the space occupied by data and improve performance. This configuration is not supported in the current version.
 - support_out_of_bound_index: The out-of-bounds verification is performed on the indices of the gather, scatter, and segment operators. The verification deteriorates the operator execution performance.

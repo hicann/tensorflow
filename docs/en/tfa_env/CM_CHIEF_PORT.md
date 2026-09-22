@@ -20,6 +20,6 @@ This environment variable cannot be used together with [RANK_TABLE_FILE](RANK_TA
 
 ## Applicability
 
-Atlas training product
+Atlas training products
 
-Atlas A2 training product/Atlas A2 inference product
+Atlas A2 products

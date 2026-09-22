@@ -1,4 +1,4 @@
-# TF Adapter 2.x API
+# TF Adapter 2.x APIs
 
 - [TF Adapter Interface Overview](tfadapter_interface_overview.md)
 - [npu.open](npu-open.md)

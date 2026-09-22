@@ -59,7 +59,7 @@ class DumpConfig():
   - all：同时进行AI Core算子溢出检测和Atomic Add溢出检测。默认值为“all”。
 
     > [!NOTE]说明
-    > 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，仅支持配置为默认值“all”。
+    > 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，仅支持配置为默认值“all”。
 
 - **dump_debug_mode**：输入，溢出检测模式，取值如下：
   - aicore_overflow：AI Core算子溢出检测，检测在算子输入数据正常的情况下，输出是否不正常的极大值（如float16下65500,38400,51200这些值）。一旦检测出这类问题，需要根据网络实际需求和算子逻辑来分析溢出原因并修改算子实现。
@@ -67,7 +67,7 @@ class DumpConfig():
   - all：同时进行AI Core算子溢出检测和Atomic Add溢出检测。默认值为“all”。
 
     > [!NOTE]说明
-    > 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，仅支持配置为默认值“all”。
+    > 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，仅支持配置为默认值“all”。
 
 - **dump_data**：输入，指定算子dump内容类型，取值：
 

@@ -40,8 +40,8 @@ Click  [here](https://www.tensorflow.org/api_docs/python/tf/data/Dataset)  for m
 
 ### Precautions
 
-- For the  Ascend 950PR/Ascend 950DT,Atlas A3 training product/Atlas A3 inference product,Atlas A2 training product/Atlas A2 inference product, the overflow/underflow mode of floating-point computation uses the INF/NaN mode by default. Therefore, you can skip this step. If you have manually called the  [set_device_sat_mode](../../apiref/set_device_sat_mode.md)  API to change the overflow/underflow mode to the saturation mode, you need to port scripts by referring to this section. Note that the saturation mode is only compatible with earlier versions and will not be evolved in the future. In addition, the compute in this mode may be inaccurate.
-- For the  Atlas training product, skip this step if your script does not involve the use of LossScaleOptimizer. Otherwise, port the script by referring to this section.
+- For the  Ascend 950PR&950DT products, Atlas A3 products, Atlas A2 products, the overflow/underflow mode of floating-point computation uses the INF/NaN mode by default. Therefore, you can skip this step. If you have manually called the  [set_device_sat_mode](../../apiref/set_device_sat_mode.md)  API to change the overflow/underflow mode to the saturation mode, you need to port scripts by referring to this section. Note that the saturation mode is only compatible with earlier versions and will not be evolved in the future. In addition, the compute in this mode may be inaccurate.
+- For the  Atlas training products, skip this step if your script does not involve the use of LossScaleOptimizer. Otherwise, port the script by referring to this section.
 
 ### Description
 

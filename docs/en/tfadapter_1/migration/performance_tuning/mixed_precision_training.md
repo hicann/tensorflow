@@ -212,7 +212,7 @@ You can find the built-in tiling policy in  **/opp/built-in/op_impl/ai_core/tbe/
   - If the field value is  **false**, the operator is on the mixed precision blocklist and its precision will not be reduced from float32 to float16.
   - If an operator does not have the  **precision_reduce**  option configured, the operator is on the graylist and will follow the same precision processing as the upstream operator.
 
-- Scenarios where  **precision_mode**  is set to  **allow_mix_precision_bf16**  \(only on the  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product,  Atlas A2 training product/Atlas A2 inference product\):
+- Scenarios where  **precision_mode**  is set to  **allow_mix_precision_bf16**  \(only on the  Ascend 950PR&950DT products,  Atlas A3 products,  Atlas A2 products\):
   - If the field value is  **true**, the operator is on the mixed precision trustlist and its precision will be reduced from float32 to bfloat16.
   - If the field value is  **false**, the operator is on the mixed precision blocklist and its precision will not be reduced from float32 to bfloat16.
   - If an operator does not have the  **precision_reduce**  option configured, the operator is on the graylist and will follow the same precision processing as the upstream operator.
@@ -353,9 +353,9 @@ Dynamic loss scaling checks the gradient floating-point exceptions during traini
 
 **In specific implementation:**
 
-For the  Ascend 950PR/Ascend 950DTAtlas A3 training product/Atlas A3 inference productAtlas A2 training product/Atlas A2 inference product, the overflow/underflow mode of floating-point computation can be saturation or Inf/NaN. Retain the default Inf/NaN mode. The saturation mode is used only for compatibility with earlier versions and will not evolve in the future. In addition, the computing accuracy in this mode may be unreliable.
+For the  Ascend 950PR&950DT products, Atlas A3 products and Atlas A2 products, the overflow/underflow mode of floating-point computation can be saturation or Inf/NaN. Retain the default Inf/NaN mode. The saturation mode is used only for compatibility with earlier versions and will not evolve in the future. In addition, the computing accuracy in this mode may be unreliable.
 
-For  Atlas training product, the default overflow/underflow mode of floating-point computation is saturation mode, and only the saturation mode is supported. This means when an overflow occurs during computation, the computation result is saturated to a floating-point extreme value \(**+-MAX**\).
+For  Atlas training products, the default overflow/underflow mode of floating-point computation is saturation mode, and only the saturation mode is supported. This means when an overflow occurs during computation, the computation result is saturated to a floating-point extreme value \(**+-MAX**\).
 
 - In saturation mode, operations such as floating-point exception check of the  AI processor  are different from those of the GPU due to various floating-point computation features. In this scenario, you need to enable loss scaling or port scripts based on the original loss scaling by referring to this section.
 - In Inf/NaN mode, directly use the native loss scaling of TensorFlow, without porting the function. If you have ported loss scaling by referring to this section, your network scripts can still run properly.

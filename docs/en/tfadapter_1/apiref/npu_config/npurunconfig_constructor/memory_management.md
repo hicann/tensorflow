@@ -54,10 +54,10 @@ Whether to enable the batch memory copy function when input data is transferred 
 
 NOTE:
 
-- This parameter is supported only on the following products:Ascend 950PR/Ascend 950DTAtlas A3 training product/Atlas A3 inference productAtlas A2 training product/Atlas A2 inference product
-  - Ascend 950PR/Ascend 950DT
-  - Atlas A3 training product/Atlas A3 inference product
-  - Atlas A2 training product/Atlas A2 inference product
+- This parameter is supported only on the following products:
+  - Ascend 950PR&950DT products
+  - Atlas A3 products
+  - Atlas A2 products
 - This parameter improves data transfer performance from the host to the device. It applies to scenarios that require frequent data transfer and have low PCIe bandwidth utilization. Enabling the batch copy function using this parameter can improve bandwidth utilization.
 - If the network initially has only one input, the batch copy function does not take effect even if it is enabled.
 - When both the input_fusion_size parameter (for enabling fusion and copy) and the input_batch_cpy parameter (for enabling batch copy) are configured, the threshold for the fusion and copy function may affect the batch copy function.

@@ -11,7 +11,7 @@
     3. 使用AOE工具进行子图、算子以及梯度切分策略的调优。
 
         > [!CAUTION]注意
-        > Ascend 950PR/Ascend 950DT不支持AOE工具。
+        > Ascend 950PR&950DT系列产品不支持AOE工具。
 
     详细操作请参见[基本调优](basic_tuning.md)。
 
@@ -28,10 +28,10 @@
     - 若性能达标 —\> 调优结束。
     - 针对如下产品，若性能不达标 —\> 再次执行[AOE自动调优](automatic_aoe_tuning.md)。
 
-        Atlas A3 训练系列产品/Atlas A3 推理系列产品
+        Atlas A3系列产品
 
-        Atlas A2 训练系列产品/Atlas A2 推理系列产品
+        Atlas A2系列产品
 
-        Atlas 训练系列产品
+        Atlas训练系列产品
 
-    - 针对Ascend 950PR/Ascend 950DT，若性能不达标，请再次执行[Profiling数据采集与分析](profile_data_collection_and_analysis.md)。
+    - 针对Ascend 950PR&950DT系列产品，若性能不达标，请再次执行[Profiling数据采集与分析](profile_data_collection_and_analysis.md)。

@@ -11,7 +11,7 @@ API path:  \{install_path\}_/python/site-packages/npu_device
 
 ## Supported Products
 
-- Ascend 950PR/Ascend 950DT
-- Atlas A3 training product/Atlas A3 inference product
-- Atlas A2 training product/Atlas A2 inference product
-- Atlas training product
+- Ascend 950PR&950DT products
+- Atlas A3 products
+- Atlas A2 products
+- Atlas training products

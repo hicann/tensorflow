@@ -3,9 +3,9 @@
 > [!NOTE]NOTE
 > The AOE tuning feature supports only the training scenarios of the following products:
 >
-> - Atlas A3 training product/Atlas A3 inference product
-> - Atlas A2 training product/Atlas A2 inference product
-> - Atlas training product
+> - Atlas A3 products
+> - Atlas A2 products
+> - Atlas training products
 
 ## aoe_mode
 
@@ -20,8 +20,8 @@ In the data parallelism scenario, AllReduce is used to aggregate gradients. The 
 > [!NOTE]NOTE
 >
 > - The tuning mode can be configured by modifying the training script or the AOE_MODE environment variable. If both configuration methods are used, the configuration by modifying the training script takes precedence.
-> - For the Atlas A2 training product/Atlas A2 inference product, subgraph tuning is not supported.
-> - For the Atlas A3 training product/Atlas A3 inference product, subgraph tuning is not supported.
+> - For the Atlas A2 products, subgraph tuning is not supported.
+> - For the Atlas A3 products, subgraph tuning is not supported.
 
 Example:
 

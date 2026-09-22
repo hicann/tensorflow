@@ -44,7 +44,7 @@ Find the built-in tiling policy in  **/opp/built-in/op_impl/ai_core/tbe/config/<
   - If the field value is  **false**, the operator is on the mixed precision blocklist and its precision will not be reduced from float32 to float16.
   - If an operator does not have the  **precision_reduce**  option configured, the operator is on the graylist and will follow the same precision processing as the upstream operator.
 
-- Scenarios where  **precision_mode**  is set to  **allow_mix_precision_bf16**  \(only on  Atlas A3 training products/Atlas A3 inference productsAtlas A2 training products/Atlas A2 inference products\):
+- Scenarios where  **precision_mode**  is set to  **allow_mix_precision_bf16**  (only on  Atlas A3 products and Atlas A2 products):
   - If the field value is  **true**, the operator is on the mixed precision trustlist and its precision will be reduced from float32 to bfloat16.
   - If the field value is  **false**, the operator is on the mixed precision blocklist and its precision will not be reduced from float32 to bfloat16.
   - If an operator does not have the  **precision_reduce**  option configured, the operator is on the graylist and will follow the same precision processing as the upstream operator.

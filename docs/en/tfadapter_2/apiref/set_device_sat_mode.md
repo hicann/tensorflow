@@ -21,7 +21,7 @@ def set_device_sat_mode(mode)
 
 | Parameter | Input/Output | Description |
 | --- | --- | --- |
-| mode | Input | Specified overflow mode.<br><br>  - 0: saturation mode.<br>  - 1: INF/NaN mode.<br><br>For the Atlas training product, the default (and the only supported) value is 0.<br>For other series products, use the default value 1.|
+| mode | Input | Specified overflow mode.<br><br>  - 0: saturation mode.<br>  - 1: INF/NaN mode.<br><br>For the Atlas training products, the default (and the only supported) value is 0.<br>For other series products, use the default value 1.|
 
 ## Returns
 
@@ -38,6 +38,6 @@ import tensorflow as tf
 import npu_device as npu
 # Initialize the NPU as the default device.
 npu.open().as_default() 
-# For the Atlas A2 training product/Atlas A2 inference product, the following API is called to set the overflow mode during network execution:
+# For the Atlas A2 products, the following API is called to set the overflow mode during network execution:
 npu.npu_device.set_device_sat_mode(1)
 ```

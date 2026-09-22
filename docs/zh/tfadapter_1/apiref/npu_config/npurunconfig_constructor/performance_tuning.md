@@ -58,11 +58,11 @@ nodename4=support_out_of_bound_index
 
   **该选项仅在以下产品支持：**
 
-  Ascend 950PR/Ascend 950DT
+  Ascend 950PR&950DT系列产品
 
-  Atlas A3 训练系列产品/Atlas A3 推理系列产品
+  Atlas A3系列产品
 
-  Atlas A2 训练系列产品/Atlas A2 推理系列产品
+  Atlas A2系列产品
 
 - enable_hi_float_32_execution：算子内部处理时使用HF32数据类型功能，使能后，FP32数据类型自动转换为HF32数据类型；该配置可以降低数据所占空间大小，实现性能提升。**当前版本暂不支持此配置。**
 - support_out_of_bound_index：表示对gather、scatter和segment类算子的indices输入进行越界校验，校验会降低算子的执行性能。

@@ -20,6 +20,6 @@ export CM_CHIEF_PORT=6000
 
 ## 支持的型号
 
-Atlas A2 训练系列产品/Atlas A2 推理系列产品
+Atlas A2系列产品
 
-Atlas 训练系列产品
+Atlas训练系列产品

@@ -5,8 +5,8 @@ The AOE tool continuously iterates tuning policies through a closed-loop feedbac
 > [!CAUTION]NOTICE
 > The AOE tuning feature supports only the following  Product:
 >
-> - Atlas A3 training products/Atlas A3 inference products
-> - Atlas A2 training products/Atlas A2 inference products
+> - Atlas A3 products
+> - Atlas A2 products
 > - Atlas training products
 
 You are advised to use the AOE tool to perform tuning in the following sequence.
@@ -14,7 +14,7 @@ You are advised to use the AOE tool to perform tuning in the following sequence.
 ![](../figures/aoe_tune.png)
 
 > [!NOTE]NOTE
-> For the  Atlas A2 training products/Atlas A2 inference productsAtlas A3 training products/Atlas A3 inference products, subgraph tuning is not supported.
+> For the  Atlas A2 products, Atlas A3 products, subgraph tuning is not supported.
 
 You can enable AOE tuning in training scenarios using either of the following methods:
 

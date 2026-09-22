@@ -11,8 +11,8 @@ API path: $\{TFPLUGIN_INSTALL_PATH\}/python/site-packages/npu_bridge.
 
 ## Supported Products
 
-- Ascend 950PR/Ascend 950DT
-- Atlas A3 training product/Atlas A3 inference product
-- Atlas A2 training product/Atlas A2 inference product
-- Atlas training product
-- Atlas inference product (only online inference is supported)
+- Ascend 950PR&950DT products
+- Atlas A3 products
+- Atlas A2 products
+- Atlas training products
+- Atlas inference products (only online inference is supported)

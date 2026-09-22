@@ -12,7 +12,7 @@
 
 > [!NOTE]说明
 >
-> - 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，仅支持溢出检测模式“all”。
+> - 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，仅支持溢出检测模式“all”。
 > - 默认训练过程中不采集溢出数据，如需采集，请参考本节内容修改训练脚本。也可以参考[浮点异常检测](../accuracy_debugging/floating-point_exception_detection.md)的方法一键式采集和分析。
 
 ## 使用注意事项

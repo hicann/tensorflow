@@ -79,7 +79,7 @@ The reference steps are as follows:
 1. Check that training with mixed precision is enabled for the benchmark model.
 2. Check that dynamic loss scaling is enabled.
 
-    You can also enable static loss scaling, but it is not recommended, as you need to adjust the loss scale value on the NPU to avoid frequent overflow or underflow when using the loss scale value set on the GPU.
+   You can also enable static loss scaling, but it is not recommended, as you need to adjust the loss scale value on the NPU to avoid frequent overflow or underflow when using the loss scale value set on the GPU.
 
 3. Check the proportion of floating-point exceptions reported during mixed precision training. A percentage less than 0.5% \(0.1% for a large global batch size\) is recommended.
 4. Modify the initial value and scale factor of the loss scale to minimize the number of floating-point exceptions.
@@ -100,11 +100,11 @@ There are two methods to enable mixed precision training on the GPU:
 
 Note that you should enable only one of the preceding methods to avoid unexpected problems invited by frequent graph modification. In addition, the same method should be used in case of porting to the NPU and the NPU accuracy configuration is as follows:
 
-For the  Ascend 910_95 AI Processor, use the  **precision_mode_v2**  parameter. The value is  **origin**.
+For the  Ascend 950PR&950DT products, use the  **precision_mode_v2**  parameter. The value is  **origin**.
 
-For the  Atlas A3 training products/Atlas A3 inference products, use the  **precision_mode_v2**  parameter. The value is  **origin**.
+For the  Atlas A3 products, use the  **precision_mode_v2**  parameter. The value is  **origin**.
 
-For the  Atlas A2 training products/Atlas A2 inference products, use the  **precision_mode_v2**  parameter. The value is  **origin**.
+For the  Atlas A2 products, use the  **precision_mode_v2**  parameter. The value is  **origin**.
 
 For the  Atlas training products, use the  **precision_mode**  parameter. The value is  **allow_fp32_to_fp16**.
 

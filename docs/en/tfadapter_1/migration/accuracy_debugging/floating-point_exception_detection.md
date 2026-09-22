@@ -133,7 +133,7 @@ Overflow/Underflow data analysis depends on the ATC and  **msaccucmp.py**  tools
 
 Before analyzing overflow/underflow data, you need to be familiar with floating-point data overflow/underflow modes of different Ascend products.
 
-- For the  Atlas training product, the default overflow/underflow mode of floating-point computation is saturation, and only the saturation mode is supported. This means when an overflow/underflow occurs during computation, the computation result is saturated to a floating-point extreme value \(±MAX\).
+- For the  Atlas training products, the default overflow/underflow mode of floating-point computation is saturation, and only the saturation mode is supported. This means when an overflow/underflow occurs during computation, the computation result is saturated to a floating-point extreme value \(±MAX\).
 - Other product series, the overflow/underflow mode of floating-point computation can be saturation or Inf/NaN. Retain the default Inf/NaN mode. The saturation mode is used only for compatibility with earlier versions and will not evolve in the future. In addition, the computing accuracy in this mode may be unreliable.
 
 Analyze overflow/underflow data as follows:

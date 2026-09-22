@@ -31,7 +31,7 @@ Perform the following operations in the NPU training environment.
 
 ## Overflow/Underflow Data Analysis
 
-Overflow/Underflow data analysis depends on the  **atc**  and  **msaccucmp.py**  tools in the CANN package. Perform the following operations in the CANN development environment:
+Overflow/Underflow data analysis depends on the **atc** and **msaccucmp.py** tools in the CANN package. Perform the following operations in the CANN development environment:
 
 1. Upload the  **precision_tool**  and  **precision_data**  folders to any directory in the CANN development environment. The following is an example of the directory structure:
 
@@ -50,7 +50,7 @@ Overflow/Underflow data analysis depends on the  **atc**  and  **msaccucmp.py** 
     pip3 install rich
     ```
 
-3. Modify  **config.py**  in the  **precision_tool/lib/config**  directory.
+3. Modify **config.py** in the **precision_tool/lib/config** directory.
 
     ```python
     # Depend on the atc and msaccucmp.py tools in the CANN package. Generally, the tools are in the .run package installation directory. Set this directory to its parent directory.

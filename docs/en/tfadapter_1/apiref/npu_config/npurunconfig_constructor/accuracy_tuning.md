@@ -36,26 +36,26 @@ A string for the operator precision mode.
 
   Mixed precision of bfloat16 and float32 is used for neural network processing. In this mode, bfloat16 is automatically used for certain float32 operators in the original graph based on the built-in tuning policy. This will improve system performance and reduce memory usage with minimal precision degradation. If the operators do not support bfloat16 and float32, the AI CPU operators are used for computation. If AI CPU operators also do not support float16 and float32, an error is reported during execution.
 
-    Note: This configuration is supported only by the Ascend 950PR/Ascend 950DT, Atlas A3 training product/Atlas A3 inference product, and Atlas A2 training product/Atlas A2 inference product.
+    Note: This configuration is supported only by the Ascend 950PR&950DT products, Atlas A3 products, and Atlas A2 products.
 
 - mixed_hif8:
 
   Enables automatic mixed precision, indicating that hifloat8 (for details about this data type, see [Link](https://arxiv.org/abs/2409.16626?context=cs.AR)), float16, bfloat16, and float32 are used together for neural network processing. In this mode, hifloat8 is automatically used for certain float16, bfloat16, and float32 operators in the original graph based on the built-in tuning policy. This will improve system performance and reduce memory usage with minimal precision degradation. The current version does not support this argument.
 
-  Note: This configuration is supported only by the Ascend 950PR/Ascend 950DT.
+  Note: This configuration is supported only by the Ascend 950PR&950DT products.
 
 - cube_hif8:
 
   The hifloat8 data type is forcibly used if the Cube operator in the original graph supports both hifloat8 and float16, bfloat16, or float32. The current version does not support this argument.
 
-  Note: This configuration is supported only by the Ascend 950PR/Ascend 950DT.
+  Note: This configuration is supported only by the Ascend 950PR&950DT products.
 
 In training scenarios:
 
-- For the Ascend 950PR/Ascend 950DT, the default value is origin.
-- For the Atlas A3 training product/Atlas A3 inference product, the default value is origin.
-- For the Atlas A2 training product/Atlas A2 inference product, the default value is origin.
-- For the Atlas training product, this parameter does not have a default value. The default value of the precision_mode parameter is used, that is, allow_fp32_to_fp16.
+- For the Ascend 950PR&950DT products, the default value is origin.
+- For the Atlas A3 products, the default value is origin.
+- For the Atlas A2 products, the default value is origin.
+- For the Atlas training products, this parameter does not have a default value. The default value of the precision_mode parameter is used, that is, allow_fp32_to_fp16.
 
 In online inference scenarios, the default value is fp16.
 
@@ -71,8 +71,8 @@ NOTE:
 - This parameter can be used to set the global precision mode of a network, but it may result in precision issues on particular operators. In this case, you are advised to call [keep_dtype_scope](../../npu_scope/keep_dtype_scope.md) to keep the precision of some operators unchanged.
 - For details about the built-in tuning policy for operators in mixed precision mode, see the description of modify_mixlist.
 - The bfloat16 data type does not support the following products:
-  - Atlas training product
-  - Atlas inference product
+  - Atlas training products
+  - Atlas inference products
 
 ## precision_mode
 
@@ -123,22 +123,22 @@ A string for the operator precision mode.
 
   Mixed precision of bfloat16 and float32 is used for neural network processing. In this mode, bfloat16 is automatically used for certain float32 operators on the original model based on the built-in tuning policy. This will improve system performance and reduce memory usage with minimal precision degradation. If the operator in the AI Core does not support bfloat16 and float32, the AI CPU operator is used for computation. If AI CPU operator also does not support bfloat16 and float32, an error is reported during execution.
 
-  Note: This configuration is supported only by the Ascend 950PR/Ascend 950DT, Atlas A3 training product/Atlas A3 inference product, and Atlas A2 training product/Atlas A2 inference product.
+  Note: This configuration is supported only by the Ascend 950PR&950DT products, Atlas A3 products, and Atlas A2 products.
 
 - allow_fp32_to_bf16:
 
   - If the operator precision in the original graph is float32, the precision of the original graph is preferably used. If the operator in the AI Core does not support float32, the precision is reduced to bfloat16. If the operator in the AI Core does not support bfloat16, the AI CPU operator is used for computation. If the AI CPU operator also does not support bfloat16, an error is reported during execution.
   - If the operator precision in the original graph is bfloat16, the precision of the original graph is preferably used. If the operator in the AI Core does not support bfloat16, float32 is used. If the operator in the AI Core does not support float32, the AI CPU operator is used for computation. If the AI CPU operator also does not support float32, an error is reported during execution.
 
-  Note: This configuration is supported by the Ascend 950PR/Ascend 950DT, Atlas A3 training product/Atlas A3 inference product, and Atlas A2 training product/Atlas A2 inference product.
+  Note: This configuration is supported by the Ascend 950PR&950DT products, Atlas A3 products, and Atlas A2 products.
 
-For the Ascend 950PR/Ascend 950DT, the default value is must_keep_origin_dtype.
+For the Ascend 950PR&950DT products, the default value is must_keep_origin_dtype.
 
-For the Atlas A3 training product/Atlas A3 inference product, the default value is must_keep_origin_dtype.
+For the Atlas A3 products, the default value is must_keep_origin_dtype.
 
-For the Atlas A2 training product/Atlas A2 inference product, the default value is must_keep_origin_dtype.
+For the Atlas A2 products, the default value is must_keep_origin_dtype.
 
-For the Atlas training product, the default value is allow_fp32_to_fp16.
+For the Atlas training products, the default value is allow_fp32_to_fp16.
 
 Example:
 

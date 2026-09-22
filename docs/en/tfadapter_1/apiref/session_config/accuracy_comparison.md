@@ -62,7 +62,7 @@ Overflow/Underflow detection mode. The values are as follows:
 - all: detects overflow/underflow of both AI Core operators and Atomic Add. The default value is all. 
 
 > [!NOTE]NOTE
-> For the Ascend 950PR/Ascend 950DT, Atlas A3 training product/Atlas A3 inference product, and Atlas A2 training product/Atlas A2 inference product, only the default value all can be used.
+> For the Ascend 950PR&950DT products, Atlas A3 products, and Atlas A2 products, only the default value all can be used.
 
 Example:
 
@@ -150,7 +150,7 @@ The value can contain letters, digits, underscores (_), hyphens (-), and periods
 
 The built-in graph fusion and UB fusion patterns are enabled by default. You can disable selected fusion patterns in the configuration file as needed. For details about fusion patterns that can be disabled, see [Graph Fusion and UB Fusion Patterns](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/maintenref/graphubfusionref/atlasrr_30_0003.html).
 
-Note: The Ascend 950PR/Ascend 950DT does not support UB fusion.
+Note: The Ascend 950PR&950DT products does not support UB fusion.
 
 Example:
 

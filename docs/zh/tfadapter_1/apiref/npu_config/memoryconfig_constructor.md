@@ -47,9 +47,9 @@ class MemoryConfig():
     > [!NOTE]说明
     >此参数仅支持以下产品：
     >
-    >- Ascend 950PR/Ascend 950DT
-    >- Atlas A3 训练系列产品/Atlas A3 推理系列产品
-    >- Atlas A2 训练系列产品/Atlas A2 推理系列产品
+    >- Ascend 950PR&950DT系列产品
+    >- Atlas A3系列产品
+    >- Atlas A2系列产品
 
 ## 返回值
 

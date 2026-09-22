@@ -59,7 +59,7 @@ class DumpConfig():
   - **all**: detects overflow/underflow of both AI Core operators and Atomic Add. Defaults to  **all**.
 
     > [!NOTE]NOTE
-    > For  Ascend 950PR/Ascend 950DTAtlas A3 training products/Atlas A3 inference productsAtlas A2 training products/Atlas A2 inference products, only the default value  **all**  can be used.
+    > For Ascend 950PR&950DT products, Atlas A3 products and Atlas A2 products, only the default value  **all**  can be used.
 
 - **dump_debug_mode**: input, overflow/underflow detection mode. The options are as follows:
   - **aicore_overflow**: detects AI Core operator overflow, that is, detecting whether abnormal extreme values \(such as 65500, 38400, and 51200 in float16\) are output with normal inputs. Once such a fault is detected, analyze the cause of the overflow/underflow and modify the operator implementation based on the network requirements and operator logic.
@@ -67,7 +67,7 @@ class DumpConfig():
   - **all**: detects overflow/underflow of both AI Core operators and Atomic Add. Defaults to  **all**.
 
     > [!NOTE]NOTE
-    > For the  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product, and  Atlas A2 training product/Atlas A2 inference product, only the default value  **all**  can be used.
+    > For Ascend 950PR&950DT products, Atlas A3 products and Atlas A2 products, only the default value  **all**  can be used.
 
 - **dump_data**: input, specifying the type of operator content to be dumped. The options are as follows:
 

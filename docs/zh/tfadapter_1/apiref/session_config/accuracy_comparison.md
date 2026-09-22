@@ -62,7 +62,7 @@ custom_op.parameter_map["enable_dump_debug"].b = True
 - all：同时进行AI Core算子溢出检测和Atomic Add溢出检测。默认值为“all”。
 
 > [!NOTE]说明
-> 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，仅支持配置为默认值“all”。
+> 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，仅支持配置为默认值“all”。
 
 配置示例：
 
@@ -150,7 +150,7 @@ custom_op.parameter_map["quant_dumpable"].s = tf.compat.as_bytes("1")
 
 系统内置了一些图融合和UB融合规则，均为默认开启，可以根据需要关闭指定的融合规则，当前可以关闭的融合规则请参见《[图融合和UB融合规则参考](https://hiascend.com/document/redirect/CannCommunitygraphubfusionref)》。
 
-**注意：Ascend 950PR/Ascend 950DT不支持UB融合。**
+**注意：Ascend 950PR&950DT系列产品不支持UB融合。**
 
 配置示例：
 

@@ -77,8 +77,8 @@ npu.global_options().op_compiler_cache_dir="/home/test/ernel_cache"
 配置格式：“整数1|整数2”，中间使用“|”分割，整数1表示算子编译时使用的最大ube Core数量，整数2表示算子编译时使用的最大Vector Core数量，整数1与整2都需要大于0，小于等于AI处理器包含的Cube Core数量和Vector Core数量。
 
 - 该参数支持如下产品：
-  - Atlas A3 训练系列产品/Atlas A3 推理系列产品
-  - Atlas A2 训练系列产品/Atlas A2 推理系列产品
+  - Atlas A3系列产品
+  - Atlas A2系列产品
 - 不同型号的AI处理器包含的最大Cube Core与Vector Core的数量可通过CANN软件安装目录/<arch\>-linux/data/platform_config/<soc_version\>_.ini”文件查看，如下所示，说明AI处理器上存在24个Cube ore，48个Vector Core。
   
   ```text

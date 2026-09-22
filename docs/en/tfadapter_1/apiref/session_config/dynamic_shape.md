@@ -45,12 +45,12 @@ Notes:
 
 For the following products, the profile range is (1,100]. That is, at least two profiles must be set, and a maximum of 100 profiles are supported.
 
-- Atlas A3 training product/Atlas A3 inference product
-- Atlas A2 training product/Atlas A2 inference product
-- Atlas inference product
-- Atlas training product
+- Atlas A3 products
+- Atlas A2 products
+- Atlas inference products
+- Atlas training products
 
-For the Ascend 950PR/Ascend 950DT, the profile range is (1,256]. That is, at least two profiles must be set, and a maximum of 256 profiles are supported.
+For the Ascend 950PR&950DT products, the profile range is (1,256]. That is, at least two profiles must be set, and a maximum of 256 profiles are supported.
 
 ## dynamic_node_type
 

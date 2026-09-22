@@ -13,7 +13,7 @@ If the performance of the network ported to the  AI processor  for training is n
     4. Use the AOE tool to tune subgraphs, operators, and gradient segmentation policies.
 
         > [!CAUTION]NOTICE
-        > The  Ascend 950PR/Ascend 950DT  does not support the AOE tool.
+        > The  Ascend 950PR&950DT products  does not support the AOE tool.
 
     For details, see  [Basic Tuning](basic_tuning.md).
 
@@ -30,10 +30,10 @@ If the performance of the network ported to the  AI processor  for training is n
     - If the performance is satisfactory, the tuning is complete.
     - If the performance does not meet the requirements for the following  Product, perform the operations in  [Automatic AOE Tuning](automatic_aoe_tuning.md)  again.
 
-        Atlas A3 training product/Atlas A3 inference product
+        Atlas A3 products
 
-        Atlas A2 training product/Atlas A2 inference product
+        Atlas A2 products
 
-        Atlas training product
+        Atlas training products
 
-    - If the performance does not meet the requirements for the  Ascend 950PR/Ascend 950DT, perform the operations in  [Profile Data Collection and Analysis](Profile_data_collection_and_analysis.md) again.
+    - If the performance does not meet the requirements for the  Ascend 950PR&950DT products, perform the operations in  [Profile Data Collection and Analysis](Profile_data_collection_and_analysis.md) again.

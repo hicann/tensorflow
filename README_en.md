@@ -17,11 +17,11 @@ TF Adapter supports TensorFlow 1.15 and TensorFlow 2.6.5.
 
 ## Supported Product Models
 
-- Ascend 950PR/Ascend 950DT
-- Atlas A3 Training Series / Atlas A3 Inference Series
-- Atlas A2 Training Series
-- Atlas Training Series
-- Atlas Inference Series (only the TensorFlow 1.15 online inference feature is supported)
+- Ascend 950PR&950DT products
+- Atlas A3 products
+- Atlas A2 training products
+- Atlas training products
+- Atlas inference products (only the TensorFlow 1.15 online inference feature is supported)
 
 ## How to Use the Source Code
 

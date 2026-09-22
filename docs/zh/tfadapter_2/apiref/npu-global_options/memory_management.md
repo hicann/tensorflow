@@ -55,9 +55,9 @@ npu.global_options().memory_config.variable_use_1g_huge_page=1
 > [!NOTE]说明
 >此参数仅支持以下产品：
 >
-> - Ascend 950PR/Ascend 950DT
-> - Atlas A3 训练系列产品/Atlas A3 推理系列产品
-> - Atlas A2 训练系列产品/Atlas A2 推理系列产品
+> - Ascend 950PR&950DT系列产品
+> - Atlas A3系列产品
+> - Atlas A2系列产品
 
 ## external_weight
 
@@ -110,9 +110,9 @@ Host侧输入数据搬运到Device时，是否开启批量内存拷贝功能。
 说明：
 
 - 该参数仅支持以下产品：
-  - Ascend 950PR/Ascend 950DT
-  - Atlas A3 训练系列产品/Atlas A3 推理系列产品
-  - Atlas A2 训练系列产品/Atlas A2 推理系列产品
+  - Ascend 950PR&950DT系列产品
+  - Atlas A3系列产品
+  - Atlas A2系列产品
 - 该参数可以提升Host到Device的数据搬运性能，适用于需要频繁搬运数据且PCIe带宽利用率较低的场景。通过该参数使能批量拷贝功能后，可提升带宽利用率。
 - 若网络初始输入个数仅有1个，即使配置了批量拷贝功能也不会生效。
 - 当同时配置了“input_fusion_size”参数以启用合并拷贝功能和“input_batch_cpy”参数以启用批量拷贝功能时，合并拷贝的阈值可能会影响批量拷贝功能。

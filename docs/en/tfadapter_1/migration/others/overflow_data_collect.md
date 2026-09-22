@@ -12,7 +12,7 @@ Based on the overflow/underflow detection result, locate the faulty operators, d
 
 > [!NOTE]NOTE
 >
-> - For  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product,  Atlas A2 training product/Atlas A2 inference product, the overflow/underflow detection mode can only be  **all**.
+> - For  Ascend 950PR&950DT products,  Atlas A3 products,  Atlas A2 products, the overflow/underflow detection mode can only be  **all**.
 > - If you need to enable overflow/underflow data collection \(disabled by default\), modify the training script as described in this section. A simpler method is provided in  [Floating-Point Exception Detection](../accuracy_debugging/floating-point_exception_detection.md).
 
 ## Precautions

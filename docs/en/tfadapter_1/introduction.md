@@ -15,11 +15,11 @@ To better understand this document, you should:
 
 ## Supported  Products
 
-- Ascend 950PR/Ascend 950DT
-- Atlas A3 training product/Atlas A3 inference product
-- Atlas A2 training product/Atlas A2 inference product
-- Atlas training product
-- Atlas inference product  (only supporting online inference)
+- Ascend 950PR&950DT products
+- Atlas A3 products
+- Atlas A2 products
+- Atlas training products
+- Atlas inference products  (only supporting online inference)
 
 ## Precautions
 
@@ -34,7 +34,7 @@ To better understand this document, you should:
 4. For condition branches and loop branches, only  **tf.cond**,  **tf.while_loop**, and  **tf.case**  are supported.
 5. During multi-device training,  **NPURunConfig**  does not support  **save_checkpoints_secs**  in  **tf.estimator.RunConfig**.
 6. During multi-device training, saving the summary information \(via the  **tf.summary**  API\) of only a single device is not supported.
-7. For the  Atlas training product, the operators do not support the Inf or NaN inputs.
+7. For the  Atlas training products, the operators do not support the Inf or NaN inputs.
 8. During data preprocessing, only dataset and placeholder modes are supported for data reading; queue-based data reading is not supported.
 9. If you spawn processes using the Python package  **multiprocessing**, you are advised to use the  **forkserver**  method as opposed to the  **fork**  method.
 

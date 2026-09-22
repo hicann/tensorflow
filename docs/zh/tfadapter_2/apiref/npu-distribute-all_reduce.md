@@ -16,7 +16,7 @@ npu.distribute.all_reduce(values, reduction="mean", fusion=1, fusion_id=-1, grou
 
 | 参数名 | 输入/输出 | 描述 |
 | --- | --- | --- |
-| values | 输入 | TensorFlow的tensor类型。<br>针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，tensor支持的数据类型为int8、int32、float16、float32、bfloat16（prod操作不支持）。<br>针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，tensor支持的数据类型为int8、int32、float16、float32、bfloat16（prod操作不支持）。<br>针对Atlas 训练系列产品，tensor支持的数据类型为int8、int32、float16、float32。|
+| values | 输入 | TensorFlow的tensor类型。<br>针对Atlas A3系列产品，tensor支持的数据类型为int8、int32、float16、float32、bfloat16（prod操作不支持）。<br>针对Atlas A2系列产品，tensor支持的数据类型为int8、int32、float16、float32、bfloat16（prod操作不支持）。<br>针对Atlas训练系列产品，tensor支持的数据类型为int8、int32、float16、float32。|
 | reduction | 输入 | String类型。<br>聚合运算的类型，可以为"mean"、"max"、"min"、"prod"或"sum"。 |
 | fusion | 输入 | int类型。<br>allreduce算子融合标识，支持以下取值：<br>  - 0：网络编译时，不会对该算子进行融合，即该allreduce算子不和其他allreduce算子融合。<br>  - 1：网络编译时，对该算子按照梯度切分策略进行融合。<br>  - 2：网络编译时，对allreduce算子按照相同的fusion_id进行融合，即“fusion_id”相同的allreduce算子之间会进行融合。 |
 | fusion_id | 输入 | int类型。<br>allreduce算子的融合id。<br>当“fusion”取值为“2”时，网络编译时会对相同fusion_id的allreduce算子进行融合。 |

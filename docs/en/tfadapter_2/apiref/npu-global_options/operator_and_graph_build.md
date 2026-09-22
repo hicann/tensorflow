@@ -77,8 +77,8 @@ Maximum number of Cube cores and Vector cores used for operator compilation.
 Format: Integer 1|Integer 2, where the two values are separated by vertical bars (|). Integer 1 specifies the maximum number of Cube cores to use, and Integer 2 specifies the maximum number of Vector cores to use. Both values must be greater than 0 and less than or equal to the actual number of Cube cores and Vector cores available on the AI processor.
 
 - This option is supported by the following products:
-  - Atlas A3 training product/Atlas A3 inference product
-  - Atlas A2 training product/Atlas A2 inference product
+  - Atlas A3 products
+  - Atlas A2 products
 - The maximum number of Cube cores and Vector cores for different AI processors can be found in the CANN installation directory/<arch\>-linux/data/platform_config/<soc_version\>.ini file. The following example indicates that there are 24 Cube cores and 48 Vector cores on the AI processor.
   
   ```text

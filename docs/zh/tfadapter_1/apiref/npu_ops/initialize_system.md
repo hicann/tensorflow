@@ -75,7 +75,7 @@ def initialize_system(name = None)
   - all：同时进行AI Core算子溢出检测和Atomic Add溢出检测。默认值为“all”。
 
     > [!NOTE]说明
-    > 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，仅支持配置为默认值“all”。
+    > 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，仅支持配置为默认值“all”。
 
 - **precision_mode**：算子精度模式，配置要求为string类型。
 
@@ -124,18 +124,18 @@ def initialize_system(name = None)
 
     表示使用混合精度bfloat16和float32数据类型来处理神经网络的过程。针对原始模型中float32数据类型的算子，按照内置的优化策略，自动将部分float32的算子降低精度到bfloat16，从而在精度损失很小的情况下提升系统性能并减少内存使用；如果AI Core中算子不支持bfloat16和float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
 
-    说明：仅Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置。
+    说明：仅Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，支持此配置。
 
   - allow_fp32_to_bf16：
 
     - 如果原图中算子精度为float32，则优先使用原图精度float32，如果AI Core中算子不支持float32，则降低精度到bfloat16；如果AI Core中算子不支持bfloat16，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
     - 如果原图中算子精度为bfloat16，则优先使用原图精度bfloat16，如果AI Core中算子不支持bfloat16，则选择float32，如果AI Core中算子不支持float32，则使用AI CPU算子进行计算；如果AI CPU算子也不支持，则执行报错。
 
-      说明：Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置。
+      说明：Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，支持此配置。
 
-    针对Atlas 训练系列产品，默认配置项为“allow_fp32_to_fp16”。
+    针对Atlas训练系列产品，默认配置项为“allow_fp32_to_fp16”。
 
-    针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，默认配置项为“must_keep_origin_dtype”。
+    针对Atlas A2系列产品，默认配置项为“must_keep_origin_dtype”。
 
 - **graph_run_mode**：图执行模式，取值：
   - 0：在线推理场景下，请配置为0。
@@ -145,16 +145,16 @@ def initialize_system(name = None)
   - 0：不开启算子debug功能。
   - 1：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成TBE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o和.json文件），用于后续工具进行AI Core Error问题定位。
 
-    注意：Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件。
+    注意：Ascend 950PR&950DT系列产品不会生成TBE指定映射文件。
 
   - 2：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成TBE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o和.json文件），并关闭ccec编译器的编译优化开关且打开ccec调试功能（ccec编译器选项设置为-O0-g），用于后续工具进行AI Core Error问题定位。
 
-    注意：Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件。
+    注意：Ascend 950PR&950DT系列产品不会生成TBE指定映射文件。
 
   - 3：不开启算子debug功能，且在训练脚本执行目录下的kernel_meta文件夹中保留.o和.json文件。
   - 4：不开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中**保留**.o（算子二进制文件）和.json文件（算子描述文件），生成TBE指令映射文件（算子cce文件\*.cce）和UB融合计算描述文件（\{$kernel_name\}_compute.json）。
 
-    注意：Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件和UB融合计算描述文件。
+    注意：Ascend 950PR&950DT系列产品不会生成TBE指定映射文件和UB融合计算描述文件。
 
     注意:
   - 当该参数取值为0时，同时又配置了“op_debug_config”参数，则训练执行时，仍会在当前执行路径下生成算子编译目录kernel_meta，目录中生成的内容以“op_debug_config”配置为准。

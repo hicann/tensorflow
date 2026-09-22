@@ -44,7 +44,7 @@ npu.open().as_default()
   - 若取值为false（黑名单），则不允许将当前float32类型的算子降低精度到float16，相应算子仍使用float32精度。
   - 若网络模型中算子没有配置该参数（灰名单），当前算子的混合精度处理机制和前一个算子保持一致，即如果前一个算子支持降精度处理，当前算子也支持降精度；如果前一个算子不允许降精度，当前算子也不支持降精度。
 
-- precision_mode配置为allow_mix_precision_bf16的场景（仅Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持此配置）：
+- precision_mode配置为allow_mix_precision_bf16的场景（仅Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，支持此配置）：
   - 若取值为true（白名单），则表示允许将当前float32类型的算子，降低精度到bfloat16。
   - 若取值为false（黑名单），则不允许将当前float32类型的算子降低精度到bfloat16，相应算子仍旧使用float32精度。
   - 若网络模型中算子没有配置该参数（灰名单），当前算子的混合精度处理机制和前一个算子保持一致，即如果前一个算子支持降精度处理，当前算子也支持降精度；如果前一个算子不允许降精度，当前算子也不支持降精度。

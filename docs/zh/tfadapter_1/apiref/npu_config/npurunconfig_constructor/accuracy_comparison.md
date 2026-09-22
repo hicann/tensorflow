@@ -36,7 +36,7 @@ config = NPURunConfig(quant_dumpable="1")
 
 系统内置了一些图融合和UB融合规则，均为默认开启，可以根据需要关闭指定的融合规则，当前可以关闭的融合规则请参见《[图融合和UB融合规则参考](https://hiascend.com/document/redirect/CannCommunitygraphubfusionref)》。
 
-**注意：针对Ascend 950PR/Ascend 950DT，不支持UB融合。**
+**注意：针对Ascend 950PR&950DT系列产品，不支持UB融合。**
 
 配置示例：
 

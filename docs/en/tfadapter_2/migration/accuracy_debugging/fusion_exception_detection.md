@@ -90,4 +90,4 @@ The fusion exception detection process is shown in the following figure.
     > [!NOTE]NOTE
     > For details about fusion patterns, see  [Graph Fusion and UB Fusion Patterns](https://hiascend.com/en/document/redirect/CannCommunitygraphubfusionref).
     >
-    > Note: UB fusion is not supported for the  Ascend 950PR/Ascend 950DT.
+    > Note: UB fusion is not supported for the  Ascend 950PR&950DT products.

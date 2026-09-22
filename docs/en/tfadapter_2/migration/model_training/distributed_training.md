@@ -22,12 +22,12 @@ For details about the restrictions on the usage of the environment variables  **
 
 **Before performing distributed training, pay attention to the following points:**
 
-1. Atlas training products: In single-server scenarios, the number of  Atlas training productss that participate in collective communication can be 1, 2, 4, or 8. In addition, devices 0 to 3 and devices 4 to 7 form separate networks. When two or four devices are used for training, cross-network clusters cannot be created. In server cluster scenarios, the number of  Ascend AI Processors that participate in collective communication can only be 1 ×  _n_, 2 ×  _n_, 4 ×  _n_, or 8 ×  _n_  \(_n_  is the number of servers participating in training\). If  _n_  is an exponential multiple of 2, the cluster performance is the best. Therefore, this mode is recommended for cluster networking.
-2. Atlas A2 training products/Atlas A2 inference products: In single-server scenarios, the number of  Ascend AI Processors that participate in collective communication is not limited. In server cluster scenarios, the number of  Ascend AI Processors that participate in collective communication must be \(1 to 8\) ×  _n_  \(_n_  is the number of servers participating in training\). It is recommended that each server should have the same number of  Ascend AI Processors that participate in collective communication. Otherwise, the performance deteriorates.
-3. Atlas A3 training products/Atlas A3 inference products: It is recommended that each supernode should have the same number of servers and each server should have the same number of  Ascend AI Processors. Otherwise, the performance deteriorates.
+1. Atlas training products: In single-server scenarios, the number of  Atlas training products that participate in collective communication can be 1, 2, 4, or 8. In addition, devices 0 to 3 and devices 4 to 7 form separate networks. When two or four devices are used for training, cross-network clusters cannot be created. In server cluster scenarios, the number of  Ascend AI Processors that participate in collective communication can only be 1 ×  _n_, 2 ×  _n_, 4 ×  _n_, or 8 ×  _n_  \(_n_  is the number of servers participating in training\). If  _n_  is an exponential multiple of 2, the cluster performance is the best. Therefore, this mode is recommended for cluster networking.
+2. Atlas A2 products: In single-server scenarios, the number of  Ascend AI Processors that participate in collective communication is not limited. In server cluster scenarios, the number of  Ascend AI Processors that participate in collective communication must be \(1 to 8\) ×  _n_  \(_n_  is the number of servers participating in training\). It is recommended that each server should have the same number of  Ascend AI Processors that participate in collective communication. Otherwise, the performance deteriorates.
+3. Atlas A3 products: It is recommended that each supernode should have the same number of servers and each server should have the same number of  Ascend AI Processors. Otherwise, the performance deteriorates.
 4. One device corresponds to one training process. It is not supported to run multiple training processes on a single device.
 5. The successfully ported TensorFlow training script and the corresponding dataset are ready.
-6. When performing training on multiple devices, ensure that the models executed on different devices are the same. Otherwise, the service fails to be executed. For details, see [How Do I Fix Application Errors Caused by Model Execution on Multiple Devices?](../faq/multi-device_model_error.md)。
+6. When performing training on multiple devices, ensure that the models executed on different devices are the same. Otherwise, the service fails to be executed. For details, see [How Do I Fix Application Errors Caused by Model Execution on Multiple Devices?](../faq/multi-device_model_error.md).
 
 ## Training Execution \(Configuring Resources via the Rank Table\)
 
@@ -163,7 +163,7 @@ Before training, you need to configure the resource information of  Ascend AI Pr
 
 The following products support resource information configuration using environment variables:
 
-Atlas A2 training products/Atlas A2 inference products
+Atlas A2 products
 
 Atlas training products
 
@@ -195,7 +195,7 @@ export HCCL_SOCKET_FAMILY=AF_INET
 - If the IP specified by the environment variable  **HCCL_SOCKET_FAMILY**  does not match the obtained NIC information, use the actual NIC information.
    For example, if  **HCCL_SOCKET_FAMILY**  is set to  **AF_INET6**  but only IPv4 NICs are available on the device, IPv4 will be used instead.
 - When the preceding environment variables are used to configure cluster information,  **RANK_TABLE_FILE**,  **RANK_ID**, and  **RANK_SIZE**  cannot exist.
-- For  Atlas A2 training products/Atlas A2 inference products, if the service is deployed in a single-device multi-process scenario, configure the communication ports used by HCCL on the NPU through the environment variable  **HCCL_NPU_SOCKET_PORT_RANGE**. Otherwise, port conflicts may occur. Note that running multiple processes may increase resource overhead and affect communication performance. Configuration example:
+- For  Atlas A2 products, if the service is deployed in a single-device multi-process scenario, configure the communication ports used by HCCL on the NPU through the environment variable  **HCCL_NPU_SOCKET_PORT_RANGE**. Otherwise, port conflicts may occur. Note that running multiple processes may increase resource overhead and affect communication performance. Configuration example:
 
     ```bash
     export HCCL_NPU_SOCKET_PORT_RANGE="auto"

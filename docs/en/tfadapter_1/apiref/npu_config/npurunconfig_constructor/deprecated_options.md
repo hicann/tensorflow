@@ -43,16 +43,16 @@ Operator debug enable.
 - 0: disables operator debug.
 - 1: Enables operator debug. TBE instruction mapping files are generated in the kernel_meta directory under the training script execution path, including operator CCE files (\*.cce), Python-CCE mapping files (\*_loc.json), .o files, and .json files. These files are used for AI Core error analysis with related tools.
 
-  Note: For the Ascend 950PR/Ascend 950DT, no TBE instruction mapping files are generated.
+  Note: For the Ascend 950PR&950DT products, no TBE instruction mapping files are generated.
 
 - 2: Enables operator debug. TBE instruction mapping files are generated in the kernel_meta directory under the training script execution path, including operator CCE files (\*.cce), Python-CCE mapping files (\*_loc.json), .o files, and .json files. The compilation optimization of the CCE compiler is disabled and the CCE compiler debugging function is enabled (by setting the compiler option to -O0-g). These files are used for AI Core error analysis with related tools.
 
-  Note: For the Ascend 950PR/Ascend 950DT, no TBE instruction mapping files are generated.
+  Note: For the Ascend 950PR&950DT products, no TBE instruction mapping files are generated.
 
 - 3: disables operator debug. The operator .o and .json files are retained in the kernel_meta folder in the training script execution directory.
 - 4: disables operator debug. The operator binary (.o) and operator description file (.json) are **retained**, and a TBE instruction mapping file (.cce) and a UB fusion description file (\{$kernel_name\}_compute.json) are generated in the kernel_meta folder under the training script execution directory.
 
-  For the Ascend 950PR/Ascend 950DT, neither TBE instruction mapping files nor UB fusion compute description files are generated.
+  For the Ascend 950PR&950DT products, neither TBE instruction mapping files nor UB fusion compute description files are generated.
 
 **NOTICE:**
 

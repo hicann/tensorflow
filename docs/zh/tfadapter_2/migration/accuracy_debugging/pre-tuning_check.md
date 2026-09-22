@@ -100,13 +100,13 @@ NPU硬件架构仅支持用户模型执行在混合精度训练模式下，故�
 
 需要注意，为了尽可能减少重复改图带来不期望的问题，以上方法需要确保仅使能一种，且迁移到NPU上时也保持同样的方式，并确保NPU的精度配置如下：
 
-针对Ascend 950PR/Ascend 950DT，使用“precision_mode_v2”选项，取值为“origin”。
+针对Ascend 950PR&950DT系列产品，使用“precision_mode_v2”选项，取值为“origin”。
 
-针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，使用“precision_mode_v2”选项，取值为“origin”。
+针对Atlas A3系列产品，使用“precision_mode_v2”选项，取值为“origin”。
 
-针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，使用“precision_mode_v2”选项，取值为“origin”。
+针对Atlas A2系列产品，使用“precision_mode_v2”选项，取值为“origin”。
 
-针对Atlas 训练系列产品，使用“precision_mode”选项，取值为“allow_fp32_to_fp16”。
+针对Atlas训练系列产品，使用“precision_mode”选项，取值为“allow_fp32_to_fp16”。
 
 ### 模型迁移：在NPU上正确使能Loss Scale
 

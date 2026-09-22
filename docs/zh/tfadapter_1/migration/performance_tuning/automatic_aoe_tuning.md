@@ -5,16 +5,16 @@ AOE自动调优工具通过生成调优策略、编译、在运行环境上验�
 > [!NOTE]说明
 > AOE调优特性仅支持如下产品：
 >
-> - Atlas A3 训练系列产品/Atlas A3 推理系列产品
-> - Atlas A2 训练系列产品/Atlas A2 推理系列产品
-> - Atlas 训练系列产品
+> - Atlas A3系列产品
+> - Atlas A2系列产品
+> - Atlas训练系列产品
 
 建议按照如下调优顺序使用AOE工具进行调优：
 
 ![](../figures/aoe_tune.png)
 
 > [!NOTE]说明
-> 针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，不支持子图调优。
+> 针对Atlas A3系列产品，Atlas A2系列产品，不支持子图调优。
 
 训练场景下使能AOE调优有两种方式：
 

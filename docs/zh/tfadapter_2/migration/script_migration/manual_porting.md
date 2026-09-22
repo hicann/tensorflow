@@ -40,8 +40,8 @@ npu.open接口的详细说明可参见[npu.open](../../apiref/npu-open.md)。
 
 ### 使用前须知
 
-- 针对Ascend 950PR/Ascend 950DT，Atlas A3 训练系列产品/Atlas A3 推理系列产品，Atlas A2 训练系列产品/Atlas A2 推理系列产品，浮点计算的溢出模式默认采用“INF/NaN模式”，因此默认场景下，可直接跳过该迁移点。若您手工调用[set_device_sat_mode](../../apiref/set_device_sat_mode.md)接口将浮点计算的溢出模式修改为了“饱和模式”，则需要参考本章节进行脚本迁移。但需要注意，饱和模式仅用于兼容旧版本，后续不再演进，且此模式下计算精度可能存在误差。
-- 针对Atlas 训练系列产品，如果您的原始脚本中未使用LossScaleOptimizer，可以直接跳过该迁移点；若您的原始脚本中使用了LossScaleOptimizer，请参考本章节进行脚本迁移。
+- 针对Ascend 950PR&950DT系列产品，Atlas A3系列产品，Atlas A2系列产品，浮点计算的溢出模式默认采用“INF/NaN模式”，因此默认场景下，可直接跳过该迁移点。若您手工调用[set_device_sat_mode](../../apiref/set_device_sat_mode.md)接口将浮点计算的溢出模式修改为了“饱和模式”，则需要参考本章节进行脚本迁移。但需要注意，饱和模式仅用于兼容旧版本，后续不再演进，且此模式下计算精度可能存在误差。
+- 针对Atlas训练系列产品，如果您的原始脚本中未使用LossScaleOptimizer，可以直接跳过该迁移点；若您的原始脚本中使用了LossScaleOptimizer，请参考本章节进行脚本迁移。
 
 ### 迁移说明
 

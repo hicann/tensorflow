@@ -1,4 +1,4 @@
-# TF Adapter 2.x API
+# TF Adapter 2.x APIs
 
 - [TF Adapter接口简介](tfadapter_interface_overview.md)
 - [npu.open](npu-open.md)
@@ -9,7 +9,7 @@
 - [npu.distribute.shard_and_rebatch_dataset](npu-distribute-shard_and_rebatch_dataset.md)
 - [npu.keep_dtype_scope](npu-keep_dtype_scope.md)
 - [npu.set_npu_loop_size](npu-set_npu_loop_size.md)
-- [npu.train.optimizer.NpuLossScaleOptimizer](npu-train-optimizer-NpuLossScaleOptimizer.md)
+- [npu.train.optimizer.NpuLossScaleOptimizer](npu-train-optimizer-npulossscaleoptimizer.md)
 - [npu.ops.gelu](npu-ops-gelu.md)
 - [set_device_sat_mode](set_device_sat_mode.md)
 - [set_schedule_aicore_task_early](set_schedule_aicore_task_early.md)

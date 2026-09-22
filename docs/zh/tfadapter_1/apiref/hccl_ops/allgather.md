@@ -19,7 +19,7 @@ def allgather(tensor, rank_size, group="hccl_world_group", fusion=0, fusion_id=-
 
 | 参数名 | 输入/输出 | 描述 |
 | --- | --- | --- |
-| tensor | 输入 | TensorFlow的tensor类型。<br>针对Ascend 950PR/Ascend 950DT，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas A3 训练系列产品/Atlas A3 推理系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas A2 训练系列产品/Atlas A2 推理系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas 训练系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64。<br>针对Atlas 300I Duo 推理卡，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64。 |
+| tensor | 输入 | TensorFlow的tensor类型。<br>针对Ascend 950PR&950DT系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas A3系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas A2系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64、bfp16。<br>针对Atlas训练系列产品，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64。<br>针对Atlas 300I Duo推理卡，支持数据类型：int8、uint8、int16、uint16、int32、uint32、int64、uint64、float16、float32、float64。 |
 | rank_size | 输入 | group内device的数量，int类型。<br>最大值为32768。 |
 | group | 输入 | String类型，最大长度为128字节，含结束符。<br>group名称，可以为用户自定义group或者"hccl_world_group"。 |
 | fusion | 输入 | AllGather算子融合标识，int类型，支持以下取值：<br><br>  - 0：标识网络编译时，不会对该算子进行融合，即该AllGather算子不和其他AllGather算子融合。<br>  - 2：网络编译时，会对AllGather算子按照相同的fusion_id进行融合，即“fusion_id”相同的AllGather算子之间会进行融合。 |

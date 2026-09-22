@@ -72,7 +72,7 @@ Code after porting:
 import tensorflow as tf
 from npu_bridge.npu_init import *
 
-# In this example, another session is created to initialize HCCL when the HCCL group management API is called. For details, see [Initializing Collective Communication](en-us_topic_0000002562450999.md).
+# In this example, another session is created to initialize HCCL when the HCCL group management API is called.
 npu_int = npu_ops.initialize_system()
 npu_shutdown = npu_ops.shutdown_system()
 config = tf.ConfigProto(allow_soft_placement=True)

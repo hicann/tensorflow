@@ -77,7 +77,7 @@ If the  **initialize_system**  API needs to be called and the following function
   - **all**: detects overflow/underflow of both AI Core operators and Atomic Add. The default value is  **all**.
 
     > [!NOTE]NOTE
-    >For the  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product, and  Atlas A2 training product/Atlas A2 inference product, only the default value  **all**  can be used.
+    >For the  Ascend 950PR&950DT products,  Atlas A3 products, and  Atlas A2 products, only the default value  **all**  can be used.
 
 - **precision_mode**: operator precision mode, which must be of the string type.
 
@@ -126,18 +126,18 @@ If the  **initialize_system**  API needs to be called and the following function
 
     Mixed precision of bfloat16 and float32 is used for neural network processing. In this mode, bfloat16 is automatically used for certain float32 operators on the original model based on the built-in tuning policy. This will improve system performance and reduce memory usage with minimal precision degradation. If the operator in the AI Core does not support bfloat16 and float32, the AI CPU operator is used for computation. If AI CPU operator also does not support bfloat16 and float32, an error is reported during execution.
 
-    Note: This configuration is supported only by the  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product, and  Atlas A2 training product/Atlas A2 inference product.
+    Note: This configuration is supported only by the  Ascend 950PR&950DT products,  Atlas A3 products, and  Atlas A2 products.
 
   - **allow_fp32_to_bf16**
 
     - If the operator precision in the original graph is float32, the precision of the original graph is preferably used. If the operator in the AI Core does not support float32, the precision is reduced to bfloat16. If the operator in the AI Core does not support bfloat16, the AI CPU operator is used for computation. If the AI CPU operator also does not support bfloat16, an error is reported during execution.
     - If the operator precision in the original graph is bfloat16, the precision of the original graph is preferably used. If the operator in the AI Core does not support bfloat16, float32 is used. If the operator in the AI Core does not support float32, the AI CPU operator is used for computation. If the AI CPU operator also does not support float32, an error is reported during execution.
 
-    Note: This configuration is supported by the  Ascend 950PR/Ascend 950DT,  Atlas A3 training product/Atlas A3 inference product, and  Atlas A2 training product/Atlas A2 inference product.
+    Note: This configuration is supported by the  Ascend 950PR&950DT products,  Atlas A3 products, and  Atlas A2 products.
 
-    For the  Atlas training product, the default value is  **allow_fp32_to_fp16**.
+    For the  Atlas training products, the default value is  **allow_fp32_to_fp16**.
 
-    For the  Atlas A2 training product/Atlas A2 inference product, the default value is  **must_keep_origin_dtype**.
+    For the  Atlas A2 products, the default value is  **must_keep_origin_dtype**.
 
 - **graph_run_mode**: graph run mode The values are as follows:
   - **0**: online inference.
@@ -147,16 +147,16 @@ If the  **initialize_system**  API needs to be called and the following function
   - **0**: disables operator debug.
   - **1**: Enables operator debug. TBE instruction mapping files are generated in the  **kernel_meta**  directory under the training script execution path, including operator CCE files \(.cce\), Python-CCE mapping files \(_loc.json\), .o files, and .json files. These files are used for AI Core error analysis with related tools.
 
-    Note: For the  Ascend 950PR/Ascend 950DT, no TBE instruction mapping files are generated.
+    Note: For the  Ascend 950PR&950DT products, no TBE instruction mapping files are generated.
 
   - **2**: Enables operator debug. TBE instruction mapping files are generated in the  **kernel_meta**  directory under the training script execution path, including operator CCE files \(.cce\), Python-CCE mapping files \(_loc.json\), .o files, and .json files. The compilation optimization of the CCE compiler is disabled and the CCE compiler debugging function is enabled \(by setting the compiler option to  **-O0-g**\). These files are used for AI Core error analysis with related tools.
 
-    Note: For the  Ascend 950PR/Ascend 950DT, no TBE instruction mapping files are generated.
+    Note: For the  Ascend 950PR&950DT products, no TBE instruction mapping files are generated.
 
   - **3**: disables operator debug. The operator .o and .json files are retained in the  **kernel_meta**  folder in the training script execution directory.
   - **4**: disables operator debug. The operator binary \(.o\) and operator description file \(.json\) are retained, and a TBE instruction mapping file \(.cce\) and a UB fusion description file \(**_\{$kernel_name\}__compute.json**\) are generated in the  **kernel_meta**  folder under the training script execution directory.
 
-    Note: For the  Ascend 950PR/Ascend 950DT, neither TBE instruction mapping files nor UB fusion compute description files are generated.
+    Note: For the  Ascend 950PR&950DT products, neither TBE instruction mapping files nor UB fusion compute description files are generated.
 
     NOTICE:
 

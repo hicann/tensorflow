@@ -24,14 +24,14 @@ export ENABLE_HF32_EXECUTION=1
 - 该环境变量仅适用于TensorFlow  1.15网络在昇腾平台执行训练或在线推理的场景。
 - 针对同一个算子，如果通过参数op_precision_mode配置了enable_float_32_execution或enable_hi_float_32_execution（当前版本暂不支持此配置），则不能再与此环境变量同时使用，若同时使用，优先级如下：
 
-    op_precision_mode\(ByNodeName，按节点名称设置精度模式\) \> ENABLE_HF32_EXECUTION  \> op_precision_mode\(ByOpType，按算子类型设置精度模式\)
+    op_precision_mode（ByNodeName，按节点名称设置精度模式） \> ENABLE_HF32_EXECUTION  \> op_precision_mode（ByOpType，按算子类型设置精度模式）
 
 - 启用FP32数据类型自动转换为HF32数据类型的功能时，需要确保算子输入或者输出类型为float32。在线推理场景下，由于TF Adapter精度模式配置参数“precision_mode”与“precision_mode_v2”的默认值分别为“force_fp16”与“fp16”，即网络模型中的算子如果既支持float16又支持float32数据类型，会强制使用float16，这种场景下环境变量“ENABLE_HF32_EXECUTION”无法生效，所以建议修改精度配置参数“precision_mode”与“precision_mode_v2”的值分别为“must_keep_origin_dtype”与“origin”。
 
 ## 支持的型号
 
-Ascend 950PR/Ascend 950DT
+Ascend 950PR&950DT系列产品
 
-Atlas A3 训练系列产品/Atlas A3 推理系列产品
+Atlas A3系列产品
 
-Atlas A2 训练系列产品/Atlas A2 推理系列产品
+Atlas A2系列产品

@@ -45,12 +45,12 @@ custom_op.parameter_map["dynamic_dims"].s = tf.compat.as_bytes("20,20,1,1;40,40,
 
 针对如下产品，档位数取值范围为\(1,100\]，即必须设置至少2个档位，最多支持100档配置。
 
-- Atlas A3 训练系列产品/Atlas A3 推理系列产品
-- Atlas A2 训练系列产品/Atlas A2 推理系列产品
-- Atlas 推理系列产品
-- Atlas 训练系列产品
+- Atlas A3系列产品
+- Atlas A2系列产品
+- Atlas推理系列产品
+- Atlas训练系列产品
 
-针对Ascend 950PR/Ascend 950DT，档位数取值范围为\(1, 256\]，即必须设置至少2个档位，最多支持256档配置。
+针对Ascend 950PR&950DT系列产品，档位数取值范围为\(1, 256\]，即必须设置至少2个档位，最多支持256档配置。
 
 ## dynamic_node_type
 

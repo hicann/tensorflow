@@ -15,11 +15,11 @@
 
 ## 支持的产品
 
-- Ascend 950PR/Ascend 950DT
-- Atlas A3 训练系列产品/Atlas A3 推理系列产品
-- Atlas A2 训练系列产品/Atlas A2 推理系列产品
-- Atlas 训练系列产品
-- Atlas 推理系列产品（仅支持在线推理特性）
+- Ascend 950PR&950DT系列产品
+- Atlas A3系列产品
+- Atlas A2系列产品
+- Atlas训练系列产品
+- Atlas推理系列产品（仅支持在线推理特性）
 
 ## 使用前须知
 
@@ -34,7 +34,7 @@
 4. 条件分支、循环分支只支持tf.cond、tf.while_loop、tf.case。
 5. 多卡训练时，NPURunConfig不支持tf.estimator.RunConfig中的配置参数save_checkpoints_secs。
 6. 多卡训练时，不支持仅保存单卡的Summary信息（tf.summary接口）。
-7. 针对Atlas 训练系列产品，算子不支持inf/nan输入。
+7. 针对Atlas训练系列产品，算子不支持inf/nan输入。
 8. 数据预处理约束：当前不支持queue方式读取数据，仅支持dataset和placeholder方式。
 9. 如果使用python的多进程包multiprocessing创建多进程，请不要使用fork方法，建议使用forkserver方法。
 

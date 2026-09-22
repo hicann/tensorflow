@@ -20,6 +20,6 @@ export CM_CHIEF_IP=192.168.1.1
 
 ## 支持的型号
 
-Atlas A2 训练系列产品/Atlas A2 推理系列产品
+Atlas A2系列产品
 
-Atlas 训练系列产品
+Atlas训练系列产品

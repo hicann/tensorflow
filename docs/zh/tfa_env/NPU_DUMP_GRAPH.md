@@ -20,12 +20,12 @@ export NPU_DUMP_GRAPH=1
 
 ## 支持的型号
 
-Ascend 950PR/Ascend 950DT
+Ascend 950PR&950DT系列产品
 
-Atlas A3 训练系列产品/Atlas A3 推理系列产品
+Atlas A3系列产品
 
-Atlas A2 训练系列产品/Atlas A2 推理系列产品
+Atlas A2系列产品
 
-Atlas 推理系列产品
+Atlas推理系列产品
 
-Atlas 训练系列产品
+Atlas训练系列产品

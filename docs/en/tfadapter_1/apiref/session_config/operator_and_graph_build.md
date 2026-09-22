@@ -80,8 +80,8 @@ Format: Integer 1|Integer 2, where the two values are separated by vertical bars
 NOTE:
 
 - This option is supported by the following products:
-  - Atlas A3 training product/Atlas A3 inference product
-  - Atlas A2 training product/Atlas A2 inference product
+  - Atlas A3 products
+  - Atlas A2 products
 - The maximum number of Cube cores and Vector cores for different AI processors can be found in the CANN installation directory/<arch\>-linux/data/platform_config/<soc_version\>.ini file. The following example indicates that there are 24 Cube cores and 48 Vector cores on the AI processor.
   
   ```text

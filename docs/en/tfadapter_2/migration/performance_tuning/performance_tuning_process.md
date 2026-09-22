@@ -12,7 +12,7 @@ If the performance of the network ported to the  Ascend AI Processor  for traini
     3. Use the AOE tool to tune subgraphs, operators, and gradient segmentation policies.
 
         > [!CAUTION]NOTICE
-        > Ascend 910_95 AI Processors do not support the AOE tool.
+        > Ascend 950PR&950DT products do not support the AOE tool.
 
     For details, see  [Basic Tuning](basic_tuning.md).
 
@@ -29,10 +29,10 @@ If the performance of the network ported to the  Ascend AI Processor  for traini
     - If the performance is satisfactory, the tuning is complete.
     - If the performance is not satisfactory for the following  Product, execute operations in  [Automatic AOE Tuning](automatic_aoe_tuning.md)  again.
 
-        Atlas A3 training products/Atlas A3 inference products
+        Atlas A3 products
 
-        Atlas A2 training products/Atlas A2 inference products
+        Atlas A2 products
 
         Atlas training products
 
-    - If the performance is not satisfactory for the  Ascend 910_95 AI Processor, execute operations in  [Profile Data Collection and Analysis](profile_data_collection_and_analysis.md)  again.
+    - If the performance is not satisfactory for the  Ascend 950PR&950DT products, execute operations in  [Profile Data Collection and Analysis](profile_data_collection_and_analysis.md)  again.

@@ -171,10 +171,10 @@ fusion_result.json文件于记录图编译过程中使用的融合规则，文�
 
 - session_and_graph_id__xx_xx_：表示融合结果所属线程和图编号。
 - graph_fusion：表示图融合。
-- ub_fusion：表示UB融合，**Ascend 950PR/Ascend 950DT不支持UB融合，不会生成该信息**。
+- ub_fusion：表示UB融合，**Ascend 950PR&950DT系列产品不支持UB融合，不会生成该信息**。
 - match_times：表示图编译过程中匹配到的融合规则次数。
 - effect_times：表示实际生效的次数。
-- repository_hit_times：优化UB融合知识库命中的次数，**Ascend 950PR/Ascend 950DT不支持UB融合，不会生成该信息**。
+- repository_hit_times：优化UB融合知识库命中的次数，**Ascend 950PR&950DT系列产品不支持UB融合，不会生成该信息**。
 
 说明：
 

@@ -72,7 +72,7 @@ with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir,
 import tensorflow as tf
 from npu_bridge.npu_init import *
 
-# 本示例调用了HCCL的group管理接口，因此需要另起session进行HCCL初始化，更多介绍请参考[集合通信初始化](init_collective_communication.md)
+# 本示例调用了HCCL的group管理接口，因此需要另起session进行HCCL初始化。
 npu_int = npu_ops.initialize_system()
 npu_shutdown = npu_ops.shutdown_system()
 config = tf.ConfigProto(allow_soft_placement=True)

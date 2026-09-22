@@ -18,12 +18,12 @@ None
 
 ## Applicability
 
-Ascend 950PR/Ascend 950DT
+Ascend 950PR&950DT products
 
-Atlas A3 training product/Atlas A3 inference product
+Atlas A3 products
 
-Atlas A2 training product/Atlas A2 inference product
+Atlas A2 products
 
-Atlas training product
+Atlas training products
 
-Atlas inference product
+Atlas inference products

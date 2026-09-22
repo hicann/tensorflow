@@ -9,16 +9,16 @@
 - 0：不开启算子debug功能。
 - 1：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成TBE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o和.json文件），用于后续工具进行AI Core Error问题定位。
 
-  注意：Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件。
+  注意：Ascend 950PR&950DT系列产品不会生成TBE指定映射文件。
 
 - 2：开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中生成TBE指令映射文件（算子cce文件\*.cce、python-cce映射文件\*_loc.json、.o和.json文件），并关闭ccec编译器的编译优化开关且打开ccec调试功能（ccec编译器选项设置为-O0-g），用于后续工具进行AI Core Error问题定位。
 
-  注意：Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件。
+  注意：Ascend 950PR&950DT系列产品不会生成TBE指定映射文件。
 
 - 3：不开启算子debug功能，且在训练脚本执行目录下的kernel_meta文件夹中保留.o和.json文件。
 - 4：不开启算子debug功能，在训练脚本执行目录下的kernel_meta文件夹中**保留**.o（算子二进制文件）和.json文件（算子描述文件），生成TBE指令映射文件（算子cce文件\*.cce）和UB融合计算描述文件（\{$kernel_name\}_compute.json）。
 
-  Ascend 950PR/Ascend 950DT不会生成TBE指定映射文件和UB融合计算描述文件。
+  Ascend 950PR&950DT系列产品不会生成TBE指定映射文件和UB融合计算描述文件。
 
   注意：
   - 当该参数取值为0时，同时又配置了“op_debug_config”参数，则训练执行时，仍会在当前执行路径下生成算子编译目录kernel_meta，目录中生成的内容以“op_debug_config”配置为准。
