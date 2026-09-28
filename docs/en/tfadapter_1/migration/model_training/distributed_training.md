@@ -70,7 +70,7 @@ Assume that there is only one AI Server node and eight devices on the node. You 
     - Enable computational graph dump by setting the corresponding environment variable before starting the training script to facilitate fault locating.
 
         ```bash
-        export DUMP_GE_GRAPH = 2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
+        export DUMP_GE_GRAPH=2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
         export DUMP_GRAPH_PATH=/home/dumpgraph  # Specify the path for storing dump graph files by using this environment variable.
         ```
 
@@ -137,7 +137,7 @@ Assume that there are two AI server nodes involved in distributed training and e
     - Enable computational graph dump by setting the corresponding environment variable before starting the training script to facilitate fault locating.
 
         ```bash
-        export DUMP_GE_GRAPH = 2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
+        export DUMP_GE_GRAPH=2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
         export DUMP_GRAPH_PATH=/home/dumpgraph  # Specify the path for storing dump graph files by using this environment variable.
         ```
 
@@ -257,7 +257,7 @@ Assume that there is only one AI server node and eight devices on the node. You 
     - Enable computational graph dump by setting the corresponding environment variable before starting the training script to facilitate fault locating.
 
         ```bash
-        export DUMP_GE_GRAPH = 2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
+        export DUMP_GE_GRAPH=2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
         export DUMP_GRAPH_PATH=/home/dumpgraph  # Specify the path for storing dump graph files by using this environment variable.
         ```
 
@@ -318,7 +318,7 @@ Assume that there are two AI server nodes involved in distributed training and e
     - Enable computational graph dump by setting the corresponding environment variable before starting the training script to facilitate fault locating.
 
         ```bash
-        export DUMP_GE_GRAPH = 2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
+        export DUMP_GE_GRAPH=2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
         export DUMP_GRAPH_PATH=/home/dumpgraph  # Specify the path for storing dump graph files by using this environment variable.
         ```
 

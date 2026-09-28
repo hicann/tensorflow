@@ -36,8 +36,8 @@ This section details how to run a ported TensorFlow training script on a single 
    - Enable computational graph dump by setting the corresponding environment variable before starting the training script to facilitate fault locating.
 
      ```bash
-     export DUMP_GE_GRAPH = 2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
-     export DUMP_GRAPH_PATH = /home/dumpgraph  # Dump path. By default, graphs are dumped to the script execution directory.
+     export DUMP_GE_GRAPH=2                  # 1: dumps all; 2: dumps without data such as weights; 3: dumps only the network structure.
+     export DUMP_GRAPH_PATH=/home/dumpgraph  # Dump path. By default, graphs are dumped to the script execution directory.
      ```
 
      After the training job is started, several dump graph files are generated in the path `${DUMP_GRAPH_PATH}/pid_${pid}_deviceid_${deviceid}`, including the `.pbtxt` and `.txt` files. Given the large number and sizes of dump files, dump can be skipped if there is no fault locating need.
