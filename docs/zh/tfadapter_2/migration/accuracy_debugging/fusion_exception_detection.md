@@ -18,7 +18,7 @@
 1. 修改训练脚本，关闭全部融合规则。<a id="step1"></a>
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='fusion_off')
     ```
 
@@ -48,7 +48,7 @@
         1. 关闭全部融合规则（参考[步骤1](#step1)相关操作），再次在NPU环境执行训练，采集dump数据，该数据默认保存在precision_data/npu/debug_0目录下。
 
             ```python
-            import precision_tool.tf_config as npu_tf_config 
+            import precision_tool.tf_config as npu_tf_config
             npu_tf_config.npu_device_dump_config(npu_device, action='fusion_off|dump')
             ```
 
@@ -70,7 +70,7 @@
 4. 定位到具体融合规则后，先恢复融合规则状态（将[步骤1](#step1)中关闭全部融合规则的代码注释掉），然后仅关闭指定的融合规则。
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='fusion_switch')
     ```
 
@@ -80,7 +80,7 @@
     {
         "Switch":{
             "GraphFusion":{
-                "ConvToFullyConnectionFusionPass":"off",
+                "ConvToFullyConnectionFusionPass":"off"
             },
             "UBFusion":{
                 "TbePool2dQuantFusionPass":"off"

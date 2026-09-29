@@ -8,7 +8,7 @@
 
 - How to Obtain
 
-  After the CANN software is installed, the porting tool is stored in the  **$\{TFPLUGIN_INSTALL_PATH\}/npu_device/convert_tf2npu/**  directory.
+  After the CANN software is installed, the porting tool is stored in the **$\{TFPLUGIN_INSTALL_PATH\}/npu_device/convert_tf2npu/** directory.
 
 - Constraints
 
@@ -53,7 +53,7 @@ Before porting a model to the  AI processor, prepare a model developed in Tensor
 
 2. Perform script scanning and automated porting.
 
-    Go to the porting tool directory  **$\{TFPLUGIN_INSTALL_PATH\}/npu_device/convert_tf2npu/**  and run the following command to perform both script scanning and automated porting:
+    Go to the porting tool directory **$\{TFPLUGIN_INSTALL_PATH\}/npu_device/convert_tf2npu/** and run the following command to perform both script scanning and automated porting:
 
     ```bash
     python3 main.py -i /root/models/examples/test -m /root/models/example/test/test.py

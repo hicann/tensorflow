@@ -17,7 +17,7 @@ Note: The priority of this configuration item is higher than that of the environ
 
 ## profiling_config.profiling_options
 
-Profiling configuration options. For supported options, refer to the environment variable [PROFILING_OPTIONS](https://gitcode.com/cann/oam-tools/blob/master/docs/zh/env-vars/PROFILING_OPTIONS.md).
+Profiling configuration options. For supported options, refer to the environment variable [PROFILING_OPTIONS](https://gitcode.com/cann/oam-tools/blob/9.2.0/docs/zh/env-vars/PROFILING_OPTIONS.md).
 
 Example:
 

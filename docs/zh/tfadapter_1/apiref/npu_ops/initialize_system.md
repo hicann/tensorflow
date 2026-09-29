@@ -29,8 +29,8 @@ def initialize_system(name = None)
   - False：关闭Profiling功能，默认关闭。
 
 - **profiling_options**：Profiling采集选项。
-   
-   支持的配置选项可参见环境变量[PROFILING_OPTIONS](https://gitcode.com/cann/oam-tools/blob/master/docs/zh/env-vars/PROFILING_OPTIONS.md)。
+
+   支持的配置选项可参见环境变量[PROFILING_OPTIONS](https://gitcode.com/cann/oam-tools/blob/9.2.0/docs/zh/env-vars/PROFILING_OPTIONS.md)。
 
 - **enable_dump**：是否开启Data Dump功能。
 
