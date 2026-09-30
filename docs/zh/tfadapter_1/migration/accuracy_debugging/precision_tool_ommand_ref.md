@@ -1,6 +1,6 @@
 # precision_tool命令参考
 
-## ac -l \[limit_num\] \(-c\)
+## ac -l [limit_num] -c
 
 - 命令说明：
 
@@ -28,11 +28,11 @@
     │   |- [Shape: (32, 20, 8, 8, 16)] [Dtype: bool] [Max: True] [Min: False] [Mean: 0.07781982421875] │ ╰─────────────────────────────────────────────────╯
     ```
 
-## run \[command\]
+## run [command]
 
 - 命令说明：
 
-    不退出交互命令环境执行shell命令，当内置命令冲突时，否则需要加run前缀。
+    不退出交互命令环境执行shell命令，当内置命令冲突时，需要加run前缀。
 
 - 命令示例：
 
@@ -41,11 +41,11 @@
     PrecisionTool > vim cli.py
     ```
 
-## ls -n \[op_name\] -t \[op_type\] -f \[fusion_pass\] -k \[kernel_name\]
+## ls -n [op_name] -t [op_type] -f [fusion_pass] -k [kernel_name]
 
 - 命令说明：
 
-    通过\[算子名\]/\[算子类型\]查询网络里的算子，模糊匹配。
+    通过[算子名]/[算子类型]查询网络里的算子，模糊匹配。
 
   - -n：可选，算子节点名称。
   - -t：可选，算子类型。
@@ -69,11 +69,11 @@
     [Mul][TbeMultiOutputFusionPass] InceptionV3/InceptionV3/Mixed_6b/Branch_1/mul_3
     ```
 
-## ni \(-n\) \[op_name\] -g \[graph\] -a \[attr\] -s \[save subgraph depth\]
+## ni -n [op_name] -g [graph] -a [attr] -s [save subgraph depth]
 
 - 命令说明：
 
-    通过\[算子名\]查询算子节点信息。
+    通过[算子名]查询算子节点信息。
 
   - -n：可选，指定节点名称。
   - -g：可选，graph名称。
@@ -115,7 +115,7 @@
     2021-04-27 14:39:55 (15178) -[INFO]Sub graph saved to /root/sym/inception/precision_data/dump/temp/op_graph
     ```
 
-## pt \(-n\) \[\*.npy\]
+## pt -n [\*.npy]
 
 - 命令说明：
 
@@ -143,7 +143,7 @@
     ╰────────────────────────────────────────────────────────────╯
     ```
 
-## cp \(-n\) \[left \*.npy\] \[right \*.npy\] -p \[print num\] -al \[atol\] -rl \[rtol\] -s
+## cp -n [left \*.npy] [right \*.npy] -p [print num] -al [atol] -rl [rtol] -s
 
 - 命令说明：
 
@@ -203,15 +203,15 @@
     ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
     ```
 
-## vcs -f \[file_name\] -c \[cos_sim_threshold\] -l \[limit\]
+## vcs -f [file_name] -c [cos_sim_threshold] -l [limit]
 
 - 命令说明：
 
     查看精度比对结果的概要信息，可以根据余弦相似度阈值过滤出低于阈值的算子/信息。
 
-  - -f \(--file\) ：可选，指定csv文件，不设置则默认遍历precision_data/temp/vector_compare/目录下最近产生的对比目录内的所有csv。
-  - -c \(--cos_sim\) ：可选，指定筛选所使用的余弦相似度阈值，默认值是0.98。
-  - -l \(--limit\) ：可选，指定输出前多少个结果，默认值是3。
+  - -f (--file) ：可选，指定csv文件，不设置则默认遍历precision_data/temp/vector_compare/目录下最近产生的对比目录内的所有csv。
+  - -c (--cos_sim) ：可选，指定筛选所使用的余弦相似度阈值，默认值是0.98。
+  - -l (--limit) ：可选，指定输出前多少个结果，默认值是3。
 
 - 命令示例：
 
@@ -248,7 +248,7 @@
      ╰─────────────────╯
     ```
 
-## vc -lt \[left_path\] -rt \[right_path\] -g \[graph\]
+## vc -lt [left_path] -rt [right_path] -g [graph]
 
 - 命令说明：
 

@@ -3,7 +3,7 @@
 ## 了解自动迁移工具
 
 - 功能介绍
-  
+
   TF Adapter提供了TensorFlow 2.6.5网络迁移工具，该工具适用于原生的TensorFlow训练脚本迁移场景，AI算法工程师通过该工具分析原生的TensorFlow Python API在AI处理器上的支持度情况，同时将原生的TensorFlow训练脚本自动迁移成AI处理器支持的脚本，迁移后的脚本能在AI处理器上执行训练，功能跑通。对于无法自动迁移的API，您可以参考工具输出的迁移报告，对训练脚本进行相应的适配修改。
 
 - 获取路径
@@ -33,7 +33,7 @@
   5. 关于分布式脚本迁移的限制：
      1. 使用工具迁移前，需要手工添加数据集分片操作，具体请参考[分布式训练脚本适配（兼容单卡）](manual_porting.md#分布式训练脚本适配兼容单卡)中的“不同worker上的数据集分片”。
      2. 当前工具仅支持对使用了TensorFlow Keras优化器（包括SGD/RMSprop/Adam/Ftrl/Adagrad/Adadelta/Adamax/Nadam）的分布式脚本进行自动迁移，其他分布式脚本需要参考[分布式训练脚本适配（兼容单卡）](manual_porting.md#分布式训练脚本适配兼容单卡)进行手工迁移。
-     3. 如果用户原始脚本中使用了LossScaleOptimizer，当前工具仅支持将tf.keras.mixed_precision.LossScaleOptimizer迁移为[npu.train.optimizer.NpuLossScaleOptimizer](../../apiref/npu-train-optimizer-NpuLossScaleOptimizer.md)，对于其他类型的LossScaleOptimizer，您应当先切换为tf.keras.mixed_precision.LossScaleOptimizer，进行功能精度验证后再手工替换为[npu.train.optimizer.NpuLossScaleOptimizer](../../apiref/npu-train-optimizer-NpuLossScaleOptimizer.md)。
+     3. 如果用户原始脚本中使用了LossScaleOptimizer，当前工具仅支持将tf.keras.mixed_precision.LossScaleOptimizer迁移为[npu.train.optimizer.NpuLossScaleOptimizer](../../apiref/npu-train-optimizer-npulossscaleoptimizer.md)，对于其他类型的LossScaleOptimizer，您应当先切换为tf.keras.mixed_precision.LossScaleOptimizer，进行功能精度验证后再手工替换为[npu.train.optimizer.NpuLossScaleOptimizer](../../apiref/npu-train-optimizer-npulossscaleoptimizer.md)。
 
   6. 迁移工具目前无法自动使能循环下沉功能，如果原始脚本中使用了循环下沉，则需要用户手工使能NPU的循环下沉能力，具体请参考[训练循环下沉时设置NPU上的循环次数](./manual_porting.md#训练循环下沉时设置npu上的循环次数)。
 
@@ -107,7 +107,7 @@
 
     ```text
     # 未去重的统计结果，分类和API支持度表中的一致
-     1.In brief: Total API: 231, in which Support: 222, Unsupport: 2,No operator is involved: 0, Analysing: 0 
+     1.In brief: Total API: 231, in which Support: 222, Unsupport: 2,No operator is involved: 0, Analysing: 0
      # 去重后的统计结果，分类和API支持度表中的一致
      2.After eliminate duplicate: Total API: 98, in which Support: 92, Unsupport or recommended: 1, No operator is involved: 0, Analysing: 0
     ```

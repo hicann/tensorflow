@@ -16,7 +16,7 @@ The fusion exception detection process is shown in the following figure.
 1. Modify the training script to disable all fusion patterns.<a id="step1"></a>
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='fusion_off')
     ```
 
@@ -46,7 +46,7 @@ The fusion exception detection process is shown in the following figure.
         1. Disable all fusion patterns by referring to  [1](#step1), perform training on the NPU again, and collect dump data. The data will be saved to the  **precision_data/npu/debug_0**  directory by default.
 
             ```python
-            import precision_tool.tf_config as npu_tf_config 
+            import precision_tool.tf_config as npu_tf_config
             npu_tf_config.npu_device_dump_config(npu_device, action='fusion_off|dump')
             ```
 
@@ -68,7 +68,7 @@ The fusion exception detection process is shown in the following figure.
 4. After the specific fusion pattern is determined, restore all fusion patterns by commenting out the lines for disabling all fusion patterns in  [1](#step1), and then disable only the selected fusion pattern.
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='fusion_switch')
     ```
 
@@ -78,7 +78,7 @@ The fusion exception detection process is shown in the following figure.
     {
         "Switch":{
             "GraphFusion":{
-                "ConvToFullyConnectionFusionPass":"off",
+                "ConvToFullyConnectionFusionPass":"off"
             },
             "UBFusion":{
                 "TbePool2dQuantFusionPass":"off"

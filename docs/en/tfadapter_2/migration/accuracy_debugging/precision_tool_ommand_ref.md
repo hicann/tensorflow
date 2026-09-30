@@ -1,13 +1,13 @@
 # precision_tool Command Reference
 
-## ac -l \[limit_num\] \(-c\)
+## ac -l [limit_num] -c
 
 - Description:
 
-    Runs automatic detection \(including displaying fusion information and parsing operator overflow/underflow information\).
+    Runs automatic detection (including displaying fusion information and parsing operator overflow/underflow information).
 
-  - **-c**: \(optional\) performs network-wide comparison.
-  - **-l**: \(optional\) limits the number of output results, such as the number of overflow parsing results.
+  - **-c**: (optional) performs network-wide comparison.
+  - **-l**: (optional) limits the number of output results, such as the number of overflow parsing results.
 
 - Example:
 
@@ -28,7 +28,7 @@
     │   |- [Shape: (32, 20, 8, 8, 16)] [Dtype: bool] [Max: True] [Min: False] [Mean: 0.07781982421875] │ ╰─────────────────────────────────────────────────╯
     ```
 
-## run \[command\]
+## run [command]
 
 - Description:
 
@@ -41,18 +41,18 @@
     PrecisionTool > vim cli.py
     ```
 
-## ls -n \[op_name\] -t \[op_type\] -f \[fusion_pass\] -k \[kernel_name\]
+## ls -n [op_name] -t [op_type] -f [fusion_pass] -k [kernel_name]
 
 - Description:
 
     Lists all operators on the network that match the specified operator name and operator type. Fuzzy matching is supported.
 
-  - **-n**: \(optional\) operator node name.
-  - **-t**: \(optional\) operator type.
-  - **-f**: \(optional\) fusion type.
-  - **-k**: \(optional\) kernel name.
+  - **-n**: (optional) operator node name.
+  - **-t**: (optional) operator type.
+  - **-f**: (optional) fusion type.
+  - **-k**: (optional) kernel name.
 
-    **Note**: Either  **-n**  or  **-t**  must be specified.
+    **Note**: Either **-n** or **-t** must be specified.
 
 - Example:
 
@@ -69,18 +69,18 @@
     [Mul][TbeMultiOutputFusionPass] InceptionV3/InceptionV3/Mixed_6b/Branch_1/mul_3
     ```
 
-## ni \(-n\) \[op_name\] -g \[graph\] -a \[attr\] -s \[save subgraph depth\]
+## ni -n [op_name] -g [graph] -a [attr] -s [save subgraph depth]
 
 - Description:
 
     Queries the operator node information based on the operator name.
 
-  - **-n**: \(optional\) specifies the node name.
-  - **-g**: \(optional\) specifies the graph name.
-  - **-a**: \(optional\) displays the attribute information.
-  - **-s**: \(optional\) saves a subgraph with the specified operator as the root and specified value as the depth.
+  - **-n**: (optional) specifies the node name.
+  - **-g**: (optional) specifies the graph name.
+  - **-a**: (optional) displays the attribute information.
+  - **-s**: (optional) saves a subgraph with the specified operator as the root and specified value as the depth.
 
-    **Note**: Either  **-n**  or  **-g**  must be specified.
+    **Note**: Either **-n** or **-g** must be specified.
 
 - Example:
 
@@ -115,7 +115,7 @@
     2021-04-27 14:39:55 (15178) -[INFO]Sub graph saved to /root/sym/inception/precision_data/dump/temp/op_graph
     ```
 
-## pt \(-n\) \[\*.npy\]
+## pt -n [\*.npy]
 
 - Description:
 
@@ -143,15 +143,15 @@
     ╰────────────────────────────────────────────────────────────╯
     ```
 
-## cp \(-n\) \[left \*.npy\] \[right \*.npy\] -p \[print num\] -al \[atol\] -rl \[rtol\] -s
+## cp -n [left \*.npy] [right \*.npy] -p [print num] -al [atol] -rl [rtol] -s
 
 - Description:
 
     Compares the tensor data in the two NumPy files.
 
-  - **-n**: \(required\) specifies the names of the two NumPy files to be compared.
-  - **-p**: \(optional\) specifies the number of error data records to be output.
-  - **-al/rl**: \(optional\)  **al**  indicates the absolute error, and  **rl**  indicates the relative error. The following are examples:
+  - **-n**: (required) specifies the names of the two NumPy files to be compared.
+  - **-p**: (optional) specifies the number of error data records to be output.
+  - **-al/rl**: (optional)  **al**  indicates the absolute error, and  **rl**  indicates the relative error. The following are examples:
 
     ```python
     # Example 1:
@@ -160,7 +160,7 @@
     err_cnt += 1 if abs(data_left[i] - data_right[i]) > (al + rl * abs(data_right[i]))
     ```
 
-  - **-s**: \(optional\) saves the file as a .txt file, which is enabled by default.
+  - **-s**: (optional) saves the file as a .txt file, which is enabled by default.
 
 - Example:
 
@@ -203,15 +203,15 @@
     ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
     ```
 
-## vcs -f \[file_name\] -c \[cos_sim_threshold\] -l \[limit\]
+## vcs -f [file_name] -c [cos_sim_threshold] -l [limit]
 
 - Description:
 
     Displays the summary of the accuracy analysis result and optionally filters operators based on the specified cosine similarity threshold.
 
-  - **-f \(--file\)**: \(optional\) specifies the CSV file. If not set, traverses all CSV files in the latest comparison directory under  **precision_data/temp/vector_compare/**.
-  - **-c \(--cos_sim\)**: \(optional\) specifies the cosine similarity threshold, which defaults to  **0.98**.
-  - **-l \(--limit\)**: \(optional\) specifies the top  _N_  results to output, which defaults to  **3**.
+  - **-f (--file)**: (optional) specifies the CSV file. If not set, traverses all CSV files in the latest comparison directory under  **precision_data/temp/vector_compare/**.
+  - **-c (--cos_sim)**: (optional) specifies the cosine similarity threshold, which defaults to  **0.98**.
+  - **-l (--limit)**: (optional) specifies the top  _N_  results to output, which defaults to  **3**.
 
 - Example:
 
@@ -248,19 +248,19 @@
      ╰─────────────────╯
     ```
 
-## vc -lt \[left_path\] -rt \[right_path\] -g \[graph\]
+## vc -lt [left_path] -rt [right_path] -g [graph]
 
 - Description:
 
     Compares two networks.
 
-  - **-lt**: \(required\) specifies the directory of the left network.
-  - **-rt**: \(required\) specifies the directory of the right network.
+  - **-lt**: (required) specifies the directory of the left network.
+  - **-rt**: (required) specifies the directory of the right network.
 
     > [!NOTE]NOTE
     > The input directories must be the ones where dump data is stored, for example,  **precision_data/npu/debug_0/dump/20220217095546/3/ge_default_20220217095547_1/1/0/**.
 
-  - **-g**: \(optional\) analyzes the mapping between graphs in NPU and TensorFlow comparison scenarios. \(NPU and NPU comparison can be done based on the operator name.\)
+  - **-g**: (optional) analyzes the mapping between graphs in NPU and TensorFlow comparison scenarios. (NPU and NPU comparison can be done based on the operator name.)
 
 - Example:
 
