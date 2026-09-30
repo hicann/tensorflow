@@ -36,7 +36,7 @@ You can use the TensorFlow debugger \(**tfdbg_ascend**\) to generate .npy files.
 
         ```python
               dbg.disable()
-              if current_step == 5: 
+              if current_step == 5:
                   dbg.enable()
                   dbg.set_dump_path("home/test/gpu_dump")
         ```
@@ -58,7 +58,7 @@ You can use the TensorFlow debugger \(**tfdbg_ascend**\) to generate .npy files.
             def on_batch_begin(self, batch, logs={}):
                 if batch == 4:
                     dbg.enable()
-                    dbg.set_dump_path("/user/name1/pip_pkg/dump4")
+                    dbg.set_dump_path("/home/test/gpu_dump")
                 else:
                     dbg.disable()
         ```
@@ -73,7 +73,7 @@ You can use the TensorFlow debugger \(**tfdbg_ascend**\) to generate .npy files.
                     LossHistory(batch_size),
                     DumpConfig()
                 ]
-         
+
         # fit the model
         history = self.model.fit(train_dataset, validation_data=valid_dataset, epochs=1, callbacks=callbacks, verbose=2)
         ```
@@ -107,7 +107,7 @@ Generally, dump of the first step is enough for comparison and analysis. To avoi
     With the following script, both dump data and dump graphs are generated.
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='dump')
     ```
 
@@ -125,11 +125,11 @@ Accuracy analysis depends on the  **atc**  and  **msaccucmp.py**  tools in the C
 1. Upload the  **precision_tool**  and  **precision_data**  directories \(containing the benchmark and NPU dump data\) to any directory in the CANN development environment. The two directories are organized as follows:
 
     ```text
-    ├── precision_tool              
-    │    ├── cli.py                   
+    ├── precision_tool
+    │    ├── cli.py
     │    ├── ...
-    ├── precision_data              
-    │    ├── npu                   
+    ├── precision_data
+    │    ├── npu
     │    │    ├── debug_0  // NPU dump data.
     │    ├── tf
     │    │    ├── dump     // Benchmark dump data

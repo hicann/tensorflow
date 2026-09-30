@@ -36,7 +36,7 @@
 
         ```python
               dbg.disable()
-              if current_step == 5: 
+              if current_step == 5:
                   dbg.enable()
                   dbg.set_dump_path("home/test/gpu_dump")
         ```
@@ -58,7 +58,7 @@
             def on_batch_begin(self, batch, logs={}):
                 if batch == 4:
                     dbg.enable()
-                    dbg.set_dump_path("/user/name1/pip_pkg/dump4")
+                    dbg.set_dump_path("/home/test/gpu_dump")
                 else:
                     dbg.disable()
         ```
@@ -73,7 +73,7 @@
                     LossHistory(batch_size),
                     DumpConfig()
                 ]
-         
+
         # fit the model
         history = self.model.fit(train_dataset, validation_data=valid_dataset, epochs=1, callbacks=callbacks, verbose=2)
         ```
@@ -107,7 +107,7 @@
     以下修改会同时生成Dump数据和Dump图，用于精度数据比对。
 
     ```python
-    import precision_tool.tf_config as npu_tf_config 
+    import precision_tool.tf_config as npu_tf_config
     npu_tf_config.npu_device_dump_config(npu_device, action='dump')
     ```
 
@@ -125,11 +125,11 @@
 1. 将precision_tool和precision_data（包括标杆数据和NPU的精度数据）文件夹上传到CANN开发环境的任意目录下，目录结构示例：
 
     ```text
-    ├── precision_tool              
-    │    ├── cli.py                   
+    ├── precision_tool
+    │    ├── cli.py
     │    ├── ...
-    ├── precision_data              
-    │    ├── npu                   
+    ├── precision_data
+    │    ├── npu
     │    │    ├── debug_0  // 存放npu dump数据
     │    ├── tf
     │    │    ├── dump     // 存放标杆dump数据
